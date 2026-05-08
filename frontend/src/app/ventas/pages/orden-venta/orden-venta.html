@@ -1,0 +1,122 @@
+<app-header-page PageName="Orden de Venta"/>
+
+
+<div class="w-full min-h-screen p-1 bg-white">
+
+
+
+  <div class="overflow-x-auto">
+    <table class="w-full table-fixed border-collapse border border-gray-300">
+      <thead>
+        <tr class="bg-gray-200">
+          <th class="w-60 border-y border-gray-100 bg-gray-50/50 p-2">Parte</th>
+          <th class="w-25 border-y border-gray-100 bg-gray-50/50 p-2">No. Cilindros</th>
+          <th class="w-25 border-y border-gray-100 bg-gray-50/50 p-2">Presentación</th>
+          <th class="w-25 border-y border-gray-100 bg-gray-50/50 p-2">UOM</th>
+          <th class="w-25 border-y border-gray-100 bg-gray-50/50 p-2">Total</th>
+          <th class="w-25 border-y border-gray-100 bg-gray-50/50 p-2">Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for(linea of LineasPedido(); track linea.parte; let index=$index) {
+          <tr>
+            <td class="border border-gray-300 px-4 py-2">
+              <select
+                [(ngModel)]="linea.parte"
+                class=" w-full p-2 rounded border bg-white"
+              >
+                 @for (parte of Parts(); track parte.codigo) {
+                  <option [value]="parte.codigo">
+                    {{ parte.descripcion }}
+                  </option>
+                }
+              </select>
+            </td>
+            <td class="border border-gray-300 px-4 py-2">
+              <input
+                type="number"
+                (input)="updateLinea(index)"
+                (focus)="updateLinea(index)"
+                [(ngModel)]="linea.cilindros"
+                class="w-full p-2 rounded border"
+              />
+            </td>
+            <td class="border border-gray-300 px-4 py-2">
+              <input
+                type="number"
+                (input)="updateLinea(index)"
+                (focus)="updateLinea(index)"
+                [(ngModel)]="linea.presentacion"
+                class="w-full p-2 rounded border"
+              />
+            </td>
+            <td class="border border-gray-300 px-4 py-2">
+              <select
+                [(ngModel)]="linea.uom"
+                class="w-full p-2 rounded border"
+              >
+                @for (uom of UnidadesMedida(); track uom.uom) {
+                  <option [value]="uom.uom">
+                    {{ uom.desc }}
+                  </option>
+                }
+              </select>
+            </td>
+            <td class="border border-gray-300 px-4 py-2">
+              <input
+                type="number"
+                [(ngModel)]="linea.total"
+                class="w-full p-2 rounded border"
+                readonly
+                disabled
+              />
+            </td>
+            <td class="border border-gray-300 px-4 py-2">
+              <button (click)="removeLinea(index)" class="p-2 text-red-600">
+                <svg class="w-6 h-6" stroke="currentColor" fill="none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                  <path d="M 10 2 L 9 3 L 4 3 L 4 5 L 5 5 L 5 20 C 5 20.522222 5.1913289 21.05461 5.5683594 21.431641 C 5.9453899 21.808671 6.4777778 22 7 22 L 17 22 C 17.522222 22 18.05461 21.808671 18.431641 21.431641 C 18.808671 21.05461 19 20.522222 19 20 L 19 5 L 20 5 L 20 3 L 15 3 L 14 2 L 10 2 z M 7 5 L 17 5 L 17 20 L 7 20 L 7 5 z M 9 7 L 9 18 L 11 18 L 11 7 L 9 7 z M13,7L13,18L15,18L15,7L13,7z"></path>
+                </svg>
+              </button>
+            </td>
+          </tr>
+
+        }
+      </tbody>
+    </table>
+  </div>
+
+  <div class="flex w-2/3 justify-center mx-auto mt-8 gap-6">
+    <div>
+      <button
+        (click)="addLinea()"
+        class="align-middle select-none font-sans font-bold text-center uppercase transition-all disabled:opacity-50 disabled:shadow-none disabled:pointer-events-none text-xs py-2 px-4 rounded-lg bg-gray-900 text-white shadow-md shadow-gray-900/10 hover:shadow-lg hover:shadow-gray-900/20 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none flex items-center gap-3 mt-4"
+        type="button"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="h-4 w-4">
+          <path d="M6.25 6.375a4.125 4.125 0 118.25 0 4.125 4.125 0 01-8.25 0zM3.25 19.125a7.125 7.125 0 0114.25 0v.003l-.001.119a.75.75 0 01-.363.63 13.067 13.067 0 01-6.761 1.873c-2.472 0-4.786-.684-6.76-1.873a.75.75 0 01-.364-.63l-.001-.122zM19.75 7.5a.75.75 0 00-1.5 0v2.25H16a.75.75 0 000 1.5h2.25v2.25a.75.75 0 001.5 0v-2.25H22a.75.75 0 000-1.5h-2.25V7.5z"></path>
+        </svg>
+        Añadir Linea
+      </button>
+    </div>
+<!--
+    <div class="flex w-full justify-end gap-4">
+      <div class="col-span-9 sm:col-span-6 md:col-span-3">
+        <div class="flex flex-row bg-white shadow-sm rounded p-4">
+          <div class="flex items-center justify-center flex-shrink-0 h-12 w-12 rounded-xl bg-red-100 text-red-500">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z">
+              </path>
+            </svg>
+          </div>
+          <div class="flex flex-col flex-grow ml-4">
+            <div class="text-sm text-gray-500">Cost per Meeting</div>
+            <div class="font-bold text-lg">$ {{ beautifyNumber(meetingTotal) }}</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+-->
+  </div>
+</div>

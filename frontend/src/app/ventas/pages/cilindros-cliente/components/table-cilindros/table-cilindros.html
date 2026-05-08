@@ -1,0 +1,25 @@
+<div class="overflow-x-auto">
+  <table class="table">
+    <!-- head -->
+    <thead>
+      <tr>
+        <th></th>
+        <th>ID</th>
+        <th>Serie</th>
+        <th>Tipo</th>
+        <th>Cve Producto</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for( cilindro of cilindros(); track cilindro.id; let index = $index) {
+        <tr>
+          <th>{{ index + 1 }}</th>
+          <td>{{ cilindro.id }}</td>
+          <td>{{ cilindro.serie }}</td>
+          <td>{{ cilindro.tipo }}</td>
+          <td>{{ cilindro.cveproducto }}</td>
+        </tr>
+      }
+    </tbody>
+  </table>
+</div>

@@ -1,0 +1,4 @@
+
+<app-header-page [PageName]="'Clientes'" />
+<app-search-debounce (searchEmisor)="onSearch($event)" />
+<app-table-clientes [lclientes]="clientesFiltrados()" />

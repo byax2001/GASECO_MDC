@@ -1,0 +1,13 @@
+<app-header-page [PageName]="'Cilindros del Cliente'" />
+<app-search-debounce (searchEmisor)="onSearch($event)" />
+<div class="grid grid-cols-1 justify-items-center">
+  <div class="stats shadow">
+    <div class="stat">
+      <div class="stat-title text-center">Total De Cilindros</div>
+      <div class="stat-value text-center">{{ lcilindros().length }}</div>
+      <div class="stat-desc text-center">Amatitlan</div>
+    </div>
+  </div>
+</div>
+
+<app-table-cilindros [cilindros]="lcilindros()" />
