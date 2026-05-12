@@ -11,6 +11,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import gaseco.backend.Constants.AppConstants;
+import gaseco.backend.Entitys.User.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -20,8 +21,13 @@ import io.jsonwebtoken.security.Keys;
 @Service
 public class JwtService {
 
-    public String getToken(UserDetails user){
-        return getToken( new HashMap<>(),user);  
+    public String getToken(User user){
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("sucursalWeb", user.getSucursalWeb());
+        claims.put("areaWeb", user.getAreaWeb());
+        claims.put("cveempWeb", user.getCveempWeb());
+
+        return getToken( claims,user);  
     }
 
     private String getToken(Map<String, Object> extraClaims, UserDetails user) {
@@ -74,5 +80,20 @@ public class JwtService {
     private boolean isTokenExpired(String token)
     {
         return getExpiration(token).before(new Date());
+    }
+
+    private String getAreaWeb(String token)
+    {
+        return getClaim(token, claims -> claims.get("areaWeb", String.class));
+    }   
+
+    private String getSucursalWeb(String token)
+    {
+        return getClaim(token, claims -> claims.get("sucursalWeb", String.class));
+    }
+
+    private String getCveempWeb(String token)
+    {
+        return getClaim(token, claims -> claims.get("cveempWeb", String.class));
     }
 }

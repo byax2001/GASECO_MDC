@@ -32,5 +32,5 @@ public class RegisterRequest {
     String cvesucursal;
     String cvealmacen;
     LocalDate fhVencimineto;
-    BigDecimal intentosPassword;
+    int intentosPassword;
 }

@@ -2,6 +2,7 @@ package gaseco.backend.Auth;
 
 
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -21,14 +22,22 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
 
     public AuthResponse login(LoginRequest request) {
-        System.out.println("AQUI LLEGA EL REQUEST EN EL SERVICE");
-    System.out.println("LOGIN: " + request.getLogin());
-    System.out.println("PASSWORD: " + request.getPassword());
-        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getLogin(), request.getPassword()));
-        UserDetails user=userRepository.findByLogin(request.getLogin()).orElseThrow();
+     
+        
+        authenticationManager.authenticate(
+            new UsernamePasswordAuthenticationToken(
+                request.getLogin(),
+                request.getPassword()
+            )
+        );
+
+        User user=userRepository.findByLogin(request.getLogin()).orElseThrow();
         String token=jwtService.getToken(user);
         return AuthResponse.builder()
             .token(token)
+            .areaweb(user.getAreaWeb())
+            .sucursal(user.getSucursalWeb())
+            .cveemp(user.getCveempWeb())
             .build();
 
     }
