@@ -1,24 +1,36 @@
-<div class="hero bg-base-200 min-h-screen">
+<div id="login" class="hero bg-base-200 min-h-screen">
+  <div class="hero-overlay"></div>
   <div class="hero-content flex-col lg:flex-row-reverse">
     <div class="text-center lg:text-left">
-      <h1 class="text-5xl font-bold">GAS<span class="bg-lime-500 text-white px-1 rounded-l-lg rounded-r-full ">
-    ECO
-  </span></h1>
-      <p class="py-6">
+      <img src="gaseco1.png" alt="Logo" class="w-80 lg:w-[38rem] h-32 mx-auto object-contain">
+      <p class="py-6 text-white">
         Potenciamos la productividad de nuestros socios comerciales con propuestas comerciales flexibles, soluciones a la medida y entregas en tiempo.
       </p>
     </div>
     <div class="card bg-base-100 w-full max-w-sm shrink-0 shadow-2xl">
-      <div class="card-body">
-        <fieldset class="fieldset">
-          <label class="label">Usuario</label>
-          <input type="text" class="input" placeholder="Usuario" />
-          <label class="label">Contraseña</label>
-          <input type="password" class="input" placeholder="Contraseña" />
-          <div><a class="link link-hover">¿Olvidaste tu contraseña?</a></div>
-          <button class="btn text-white btn-success mt-4">Success</button>
-        </fieldset>
+        <form class="form-control card-body" [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+  <fieldset class="fieldset">
+
+    <Inputg
+      placeholder="Usuario"
+      type="text"
+      idinput="username"
+      formControlName="username">
+    </Inputg>
+
+    <Inputg
+      placeholder="Contraseña"
+      type="password"
+      idinput="password"
+      formControlName="password">
+    </Inputg>
+
+    <button type="submit" class="btn bg-[#A6C441] text-white mt-4">
+      Ingresar
+    </button>
+
+  </fieldset>
+</form>
       </div>
-    </div>
   </div>
 </div>

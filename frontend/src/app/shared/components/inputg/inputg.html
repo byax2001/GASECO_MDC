@@ -1,0 +1,42 @@
+<div class="relative w-full mt-2">
+  
+  <input
+    [type]="type() === 'password' && showPassword ? 'text' : type()"
+    [id]="idinput()"
+    [value]="value"
+    [disabled]="disabled"
+    (input)="updateValue($event)"
+    (blur)="onTouched()"
+    placeholder=" "
+    class="peer input input-bordered  h-11 pt-3 text-sm"
+  />
+
+  <label
+    [for]="idinput()"
+    class="absolute left-3 top-2.5 text-gray-500 bg-white px-1 text-sm transition-all duration-200
+           
+           peer-focus:-top-2
+           peer-focus:text-xs
+           peer-focus:text-[#A6C441]
+
+           peer-[:not(:placeholder-shown)]:-top-2
+           peer-[:not(:placeholder-shown)]:text-xs"
+  >
+    {{ placeholder() }}
+  </label>
+    @if(type() === 'password') {
+    <button
+      type="button"
+      (click)="togglePassword()"
+      class="absolute right-6 top-1/2 -translate-y-1/2 text-gray-500"
+    >
+
+      @if(!showPassword) {
+         <i class="fa-solid fa-eye-slash"></i>
+      } @else {
+         <i class="fa-solid fa-eye"></i>
+      }
+
+    </button>
+  }
+</div>
