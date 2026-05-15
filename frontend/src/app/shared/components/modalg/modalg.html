@@ -1,0 +1,30 @@
+
+@if(showModal()) {
+
+<div class="modal modal-open" role="dialog">
+  <div class="modal-box">
+
+    <h3 
+      class="text-lg font-bold"
+        [ngClass]="{
+    'text-error': TitleModal() === 'Error',
+    'text-success': TitleModal() === 'Éxito'
+  }"
+    >
+      {{ TitleModal() }}
+    </h3>
+
+    <p class="py-4">
+     {{ msgModal() }}
+    </p>
+
+    <div class="modal-action">
+      <button class="btn" (click)="closeModal()">
+        Cerrar
+      </button>
+    </div>
+
+  </div>
+</div>
+
+}

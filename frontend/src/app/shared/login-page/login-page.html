@@ -1,3 +1,11 @@
+
+<modalg
+  #modalG
+  [msgModal]="msgModal()"
+  [TitleModal]="TitleModal()"
+  />
+
+
 <div id="login" class="hero bg-base-200 min-h-screen">
   <div class="hero-overlay"></div>
   <div class="hero-content flex-col lg:flex-row-reverse">
@@ -7,6 +15,7 @@
         Potenciamos la productividad de nuestros socios comerciales con propuestas comerciales flexibles, soluciones a la medida y entregas en tiempo.
       </p>
     </div>
+
     <div class="card bg-base-100 w-full max-w-sm shrink-0 shadow-2xl">
         <form class="form-control card-body" [formGroup]="loginForm" (ngSubmit)="onSubmit()">
   <fieldset class="fieldset">
