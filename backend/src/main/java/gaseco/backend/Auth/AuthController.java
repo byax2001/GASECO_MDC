@@ -12,11 +12,14 @@ import java.util.Map;
 import javax.sql.DataSource;
 
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.core.AuthenticationException;
 
 
 @RestController
@@ -49,9 +52,13 @@ public class AuthController {
 
     @PostMapping(value = "login")
     public ResponseEntity<AuthResponse> Login(@RequestBody LoginRequest request){
-        System.out.print("AQUI LLEGA EL REQUEST: ");
-        System.out.print(request);
+        try{
         return  ResponseEntity.ok(authService.login(request));
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body( AuthResponse.builder()
+                    .build());
+        }
+
     }
 
     @PostMapping(value = "register")

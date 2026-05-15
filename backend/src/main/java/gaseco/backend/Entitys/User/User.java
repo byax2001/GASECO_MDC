@@ -84,20 +84,33 @@ public class User implements UserDetails {
     LocalDate fhVencimineto;
 
     @Column(name = "INTENTOS_PASSWORD", precision = 1, scale = 0)
-    BigDecimal intentosPassword;
+    int intentosPassword;
 
-  
+    @Column(name = "SUCURSAL_WEB", length = 8)
+    String sucursalWeb;
+
+    @Column(name = "AREA_WEB", length = 8)
+    String areaWeb;
+
+    @Column(name = "CVEEMP_WEB", length = 8)
+    String cveempWeb;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        // TODO Auto-generated method stub
-        return List.of();
+        // La autoridad sera la variable AREA_WEB, pero se le antepone el prefijo "ROLE_"
+        return List.of(new SimpleGrantedAuthority("ROLE_" + this.areaWeb));
     }
 
     @Override
     public String getUsername() {
         // TODO Auto-generated method stub
         return this.login; 
+    }
+
+    @Override
+    public String getPassword() {
+        // TODO Auto-generated method stub
+        return this.password;
     }
 
      @Override
@@ -107,19 +120,18 @@ public class User implements UserDetails {
 
     @Override
     public boolean isAccountNonLocked() {
-        return true;
+        return this.intentosPassword == 0;
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return true;
+        return this.fhVencimineto.isAfter(LocalDate.now());
     }
 
     @Override
     public boolean isEnabled() {
-        return true;
+        return this.status.equals("A");
     }
-
     
 
 
