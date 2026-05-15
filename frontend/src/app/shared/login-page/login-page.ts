@@ -6,10 +6,11 @@ import { AuthService } from '../../services/auth.service';
 import { Modalg } from "../components/modalg/modalg";
 import { Router } from '@angular/router';
 import { ViewChild } from '@angular/core';
+import { CookieService } from 'ngx-cookie-service';
 
 @Component({
   selector: 'app-login-page',
-  imports: [NgOptimizedImage, Inputg, ReactiveFormsModule, Modalg],
+  imports: [Inputg, ReactiveFormsModule, Modalg],
   templateUrl: './login-page.html',
   styleUrl: './login-page.css',
 })

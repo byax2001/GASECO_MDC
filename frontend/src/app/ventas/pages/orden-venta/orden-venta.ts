@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { Component, signal } from '@angular/core';
 import { HeaderPage } from "../../../shared/components/header-page/header-page";
 import { SearchDebounce } from "../../components/search-debounce/search-debounce";
@@ -9,7 +9,7 @@ import UOM from '../../interfaces/uom.interface';
 
 @Component({
   selector: 'app-orden-venta',
-  imports: [CommonModule, HeaderPage, SearchDebounce, FormsModule],
+  imports: [HeaderPage, SearchDebounce, FormsModule],
   templateUrl: './orden-venta.html',
   styleUrl: './orden-venta.css',
 })
