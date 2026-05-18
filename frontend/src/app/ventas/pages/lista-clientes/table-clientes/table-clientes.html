@@ -14,12 +14,12 @@
       </tr>
     </thead>
     <tbody class="text-sm font-normal text-gray-700">
-      @for (cliente of lclientes(); track cliente.id; let index = $index) {
+      @for (cliente of lclientes(); track cliente.Customer_CustID; let index = $index) {
         <tr class="hover:bg-gray-100 border-b border-gray-200 py-4">
-          <td class="px-4 py-4 flex items-center">{{ cliente.name }}</td>
-          <td class="px-4 py-4">{{ cliente.code }}</td>
-          <td class="px-4 py-4">{{ cliente.type }}</td>
-          <td class="px-4 py-4">{{ cliente.status }}</td>
+          <td class="px-4 py-4 flex items-center">{{ cliente.Customer_Name }}</td>
+          <td class="px-4 py-4">{{ cliente.Customer_CustID }}</td>
+          <td class="px-4 py-4">{{ cliente.Customer_TipoCustomer_c }}</td>
+          <td class="px-4 py-4">{{ cliente.Calculated_Estado }}</td>
           <td class="px-4 py-4">
             <button class="bg-green-500 text-white px-3 py-1 rounded-md">Crear OV</button>
           </td>
