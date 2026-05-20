@@ -11,7 +11,5 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class AuthResponse {
     String token;
-    String areaweb;
-    String sucursal;
-    String cveemp;
+    String rol;
 }

@@ -35,9 +35,7 @@ public class AuthService {
         String token=jwtService.getToken(user);
         return AuthResponse.builder()
             .token(token)
-            .areaweb(user.getAreaWeb())
-            .sucursal(user.getSucursalWeb())
-            .cveemp(user.getCveempWeb())
+            .rol(user.getRol())
             .build();
 
     }

@@ -23,9 +23,7 @@ public class JwtService {
 
     public String getToken(User user){
         Map<String, Object> claims = new HashMap<>();
-        claims.put("sucursalWeb", user.getSucursalWeb());
-        claims.put("areaWeb", user.getAreaWeb());
-        claims.put("cveempWeb", user.getCveempWeb());
+        claims.put("rol", user.getRol());
 
         return getToken( claims,user);  
     }
@@ -82,18 +80,9 @@ public class JwtService {
         return getExpiration(token).before(new Date());
     }
 
-    private String getAreaWeb(String token)
+    private String getRol(String token)
     {
-        return getClaim(token, claims -> claims.get("areaWeb", String.class));
+        return getClaim(token, claims -> claims.get("rol", String.class));
     }   
 
-    private String getSucursalWeb(String token)
-    {
-        return getClaim(token, claims -> claims.get("sucursalWeb", String.class));
-    }
-
-    private String getCveempWeb(String token)
-    {
-        return getClaim(token, claims -> claims.get("cveempWeb", String.class));
-    }
 }

@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { HeaderPage } from "../../../shared/components/header-page/header-page";
 import { TableClientes } from "./table-clientes/table-clientes";
 import { rxResource } from '@angular/core/rxjs-interop';
@@ -18,6 +18,7 @@ export default class ListaClientes {
 
   companyService = inject(CompanyService);
   ventasQueryService = inject(VentasQueryService);
+  searchText = signal('');
 
   clientesResource = rxResource({
 
@@ -34,18 +35,21 @@ export default class ListaClientes {
 
   }); 
 
-  clientesFiltrados = signal<Cliente[]>([]);
+  clientesFiltrados = computed(() => {
+    const clientes = this.clientesResource.value() ?? [];
+    const search = this.searchText().toLowerCase().trim();
 
-  constructor() {
-    //Se copia de esta forma para evitar crear referencias con el array original, 
-    // lo que permite mantener el estado original para futuras búsquedas
-    // Si se hiciera solo = clientesResource, se estaría creando una referencia al mismo array, 
-    // y cualquier cambio en clientesFiltrados afectaría a clientesResource
-    this.clientesFiltrados.set([...this.clientesResource()]);
-  }
+    if (!search) {
+      return clientes;
+    }
 
-  onSearch(cliente:string){
-    this.clientesFiltrados.set(this.clientesResource().filter( c => c.Customer_Name.toLowerCase().includes(cliente.toLowerCase())));
+    return clientes.filter(c =>
+      c.Customer_Name.toLowerCase().includes(search)
+    );
+  });
+
+  onSearch(cliente: string) {
+    this.searchText.set(cliente);
   }
 
   
