@@ -1,11 +1,12 @@
 import { Component, inject, signal, ViewChild } from '@angular/core';
 import { Modalg } from "../shared/components/modalg/modalg";
+import {NavbarHome} from "./navbar-home/navbar-home";
 import { RouterLink } from '@angular/router';
 import { CookieService } from 'ngx-cookie-service';
 
 @Component({
   selector: 'app-home',
-  imports: [Modalg, RouterLink],
+  imports: [Modalg, RouterLink, NavbarHome],
   templateUrl: './home.html',
   styleUrl: './home.css',
 })

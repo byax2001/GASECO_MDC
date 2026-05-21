@@ -10,6 +10,7 @@ import { UserInfoService } from '../../services/userInfo.service';
 import  mapToInfoUser from '../../Mapper/InfoUser.mapper';
 import { InfoAppResponse } from '../../interfaces/InfoAppResponse.interface';
 
+
 @Component({
   selector: 'app-login-page',
   imports: [Inputg, ReactiveFormsModule, Modalg],
@@ -55,22 +56,8 @@ export default class LoginPage {
       //Para mostrar el modal de bienvenida solo la primera vez que se inicia sesión, se utiliza sessionStorage para almacenar un indicador. Si el indicador ya existe, no se muestra el modal. Si no existe, se muestra el modal y luego se establece el indicador para futuras visitas. Al cerrar sesión, se elimina el indicador para que el modal vuelva a mostrarse en el próximo inicio de sesión.
       sessionStorage.removeItem('welcomeShown');
 
-      this.infoUserService.getUserInfo(username, response.token).subscribe({
-        next: (userInfo ) => {
-          this.infoUserService.userInfo.set(mapToInfoUser(userInfo));
-          this.infoUserService.rol.set(response.rol);
-          this.router.navigate(['/home']);
-        },
-        error: (error) => {
-          console.error('Failed to retrieve user info', error);
-          return;
-        }
-      });
-
-
-     
-
-
+      this.infoUserService.loadUserInfo();
+      this.router.navigate(['/home']);
     },
     error: (error) => {
       console.error('Login failed', error);

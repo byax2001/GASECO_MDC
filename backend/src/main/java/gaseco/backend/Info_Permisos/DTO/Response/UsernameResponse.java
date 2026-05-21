@@ -1,5 +1,4 @@
-package gaseco.backend.Auth;
-
+package gaseco.backend.Info_Permisos.DTO.Response;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -9,6 +8,6 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class AuthResponse {
-    String token;
+public class UsernameResponse {
+    String username;
 }
