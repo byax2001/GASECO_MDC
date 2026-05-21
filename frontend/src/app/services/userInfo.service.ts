@@ -7,6 +7,7 @@ import { environment } from '../../environments/environment';
 import mapToInfoUser from '../Mapper/InfoUser.mapper';
 import { CookieService } from 'ngx-cookie-service';
 import { UserName } from '../interfaces/UserName.interface';
+import { Company } from '../interfaces/Company.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -17,6 +18,11 @@ export class UserInfoService {
   userInfo = signal<InfoUser>({});
   rol = signal<string>('');
   company = signal<string>('');
+
+  companyNames: Record<string, string> = {
+    '165943': 'GASECO GT',
+    '165943B': 'GASECO HN'
+  };
 
   getUserInfo(username: string): Observable<InfoAppResponse[]> {
     //Ya no es necesario el token porque el interceptor se encarga de agregarlo a cada petición
@@ -29,11 +35,13 @@ export class UserInfoService {
   }
 
   loadUserInfo() {
+    
     this.getUserName().subscribe({
       next: (response) => {
         this.getUserInfo(response.username).subscribe({
           next: (response) => {
             this.userInfo.set(mapToInfoUser(response));
+            this.company.set(this.getCompaniesCmb()[0]?.code ?? '');
           },
           error: (error) => {
             console.error('Error cargando user info', error);
@@ -45,5 +53,13 @@ export class UserInfoService {
       }
     });
     
+
+  }
+
+  getCompaniesCmb():Company[]{
+     return Object.keys(this.userInfo()).map(company => ({
+      code: company,
+      name: this.companyNames[company] ?? company
+    }));
   }
 }
