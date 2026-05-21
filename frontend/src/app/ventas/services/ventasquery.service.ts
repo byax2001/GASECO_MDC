@@ -1,9 +1,9 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { environment } from '../../../environments/environment';
-import { CompanyService } from './company.service';
 import { Cliente } from '../interfaces/cliente.interface';
 import { Observable } from 'rxjs/internal/Observable';
+import { UserInfoService } from '../../services/userInfo.service';
 
 @Injectable({
   providedIn: 'root',
@@ -11,12 +11,13 @@ import { Observable } from 'rxjs/internal/Observable';
 export class VentasQueryService {
   http = inject(HttpClient);
   url = environment.API_URL;
-  companyService = inject(CompanyService);
+  userInfoService = inject(UserInfoService);
+
 
 
   getClientes(): Observable<Cliente[]> {
     return this.http.get<Cliente[]>(
-      `${this.url}/ventas/lclientes/${this.companyService.selectedCompany()}`
+      `${this.url}/ventas/lclientes/${this.userInfoService.company()}`
     );
   }
 }

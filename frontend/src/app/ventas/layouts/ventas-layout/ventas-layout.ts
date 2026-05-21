@@ -1,10 +1,10 @@
 import { Component } from '@angular/core';
-import { TopMenu } from "../../components/top-menu/top-menu";
+import { TopMenuVentas } from "../../components/top-menu/top-menu";
 import { RouterOutlet } from "@angular/router";
 
 @Component({
   selector: 'app-ventas-layout',
-  imports: [TopMenu, RouterOutlet],
+  imports: [TopMenuVentas, RouterOutlet],
   templateUrl: './ventas-layout.html',
   styleUrl: './ventas-layout.css',
 })

@@ -5,8 +5,9 @@ import { rxResource } from '@angular/core/rxjs-interop';
 import { of } from 'rxjs';
 import { Cliente } from '../../interfaces/cliente.interface';
 import { SearchDebounce } from "../../components/search-debounce/search-debounce";
-import { CompanyService } from '../../services/company.service';
+
 import {VentasQueryService } from '../../services/ventasquery.service';
+import { UserInfoService } from '../../../services/userInfo.service';
 
 @Component({
   selector: 'app-lista-clientes',
@@ -15,15 +16,15 @@ import {VentasQueryService } from '../../services/ventasquery.service';
   styleUrl: './lista-clientes.css',
 })
 export default class ListaClientes {
+  userInfoService = inject(UserInfoService);
 
-  companyService = inject(CompanyService);
   ventasQueryService = inject(VentasQueryService);
   searchText = signal('');
 
   clientesResource = rxResource({
 
     params: () => ({
-      company: this.companyService.selectedCompany()
+      company: this.userInfoService.company()
     }),
 
     stream: ({ params }) => {

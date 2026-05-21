@@ -23,8 +23,8 @@
 
 
   <select class="select select-bordered w-48 mr-4" (change)="onSelectCompany($event)">
-    @for(company of companys(); track company.cod){
-      <option [value]="company.cod">{{company.name}}</option>
+    @for(company of companies(); track company.code){
+      <option [value]="company.code">{{company.name}}</option>
     }
   </select>
     <button class = "btn btn-ghost btn-circle" routerLink="/home">
