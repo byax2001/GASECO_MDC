@@ -8,7 +8,6 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class UsernameResponse {
-    String username;
+public class RolResponse {
     String rol;
 }

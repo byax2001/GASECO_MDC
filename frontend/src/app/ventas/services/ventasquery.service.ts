@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { environment } from '../../../environments/environment';
 import { Cliente } from '../interfaces/cliente.interface';
-import { Observable } from 'rxjs/internal/Observable';
+import { Observable } from 'rxjs';
 import { UserInfoService } from '../../services/userInfo.service';
 
 @Injectable({
@@ -16,8 +16,12 @@ export class VentasQueryService {
 
 
   getClientes(): Observable<Cliente[]> {
+    if(this.userInfoService.rol() === 'ADMIN'){
+      return this.http.get<Cliente[]>(`${this.url}/ventas/lclientes/${this.userInfoService.company()}`);
+    }
+
     return this.http.get<Cliente[]>(
-      `${this.url}/ventas/lclientes/${this.userInfoService.company()}`
+      `${this.url}/ventas/lclientes/${this.userInfoService.company()}/${this.userInfoService.getCodeUser('VENTAS')}`
     );
   }
 }

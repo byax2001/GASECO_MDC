@@ -23,6 +23,10 @@ export class UserInfoService {
     '165943': 'GASECO GT',
     '165943B': 'GASECO HN'
   };
+  
+  //Modulos:
+  // VENTAS: Modulo de ventas.
+  // MDC: Modulo de Cilindros.
 
   getUserInfo(username: string): Observable<InfoAppResponse[]> {
     //Ya no es necesario el token porque el interceptor se encarga de agregarlo a cada petición
@@ -37,11 +41,12 @@ export class UserInfoService {
   loadUserInfo() {
     
     this.getUserName().subscribe({
-      next: (response) => {
-        this.getUserInfo(response.username).subscribe({
+      next: (resp_user) => {
+        this.getUserInfo(resp_user.username).subscribe({
           next: (response) => {
             this.userInfo.set(mapToInfoUser(response));
             this.company.set(this.getCompaniesCmb()[0]?.code ?? '');
+            this.rol.set(resp_user.rol);
           },
           error: (error) => {
             console.error('Error cargando user info', error);
@@ -61,5 +66,10 @@ export class UserInfoService {
       code: company,
       name: this.companyNames[company] ?? company
     }));
+  }
+
+  getCodeUser(modulo:string): string {
+    const codUser = this.userInfo()[this.company()]?.[modulo];
+    return codUser || '';
   }
 }

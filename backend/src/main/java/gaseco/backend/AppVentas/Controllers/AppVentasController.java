@@ -19,12 +19,18 @@ public class AppVentasController {
     
     private final AppVentasService appVentasService;
 
-
     //Todos los clientes
     @GetMapping("/lclientes/{Company}")
-    public List<Map<String, Object>> listarClientes( @PathVariable String Company) {
+    public List<Map<String, Object>> allLClientes( @PathVariable String Company) {
 
         System.out.println("Listar clientes en Epicor");
         return appVentasService.ListarClientes(Company,"");
+    }
+
+    @GetMapping("/lclientes/{Company}/{CodVendedor}")
+    public List<Map<String, Object>> listarClientes( @PathVariable String Company, @PathVariable String CodVendedor) {
+
+        System.out.println("Listar clientes en Epicor");
+        return appVentasService.ListarClientes(Company,CodVendedor);
     }
 }

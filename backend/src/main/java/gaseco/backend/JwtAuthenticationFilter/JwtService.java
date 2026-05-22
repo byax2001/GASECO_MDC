@@ -81,7 +81,7 @@ public class JwtService {
         return getExpiration(token).before(new Date());
     }
 
-    private String getRol(String token)
+    public String getRol(String token)
     {
         return getClaim(token, claims -> claims.get("rol", String.class));
     }   

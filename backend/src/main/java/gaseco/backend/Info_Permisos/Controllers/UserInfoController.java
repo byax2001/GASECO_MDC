@@ -8,8 +8,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.security.core.Authentication;
 
+import gaseco.backend.Info_Permisos.DTO.Response.RolResponse;
 import gaseco.backend.Info_Permisos.DTO.Response.UsernameResponse;
 import gaseco.backend.Info_Permisos.Services.UserInfoService;
+import gaseco.backend.JwtAuthenticationFilter.JwtService;
 import lombok.RequiredArgsConstructor;
 import java.util.List;
 import java.util.Map;
@@ -21,7 +23,7 @@ public class UserInfoController {
     private final UserInfoService userInfoService;
     
 
-    @GetMapping("username")  //Se puede obtener directamente el Authentication como parámetro del método, Spring lo inyectará automáticamente con la información del usuario autenticado.
+    @GetMapping("/username")  //Se puede obtener directamente el Authentication como parámetro del método, Spring lo inyectará automáticamente con la información del usuario autenticado.
     public ResponseEntity<UsernameResponse> getUsername(Authentication authInfo) {
         // Obtener la autenticación actual del contexto de seguridad de Spring
         // Esto se hace para obtener información sobre el usuario autenticado, como su nombre de usuario, roles, etc.
@@ -30,8 +32,25 @@ public class UserInfoController {
 
         UsernameResponse usernameResponse = UsernameResponse.builder()
                 .username(authInfo.getName())
+                .rol(authInfo.getAuthorities().stream().findFirst().map(authority -> authority.getAuthority().replace("ROLE_", "")).orElse(""))
                 .build();
         return ResponseEntity.ok(usernameResponse);
+    }
+
+    @GetMapping("/rol")
+    public ResponseEntity<RolResponse> getUserRole(Authentication authInfo) { // Imprimir el token para verificar su valor
+       
+        String rol = authInfo.getAuthorities()
+        .stream()
+        .findFirst()
+        .map(authority -> authority.getAuthority().replace("ROLE_", ""))
+        .orElse("");
+
+        RolResponse rolResponse = RolResponse.builder()
+                .rol(rol)
+                .build();
+
+        return ResponseEntity.ok(rolResponse);
     }
 
     @GetMapping("/{username}")
