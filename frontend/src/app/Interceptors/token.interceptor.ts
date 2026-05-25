@@ -1,7 +1,8 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpInterceptor, HttpEvent, HttpHandler, HttpRequest, HttpHandlerFn } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { catchError, Observable, throwError } from 'rxjs';
 import { CookieService } from 'ngx-cookie-service';
+import { Router } from '@angular/router';
 
 //Un interceptor no borra el resto de elementos del headers (method, url, params), sino que los mantiene y 
 // añade el nuevo header con el token. 
@@ -13,7 +14,8 @@ export function TokenInterceptor(
  req: HttpRequest<unknown>,
   next: HttpHandlerFn
 ) {
-  const token = inject(CookieService).get('token');
+  const cookieService = inject(CookieService);
+  const token = cookieService.get('token');
 
   //Con esto se evita mandar el token en peticiones login ya que no las necesita
     /*if(req.url.includes('/auth/login')){
@@ -28,6 +30,18 @@ export function TokenInterceptor(
     }
   });
 
- 
-  return next(newReq);
+  //Si el token es invalido o ha expirado, el backend responde con un error 401, lo que hace que 
+  // se borre el token de las cookies y se redirija al login.
+  return next(newReq).pipe(
+    catchError((error) => {
+      if (error.status === 401) {
+        cookieService.delete('token', '/');
+        sessionStorage.clear();
+        
+        window.location.href = '/login';
+      }
+
+      return throwError(() => error);
+    })
+  );
 }
