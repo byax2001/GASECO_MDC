@@ -1,4 +1,4 @@
-package gaseco.backend.Info_Permisos.Controllers;
+package gaseco.backend.AppWeb.Info_Permisos.Controllers;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -8,9 +8,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.security.core.Authentication;
 
-import gaseco.backend.Info_Permisos.DTO.Response.RolResponse;
-import gaseco.backend.Info_Permisos.DTO.Response.UsernameResponse;
-import gaseco.backend.Info_Permisos.Services.UserInfoService;
+import gaseco.backend.AppWeb.Info_Permisos.DTO.Response.RolResponse;
+import gaseco.backend.AppWeb.Info_Permisos.DTO.Response.UsernameResponse;
+import gaseco.backend.AppWeb.Info_Permisos.Services.UserInfoService;
 import gaseco.backend.JwtAuthenticationFilter.JwtService;
 import lombok.RequiredArgsConstructor;
 import java.util.List;

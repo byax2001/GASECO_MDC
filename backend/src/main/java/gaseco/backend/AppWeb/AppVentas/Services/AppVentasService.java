@@ -1,4 +1,4 @@
-package gaseco.backend.AppVentas.Services;
+package gaseco.backend.AppWeb.AppVentas.Services;
 import java.util.List;
 import java.util.Map;
 

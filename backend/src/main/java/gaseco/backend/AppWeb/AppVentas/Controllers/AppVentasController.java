@@ -1,4 +1,4 @@
-package gaseco.backend.AppVentas.Controllers;
+package gaseco.backend.AppWeb.AppVentas.Controllers;
 
 import java.util.List;
 import java.util.Map;
@@ -8,8 +8,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-
-import gaseco.backend.AppVentas.Services.AppVentasService;
+import gaseco.backend.AppWeb.AppVentas.Services.AppVentasService;
 import lombok.RequiredArgsConstructor;
 
 @RestController

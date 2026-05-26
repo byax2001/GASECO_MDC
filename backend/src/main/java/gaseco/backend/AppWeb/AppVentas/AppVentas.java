@@ -1,4 +1,4 @@
-package gaseco.backend.AppVentas;
+package gaseco.backend.AppWeb.AppVentas;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;

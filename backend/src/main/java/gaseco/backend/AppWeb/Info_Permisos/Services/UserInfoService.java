@@ -1,9 +1,9 @@
-package gaseco.backend.Info_Permisos.Services;
+package gaseco.backend.AppWeb.Info_Permisos.Services;
 import java.util.List;
 import java.util.Map;
 import org.springframework.stereotype.Service;
 
-import gaseco.backend.Info_Permisos.Repository.UserInfoRepository;
+import gaseco.backend.AppWeb.Info_Permisos.Repository.UserInfoRepository;
 
 @Service
 public class UserInfoService {

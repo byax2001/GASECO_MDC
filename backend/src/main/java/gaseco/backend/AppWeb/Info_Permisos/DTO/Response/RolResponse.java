@@ -1,4 +1,4 @@
-package gaseco.backend.Info_Permisos.DTO.Response;
+package gaseco.backend.AppWeb.Info_Permisos.DTO.Response;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -8,7 +8,6 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class UsernameResponse {
-    String username;
+public class RolResponse {
     String rol;
 }
