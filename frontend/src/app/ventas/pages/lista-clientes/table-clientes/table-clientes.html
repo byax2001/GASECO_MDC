@@ -61,7 +61,7 @@
       </tbody>
      <tfoot>
       <tr>
-        <td colspan="5">
+        <td colspan="6">
           <PaginationTable
             [rowTableSize]="lclientes().length"
             [pageSize]="pageSize"
@@ -110,11 +110,14 @@
         <button class="btn mt-4 bg-green-500 text-white px-3 py-2 rounded-md w-full" (click)="createOV(cliente.Customer_CustID)">
           Crear OV
         </button>
+         <button class="btn bg-[#1A77F2] text-white px-3 py-1 rounded-md w-full" (click)="createOV(cliente.Customer_CustID)">
+          Ir a Listado
+        </button>
 
       </div>
 
     }
-    <div class="w-full overflow-x-auto">
+    <div class="w-full overflow-x-auto ">
       <PaginationTable
         [rowTableSize]="lclientes().length"
         [pageSize]="25"
