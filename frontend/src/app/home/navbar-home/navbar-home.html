@@ -1,0 +1,39 @@
+<modalact
+  [TitleModal]="'Cierre de sesión'"
+  [msgModal]="'¿Confirmar cierre de sesión?'"
+  (ynAction)="modalAction($event)"
+  #modalAct
+/>
+<div class="navbar grid grid-cols-12  bg-neutral/60 backdrop-blur-md text-neutral-content">
+
+  <!-- LOGO -->
+
+  <div class="col-span-12  md:col-span-10 flex justify-center md:justify-start mb-2 md:mb-0">
+    <img src="gaseco1.png" alt="Logo" class="h-15 md:h-10 w-60 md:w-40"/>
+  </div>
+  <div class="col-span-3 md:hidden"></div>
+  <!-- MENU -->
+  <div class="col-span-6 md:col-span-1 flex justify-center md:justify-end">
+    <ul class="menu menu-horizontal px-1">
+           <select class="select bg-neutral/10 w-48 mr-4" (change)="onSelectCompany($event)">
+            @for(company of companies(); track company.code){
+               <option class="bg-neutral/30" [value]="company.code">{{company.name}}</option>
+            }
+        </select>
+
+    </ul>
+  </div>
+
+  <!-- BOTON -->
+  <div class="col-span-3 md:col-span-1 flex justify-end md:justify-end">
+    <button class="btn btn-ghost btn-circle" (click)="openModal()">
+      <svg xmlns="http://www.w3.org/2000/svg"
+           width="24"
+           height="24"
+           viewBox="0 0 24 24">
+        <path fill="currentColor"
+          d="M11.98 20v-1H19V5h-7.02V4H20v16zm-.71-4.461l-.703-.72l2.32-2.319H4.019v-1h8.868l-2.32-2.32l.702-.718L14.808 12z"/>
+      </svg>
+    </button>
+  </div>
+</div>

@@ -14,8 +14,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import java.util.List;
 
 import gaseco.backend.JwtAuthenticationFilter.JwtAuthenticationFilter;
-
-
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 
 @Configuration
@@ -26,15 +25,25 @@ public class SecurityConfig {
     private final AuthenticationProvider authProvider;
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http){
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
         .cors(cors -> cors.configurationSource(corsConfigurationSource()))
         .csrf(crsf -> crsf.disable())
         .authorizeHttpRequests(authRequest -> authRequest.requestMatchers("/auth/**", "/epicormdc/**").permitAll()
         .anyRequest().authenticated())
+        
+        .exceptionHandling(exception -> exception
+            .authenticationEntryPoint((request, response, authException) -> {
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                response.setContentType("application/json");
+                response.getWriter().write("{\"message\":\"Token inválido o expirado\"}");
+            })
+        )
+        
         .sessionManagement(sessionManagement -> 
             sessionManagement.
             sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+
         .authenticationProvider(authProvider)
         .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)    
         .build();

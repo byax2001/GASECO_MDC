@@ -1,0 +1,39 @@
+  <div class="join mt-4 flex justify-center">
+            <button
+              class="join-item btn"
+              [class.btn-disabled]="currentPage() === 1"
+              (click)="prevPage()"
+            > &lt; </button>
+            @for (page of visiblePages(); track page) {
+
+              <button
+                class="join-item btn"
+                [class.btn-active]="page === currentPage()"
+                (click)="this.setPage(page)"
+              >
+
+                {{ page }}
+
+              </button>
+
+            }
+
+            @if(totalPages() > visiblePages()[visiblePages().length - 1]) {
+                <button
+                class="join-item btn"
+                (click)="this.nextPage()"
+                >
+
+                ...
+
+                </button>
+            }
+
+            <button
+              class="join-item btn"
+              [class.btn-disabled]="currentPage() === totalPages()"
+              (click)="this.nextPage()"
+            > &gt; </button>
+
+    </div>
+

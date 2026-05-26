@@ -86,19 +86,13 @@ public class User implements UserDetails {
     @Column(name = "INTENTOS_PASSWORD", precision = 1, scale = 0)
     int intentosPassword;
 
-    @Column(name = "SUCURSAL_WEB", length = 8)
-    String sucursalWeb;
-
-    @Column(name = "AREA_WEB", length = 8)
-    String areaWeb;
-
-    @Column(name = "CVEEMP_WEB", length = 8)
-    String cveempWeb;
+    @Column(name = "ROL_APP", length = 8)
+    String Rol;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         // La autoridad sera la variable AREA_WEB, pero se le antepone el prefijo "ROLE_"
-        return List.of(new SimpleGrantedAuthority("ROLE_" + this.areaWeb));
+        return List.of(new SimpleGrantedAuthority("ROLE_" + this.Rol));
     }
 
     @Override

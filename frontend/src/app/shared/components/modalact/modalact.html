@@ -1,0 +1,29 @@
+
+@if(showModal()) {
+
+<div class="modal modal-open" role="dialog">
+  <div class="modal-box">
+
+    <h3 
+      class="text-lg font-bold"
+    >
+      {{ TitleModal() }}
+    </h3>
+
+    <p class="py-4">
+     {{ msgModal() }}
+    </p>
+
+    <div class="modal-action">
+      <button class="btn" (click)="confirmAction()">
+        Confirmar
+      </button>
+      <button class="btn" (click)="closeModal()">
+        Cancelar
+      </button>
+    </div>
+
+  </div>
+</div>
+
+}

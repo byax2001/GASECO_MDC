@@ -6,6 +6,9 @@ import { AuthService } from '../../services/auth.service';
 import { Modalg } from "../components/modalg/modalg";
 import { Router } from '@angular/router';
 import { ViewChild } from '@angular/core';
+import { UserInfoService } from '../../services/userInfo.service';
+import  mapToInfoUser from '../../Mapper/InfoUser.mapper';
+import { InfoAppResponse } from '../../interfaces/InfoAppResponse.interface';
 
 
 @Component({
@@ -19,6 +22,7 @@ import { ViewChild } from '@angular/core';
 export default class LoginPage {
   private fb = inject(FormBuilder);
   private authService = inject(AuthService);
+  //private infoUserService = inject(UserInfoService);
   private router = inject(Router);
   private cookieService = inject(CookieService);
 
@@ -49,16 +53,11 @@ export default class LoginPage {
 
     
       this.cookieService.set('token', response.token, { path: '/' });
-      this.cookieService.set('username', username, { path: '/' });
-      this.cookieService.set('areaweb', response.areaweb, { path: '/' });
-      this.cookieService.set('sucursal', response.sucursal, { path: '/' });
-      this.cookieService.set('cveemp', response.cveemp, { path: '/' });
-
       //Para mostrar el modal de bienvenida solo la primera vez que se inicia sesión, se utiliza sessionStorage para almacenar un indicador. Si el indicador ya existe, no se muestra el modal. Si no existe, se muestra el modal y luego se establece el indicador para futuras visitas. Al cerrar sesión, se elimina el indicador para que el modal vuelva a mostrarse en el próximo inicio de sesión.
       sessionStorage.removeItem('welcomeShown');
+
+      //this.infoUserService.loadUserInfo();
       this.router.navigate(['/home']);
-
-
     },
     error: (error) => {
       console.error('Login failed', error);
