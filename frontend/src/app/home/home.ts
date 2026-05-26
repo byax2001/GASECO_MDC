@@ -34,8 +34,8 @@ export default class Home {
   ngAfterViewInit() {
       const welcomeShown = sessionStorage.getItem('welcomeShown');
       if (!welcomeShown) {
-        const username = this.cookieService.get('username');
-        this.TitleModal.set(`¡Bienvenido, ${username}!`);
+
+        this.TitleModal.set(`¡Bienvenido!`);
         this.msgModal.set('Inicio de sesión exitoso');
         this.modalG.openModal();
         sessionStorage.setItem('welcomeShown', 'true');

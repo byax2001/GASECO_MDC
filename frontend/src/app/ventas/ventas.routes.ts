@@ -15,7 +15,7 @@ export const ventasRoutes: Routes = [
         loadComponent: () => import('./pages/cilindros-cliente/cilindros-cliente')
       },
       {
-        path: 'ov',
+        path: 'ov/:custid',
         loadComponent: () => import('./pages/orden-venta/orden-venta')
       }
 

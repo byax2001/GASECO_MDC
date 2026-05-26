@@ -1,15 +1,17 @@
-import { Component, computed, HostListener, input, signal } from '@angular/core';
+import { Component, computed, HostListener, inject, input, signal } from '@angular/core';
 import { Cliente } from '../../../interfaces/cliente.interface';
+import { PaginationTable } from "../../../../shared/components/pagination-table/pagination-table";
+import { Router } from '@angular/router';
 
 
 @Component({
   selector: 'app-table-clientes',
-  imports: [],
+  imports: [PaginationTable],
   templateUrl: './table-clientes.html',
   styleUrl: './table-clientes.css',
 })
 export class TableClientes {
-
+  router = inject(Router);
   //APARTADO PARA VERIFICAR SI EL USUARIO ESTA EN MOVIL O DESKTOP
   @HostListener('window:resize')
   onResize() {
@@ -28,39 +30,14 @@ export class TableClientes {
     return clientes.slice(start, end);
   });
 
-  
-  totalPages = computed(() => {
+   createOV(custId: string) {
+    console.log('Crear OV para cliente:', custId);
+    this.router.navigate([
+      '/ventas/ov',
+      custId
+    ]);
 
-    return Math.ceil(
-      this.lclientes().length / this.pageSize
-    );
-  });
-
-  //Genera un array con el numero de paginas para mostrar los botones de paginacion
-  //Impreso seria algo asi como [1, 2, 3, 4, 5] si hay 5 paginas
-  pages = computed(() =>
-    Array.from(
-      { length: this.totalPages() },
-      (_, i) => i + 1
-    )
-  );
-
-  nextPage() {
-
-    if (this.currentPage() < this.totalPages()) {
-      this.currentPage.update(p => p + 1);
-    }
-
-  }
-
-  prevPage() {
-
-    if (this.currentPage() > 1) {
-      this.currentPage.update(p => p - 1);
-    }
-
-}
-  
+   }
 
   
 }

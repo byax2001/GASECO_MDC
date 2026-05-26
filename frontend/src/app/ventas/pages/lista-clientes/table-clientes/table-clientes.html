@@ -11,7 +11,8 @@
           <th class="px-4 py-2 bg-gray-100">Código</th>
           <th class="px-4 py-2 bg-gray-100">Tipo</th>
           <th class="px-4 py-2 bg-gray-100">Estado</th>
-          <th class="px-4 py-2 bg-gray-100">Acción</th>
+          <th class="px-4 py-2 bg-gray-100">Ord. de Venta</th>
+          <th class="px-4 py-2 bg-gray-100">Cil. en Cliente</th>
         </tr>
       </thead>
 
@@ -22,7 +23,7 @@
           <tr
             class="border-b border-gray-200 hover:bg-gray-100"
             [class.bg-white]="index % 2 === 0"
-            [class.bg-green-50]="index % 2 !== 0"
+            [class.bg-[#EEEEEE]]="index % 2 !== 0"
           >
 
             <td class="px-4 py-4">
@@ -42,10 +43,16 @@
             </td>
 
             <td class="px-4 py-4">
-              <button class="bg-green-500 text-white px-3 py-1 rounded-md">
-                Crear OV
+              <button class="btn bg-green-500 text-white px-3 py-1 rounded-md" (click)="createOV(cliente.Customer_CustID)">
+                Crear Orden
               </button>
             </td>
+            <td class="px-4 py-4">
+              <button class="btn bg-[#1A77F2] text-white px-3 py-1 rounded-md" (click)="createOV(cliente.Customer_CustID)">
+                Ir a Listado
+              </button>
+            </td>
+
 
           </tr>
 
@@ -55,33 +62,11 @@
      <tfoot>
       <tr>
         <td colspan="5">
-
-          <div class="join mt-4 flex justify-center">
-            <button
-              class="join-item btn"
-              [class.btn-disabled]="currentPage() === 1"
-              (click)="prevPage()"
-            > &lt; </button>
-            @for (page of pages(); track page) {
-
-              <button
-                class="join-item btn"
-                [class.btn-active]="page === currentPage()"
-                (click)="currentPage.set(page)"
-              >
-
-                {{ page }}
-
-              </button>
-
-            }
-            <button
-              class="join-item btn"
-              [class.btn-disabled]="currentPage() === totalPages()"
-              (click)="nextPage()"
-            > &gt; </button>
-
-          </div>
+          <PaginationTable
+            [rowTableSize]="lclientes().length"
+            [pageSize]="pageSize"
+            (pageChange)="currentPage.set($event)"
+          />
 
         </td>
       </tr>
@@ -93,7 +78,7 @@
   @else{
   
   <!-- MOBILE -->
-  <div class="md:hidden space-y-4">
+  <div class="md:hidden space-y-4 w-full max-w-full overflow-hidden">
 
     @for (cliente of paginatedClientes(); track cliente.Customer_CustID; let index = $index) {
 
@@ -122,41 +107,19 @@
           {{ cliente.Calculated_Estado }}
         </div>
 
-        <button class="mt-4 bg-green-500 text-white px-3 py-2 rounded-md w-full">
+        <button class="btn mt-4 bg-green-500 text-white px-3 py-2 rounded-md w-full" (click)="createOV(cliente.Customer_CustID)">
           Crear OV
         </button>
 
       </div>
 
     }
-    <div class="join mt-4 flex justify-center">
-            <button
-              class="join-item btn"
-              [class.btn-disabled]="currentPage() === 1"
-              (click)="prevPage()"
-            > &lt; </button>
-            @for (page of pages(); track page) {
-
-              <button
-                class="join-item btn"
-                [class.btn-active]="page === currentPage()"
-                (click)="currentPage.set(page)"
-              >
-
-                {{ page }}
-
-              </button>
-
-            }
-            <button
-              class="join-item btn"
-              [class.btn-disabled]="currentPage() === totalPages()"
-              (click)="nextPage()"
-            > &gt; </button>
-
-          </div>
-
+    <div class="w-full overflow-x-auto">
+      <PaginationTable
+        [rowTableSize]="lclientes().length"
+        [pageSize]="25"
+        (pageChange)="currentPage.set($event)"
+      />
+    </div>
   </div>
-  }
-
-</div>
+}

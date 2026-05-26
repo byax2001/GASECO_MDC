@@ -1,39 +1,116 @@
-<div class="navbar bg-base-100 shadow-sm">
-  <div class="navbar-start">
-    <div class="dropdown">
-      <div tabindex="0" role="button" class="btn btn-ghost btn-circle">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"> <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7" /> </svg>
+<div class="bg-base-100 shadow-sm px-4 py-2">
+
+  <div class="grid grid-cols-12 items-center gap-2">
+
+    <!-- IZQUIERDA -->
+    <div class="col-span-2 md:col-span-4 flex items-center">
+
+      <div class="dropdown">
+
+        <div tabindex="0" role="button" class="btn btn-ghost btn-circle">
+          <svg xmlns="http://www.w3.org/2000/svg"
+            class="h-5 w-5"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor">
+
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M4 6h16M4 12h16M4 18h7" />
+          </svg>
+        </div>
+
+        <ul
+          tabindex="-1"
+          class="menu menu-sm dropdown-content bg-base-100 rounded-box z-40  w-52  shadow">
+
+          <li><a routerLink="/ventas/listaclientes">Lista de Clientes</a></li>
+          <li><a routerLink="/ventas/cilcli">Cilindros en Cliente</a></li>
+          <li><a routerLink="/ventas/ov">Orden de Venta</a></li>
+          <li><a routerLink="/ventas/factura">Presupuestos</a></li>
+
+        </ul>
+
       </div>
-      <ul
-        tabindex="-1"
-        class="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow">
-        <li><a routerLink="/ventas/listaclientes">Lista de Clientes</a></li>
-        <li><a routerLink="/ventas/cilcli">Cilindros en Cliente</a></li>
-        <li><a routerLink="/ventas/ov">Orden de Venta</a></li>
-        <li><a routerLink="/ventas/factura">Presupuestos</a></li>
-      </ul>
-      
+
     </div>
-    
+
+    <!-- CENTRO -->
+    <div class="col-span-8 md:col-span-4 flex justify-center">
+      <a class="btn btn-ghost text-3xl md:text-2xl">
+        GASECO
+      </a>
+    </div>
+
+    <!-- DERECHA DESKTOP -->
+    <div class="hidden md:flex md:col-span-4 justify-end items-center gap-2">
+
+      <button class="btn btn-ghost btn-circle" routerLink="/home">
+        <i class="fa-solid fa-house"></i>
+      </button>
+
+      <button class="btn btn-ghost btn-circle">
+        <svg xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          viewBox="0 0 24 24">
+
+          <path fill="currentColor"
+            d="M11.98 20v-1H19V5h-7.02V4H20v16zm-.71-4.461l-.703-.72l2.32-2.319H4.019v-1h8.868l-2.32-2.32l.702-.718L14.808 12z"/>
+        </svg>
+      </button>
+
+      <select
+        class="select select-bordered w-40"
+        (change)="onSelectCompany($event)">
+
+        @for(company of companies(); track company.code) {
+          <option [value]="company.code">
+            {{ company.name }}
+          </option>
+        }
+
+      </select>
+
+    </div>
+
+    <!-- DERECHA MOBILE ICONOS -->
+    <div class="col-span-2 flex md:hidden justify-end items-center gap-1">
+
+      <button class="btn btn-ghost btn-circle" routerLink="/home">
+        <i class="fa-solid fa-house"></i>
+      </button>
+
+      <button class="btn btn-ghost btn-circle">
+        <svg xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          viewBox="0 0 24 24">
+
+          <path fill="currentColor"
+            d="M11.98 20v-1H19V5h-7.02V4H20v16zm-.71-4.461l-.703-.72l2.32-2.319H4.019v-1h8.868l-2.32-2.32l.702-.718L14.808 12z"/>
+        </svg>
+      </button>
+
+    </div>
+
+    <!-- SELECT MOBILE -->
+    <div class="col-span-12 md:hidden">
+      <select
+        class="select select-bordered w-full"
+        (change)="onSelectCompany($event)">
+
+        @for(company of companies(); track company.code) {
+          <option [value]="company.code">
+            {{ company.name }}
+          </option>
+        }
+
+      </select>
+    </div>
+
   </div>
-  <div class="navbar-center">
-    <a class="btn btn-ghost text-xl">GASECO</a>
-  </div>
-  <div class="navbar-end">
 
-
-  <select class="select select-bordered w-48 mr-4" (change)="onSelectCompany($event)">
-    @for(company of companies(); track company.code){
-      <option [value]="company.code">{{company.name}}</option>
-    }
-  </select>
-    <button class = "btn btn-ghost btn-circle" routerLink="/home">
-      <i class="fa-solid fa-house"></i>
-    </button>
-    <button class="btn btn-ghost btn-circle">
-      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M11.98 20v-1H19V5h-7.02V4H20v16zm-.71-4.461l-.703-.72l2.32-2.319H4.019v-1h8.868l-2.32-2.32l.702-.718L14.808 12z"/></svg>
-    </button>
-
-
-  </div>
 </div>
