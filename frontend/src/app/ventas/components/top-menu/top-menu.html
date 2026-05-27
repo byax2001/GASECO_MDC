@@ -1,3 +1,9 @@
+<modalact
+  [TitleModal]="'Cierre de sesión'"
+  [msgModal]="'¿Confirmar cierre de sesión?'"
+  (ynAction)="accionModal($event)"
+  #modalAct>
+</modalact>
 <div class="bg-base-100 shadow-sm px-4 py-2">
 
   <div class="grid grid-cols-12 items-center gap-2">
@@ -28,7 +34,6 @@
 
           <li><a routerLink="/ventas/listaclientes">Lista de Clientes</a></li>
           <li><a routerLink="/ventas/cilcli">Cilindros en Cliente</a></li>
-          <li><a routerLink="/ventas/ov">Orden de Venta</a></li>
           <li><a routerLink="/ventas/factura">Presupuestos</a></li>
 
         </ul>
@@ -51,7 +56,9 @@
         <i class="fa-solid fa-house"></i>
       </button>
 
-      <button class="btn btn-ghost btn-circle">
+      <button
+        (click)="abrirModal()"
+        class="btn btn-ghost btn-circle">
         <svg xmlns="http://www.w3.org/2000/svg"
           width="24"
           height="24"
@@ -64,12 +71,14 @@
 
       <select
         class="select select-bordered w-40"
-        (change)="onSelectCompany($event)">
+         [ngModel]="userInfoService.company()"
+         (ngModelChange)="userInfoService.company.set($event)"
+        >
 
         @for(company of companies(); track company.code) {
           <option [value]="company.code">
             {{ company.name }}
-          </option>
+          </option> 
         }
 
       </select>

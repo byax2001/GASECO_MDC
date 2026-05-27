@@ -41,9 +41,6 @@ export default class Home {
         sessionStorage.setItem('welcomeShown', 'true');
       }
   }
-  cambioCompany(companyCode: string) {
-    this.userInfoService.company.set(companyCode);
-  }
 
 
 }

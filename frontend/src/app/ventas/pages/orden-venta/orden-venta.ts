@@ -7,6 +7,7 @@ import { FormsModule } from '@angular/forms';
 import { OrdenLines } from "./orden-lines/orden-lines";
 import { Inputg } from "../../../shared/components/inputg/inputg";
 import { VentasQueryService } from '../../services/ventasquery.service';
+import { ClienteInfoOv } from '../../interfaces/ClienteInfoOv.interface';
 
 @Component({
   selector: 'app-orden-venta',
@@ -18,7 +19,7 @@ export default class OrdenVenta {
   fechaRequerida = signal<Date>(new Date());
   ubicacion = signal<string>('');
   custID = signal<string>('');
-  
+  CustInfoOv = signal<ClienteInfoOv | null>(null);
 
 
   private route = inject(ActivatedRoute);
@@ -30,10 +31,10 @@ export default class OrdenVenta {
     this.route.params.subscribe((params) => {
       this.custID.set(params['custid'] || null);
       if (this.custID()) {
-        this.ventasQueryService.getClienteOv(this.custID()).subscribe((data) => {
+        this.ventasQueryService.getClienteInfoOv(this.custID()).subscribe((data) => {
           console.log('ID de cliente:', this.custID());
           console.log('Datos del cliente:', data);
-          // Aquí podrías asignar los datos del cliente a señales para mostrarlos en la plantilla
+          this.CustInfoOv.set(data[0] || null); // Asignar los datos del cliente a la señal
         });
       }else {
         console.log('No se proporcionó un ID de cliente en la URL');

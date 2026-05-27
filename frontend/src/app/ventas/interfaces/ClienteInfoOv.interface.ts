@@ -1,4 +1,4 @@
-export interface ClienteOv {
+export interface ClienteInfoOv {
     Customer_CustID:       string;
     Customer_CustNum:      number;
     Customer_Name:         string;

@@ -3,24 +3,95 @@
 
 <div class="w-full min-h-screen p-1 bg-white">
     <!-- HEADER FORM -->
-  <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
 
-    <div>
+
+  <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6 md:mb-10">
+
+    <div class="p-3 rounded-xl bg-gray-50">
+      <label class="text-xs text-gray-500">Cliente</label>
+      <p class="font-semibold text-gray-800">
+        {{ CustInfoOv()?.Customer_Name }}
+      </p>
+    </div>
+
+    <div class="p-3 rounded-xl bg-gray-50">
+      <label class="text-xs text-gray-500">Código Cliente</label>
+      <p class="font-semibold text-gray-800">
+        {{ CustInfoOv()?.Customer_CustID }}
+      </p>
+    </div>
+
+    <div class="p-3 rounded-xl bg-gray-50">
+      <label class="text-xs text-gray-500">No. Cliente</label>
+      <p class="font-semibold text-gray-800">
+        {{ CustInfoOv()?.Customer_CustNum }}
+      </p>
+    </div>
+
+    <div class="p-3 rounded-xl bg-gray-50">
+      <label class="text-xs text-gray-500">Territorio</label>
+      <p class="font-semibold text-gray-800">
+        {{ CustInfoOv()?.Customer_TerritoryID }}
+      </p>
+    </div>
+
+    <div class="p-3 rounded-xl bg-gray-50">
+      <label class="text-xs text-gray-500">Vendedor</label>
+      <p class="font-semibold text-gray-800">
+        {{ CustInfoOv()?.SalesRep_Name }}
+      </p>
+    </div>
+
+    <div class="p-3 rounded-xl bg-gray-50">
+      <label class="text-xs text-gray-500">Condición de Pago</label>
+      <p class="font-semibold text-gray-800">
+        {{ CustInfoOv()?.Terms_Description }}
+      </p>
+    </div>
+
+    <div class="p-3 rounded-xl bg-gray-50">
+      <label class="text-xs text-gray-500">Código Término</label>
+      <p class="font-semibold text-gray-800">
+        {{ CustInfoOv()?.Customer_TermsCode }}
+      </p>
+    </div>
+
+    <div class="p-3 rounded-xl bg-gray-50">
+      <label class="text-xs text-gray-500">Descripción Moneda</label>
+      <p class="font-semibold text-gray-800">
+        {{ CustInfoOv()?.Currency_CurrDesc }}
+      </p>
+    </div>
+
+     <div>
+      <label class="label">
+        <span class="label-text">Fecha requerida</span>
+      </label>
       <input
         type="date"
-        class="w-full p-2 rounded border"
+        class="input input-bordered w-full"
         (change)="changeFechaRequerida($event)"
       />
     </div>
 
     <div>
+      <label class="label">
+        <span class="label-text">Ubicación / Observación</span>
+      </label>
       <input
         type="text"
-        placeholder="Ubicación"
-        class="w-full p-2 rounded border"
+        placeholder="Ingrese ubicación"
+        class="input input-bordered w-full"
         (change)="changeUbicacion($event)"
       />
     </div>
+
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-5">
+
+   
+
 
   </div>
 
