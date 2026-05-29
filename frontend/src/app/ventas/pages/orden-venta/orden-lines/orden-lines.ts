@@ -1,7 +1,11 @@
-import { Component, computed, signal } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { FormArray, FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import UOM from '../../../interfaces/uom.interface';
 import { Parte } from '../../../interfaces/parte.interface';
+import { PartOV } from '../../../interfaces/PartOV.interface';
+import { VentasQueryService } from '../../../services/ventasquery.service';
+import { TCilindros } from '../../../interfaces/TCilindros.interface';
+import { PartUOM } from '../../../interfaces/PartUOM.interface';
 
 @Component({
   selector: 'Orden-lines',
@@ -11,30 +15,16 @@ import { Parte } from '../../../interfaces/parte.interface';
 })
 export class OrdenLines {
   private fb = new FormBuilder();
+  private ventasQueryService = inject(VentasQueryService);
 
-  Parts = signal<Parte[]>([
-    { codigo: 'P001', descripcion: 'Cilindro de Gas LP 20 lb' },
-    { codigo: 'P002', descripcion: 'Cilindro de Gas LP 30 lb' },
-    { codigo: 'P003', descripcion: 'Cilindro de Gas LP 45 lb' },
-    { codigo: 'P004', descripcion: 'Cilindro de Gas LP 100 lb' },
-  ]);
-
-  UnidadesMedida = signal<UOM[]>([
-    { uom: 'UND', desc: 'UND' },
-    { uom: 'L', desc: 'L' },
-    { uom: 'FT3', desc: 'FT3' },
-    { uom: 'KG', desc: 'KG' },
-    { uom: 'LB', desc: 'LB' },
-    { uom: 'GAL', desc: 'GAL' },
-  ]);
-
-  Presentaciones = signal<number[]>([300, 220, 24.5, 10]);
+  Parts = signal<PartOV[]>([]);
+  //UOMs por línea, se actualizan dinámicamente al seleccionar una parte
+  uomsPorLinea = signal<Record<number, PartUOM[]>>({});
+  
+  Presentaciones = signal<TCilindros[]>([]);
 
   form = this.fb.nonNullable.group({
-    lineas: this.fb.array([
-      this.createLinea('P001', 2, 300, 'UND'),
-      this.createLinea('P002', 1, 300, 'UND'),
-    ])
+    lineas: this.fb.array([])
   });
 
   get lineas() {
@@ -64,15 +54,84 @@ export class OrdenLines {
     return group;
   }
 
+  //AL INICIAR EL COMPONENTE:
+  ngOnInit(){
+    //OBTENER PARTES PARA ORDEN DE VENTA
+    this.ventasQueryService.getPartOv().subscribe({
+      next: (partes) => {
+        this.Parts.set(partes); 
+      },
+      error: (err) => {
+        console.error('Error al obtener partes para orden de venta:', err);
+      }
+    });
+
+    //OBTENER PRESENTACIONES DE CILINDROS PARA ORDEN DE VENTA
+    this.ventasQueryService.getTipoCilindros().subscribe({
+      next: (presentaciones) => {
+        this.Presentaciones.set(presentaciones);
+      },
+      error: (err) => {
+        console.error('Error al obtener presentaciones de cilindros para orden de venta:', err);
+      }
+    });
+  }
+
   addLinea(): void {
     this.lineas.push(this.createLinea());
   }
 
   removeLinea(index: number): void {
     this.lineas.removeAt(index);
+
+     this.uomsPorLinea.update(current => {
+      const updated: Record<number, PartUOM[]> = {};
+
+      Object.entries(current).forEach(([key, value]) => {
+        const oldIndex = Number(key);
+
+        if (oldIndex < index) {
+          updated[oldIndex] = value;
+        }
+
+        if (oldIndex > index) {
+          updated[oldIndex - 1] = value;
+        }
+      });
+
+      return updated;
+    });
   }
 
   getLineasPedido() {
     return this.form.getRawValue().lineas;
   }
+
+  onParteChange(index: number) {
+
+   const linea = this.lineas.at(index);
+    const partNum = linea.get('parte')?.value;
+
+  this.ventasQueryService.getPartUOM(partNum).subscribe({
+
+    next: (uoms) => {
+
+       this.uomsPorLinea.update(current => ({
+        ...current,
+        [index]: uoms
+      }));
+
+      const defaultUom = uoms.find(
+        u => u.Calculated_IUMDefault === 1
+      );
+
+      linea.get('uom')?.setValue(
+        defaultUom?.UOMConv_UOMCode ?? ''
+      );
+
+    }
+
+  });
+
+}
 }

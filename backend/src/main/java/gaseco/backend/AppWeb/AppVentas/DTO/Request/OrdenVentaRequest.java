@@ -1,4 +1,4 @@
-package gaseco.backend.AppWeb.DTO.Request;
+package gaseco.backend.AppWeb.AppVentas.DTO.Request;
 
 
 import java.time.OffsetDateTime;

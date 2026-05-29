@@ -20,10 +20,14 @@
         <tr [formGroupName]="index">
 
           <td class="border border-gray-300 px-4 py-2">
-            <select formControlName="parte" class="w-full p-2 rounded border bg-white">
-              @for (parte of Parts(); track parte.codigo) {
-                <option [value]="parte.codigo">
-                  {{ parte.descripcion }}
+            <select
+            formControlName="parte" 
+            class="w-full p-2 rounded border bg-white"
+            (change)="onParteChange(index)"
+            >
+              @for (parte of Parts(); track parte.Part_PartNum) {
+                <option [value]="parte.Part_PartNum">
+                  {{ parte.Part_PartDescription }}
                 </option>
               }
             </select>
@@ -37,26 +41,30 @@
             />
           </td>
 
+<!--PRESENTACION-->
           <td class="border border-gray-300 px-4 py-2">
             <select formControlName="presentacion" class="w-full p-2 rounded border bg-white">
               @for (pres of Presentaciones(); track pres) {
-                <option [value]="pres">
-                  {{ pres }}
+                <option [value]="pres.UDCodes_NUMERO01_c">
+                  {{ pres.UDCodes_NUMERO01_c }} {{ pres.Calculated_Propietario}}
                 </option>
               }
             </select>
           </td>
 
 <!--UNIDAD DE MEDIDA-->
-          <td class="border border-gray-300 px-4 py-2">
-            <select formControlName="uom" class="w-full p-2 rounded border">
-              @for (uom of UnidadesMedida(); track uom.uom) {
-                <option [value]="uom.uom">
-                  {{ uom.desc }}
-                </option>
-              }
-            </select>
-          </td>
+         <td class="border border-gray-300 px-4 py-2">
+  <select
+    formControlName="uom"
+    class="w-full p-2 rounded border"
+  >
+    @for (uom of uomsPorLinea()[index] ?? []; track uom.RowIdent) {
+      <option [value]="uom.UOMConv_UOMCode">
+        {{ uom.UOMConv_UOMCode }}
+      </option>
+    }
+  </select>
+</td>
 <!--PRECIO-->
             <td class="border border-gray-300 px-4 py-2">
                 <input
