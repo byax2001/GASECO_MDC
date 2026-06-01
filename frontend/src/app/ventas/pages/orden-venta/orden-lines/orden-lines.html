@@ -57,6 +57,7 @@
   <select
     formControlName="uom"
     class="w-full p-2 rounded border"
+    (change)="ChangeUnitPrice(index)"
   >
     @for (uom of uomsPorLinea()[index] ?? []; track uom.RowIdent) {
       <option [value]="uom.UOMConv_UOMCode">
@@ -65,12 +66,13 @@
     }
   </select>
 </td>
-<!--PRECIO-->
+<!--PRECIO UNITARIO-->
             <td class="border border-gray-300 px-4 py-2">
                 <input
                 type="number"
                 formControlName="precio"
                 class="w-full p-2 rounded border"
+                readonly
                 />
             </td>
 <!--PRECIO TOTAL: SOLO LECTURA-->

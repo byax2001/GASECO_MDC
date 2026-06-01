@@ -1,4 +1,4 @@
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, computed, inject, input, Input, signal } from '@angular/core';
 import { FormArray, FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import UOM from '../../../interfaces/uom.interface';
 import { Parte } from '../../../interfaces/parte.interface';
@@ -14,13 +14,15 @@ import { PartUOM } from '../../../interfaces/PartUOM.interface';
   styleUrl: './orden-lines.css',
 })
 export class OrdenLines {
+  custID = input.required<string>();
+  currencyCode = input.required<string>();
   private fb = new FormBuilder();
   private ventasQueryService = inject(VentasQueryService);
 
   Parts = signal<PartOV[]>([]);
   //UOMs por línea, se actualizan dinámicamente al seleccionar una parte
   uomsPorLinea = signal<Record<number, PartUOM[]>>({});
-  
+
   Presentaciones = signal<TCilindros[]>([]);
 
   form = this.fb.nonNullable.group({
@@ -45,7 +47,7 @@ export class OrdenLines {
     group.valueChanges.subscribe(value => {
       const total =
         Number(value.cilindros ?? 0) *
-        Number(value.presentacion ?? 0)*
+        Number(value.presentacion ?? 0) *
         Number(value.precio ?? 0);
 
       group.get('total')?.setValue(total, { emitEvent: false });
@@ -55,11 +57,11 @@ export class OrdenLines {
   }
 
   //AL INICIAR EL COMPONENTE:
-  ngOnInit(){
+  ngOnInit() {
     //OBTENER PARTES PARA ORDEN DE VENTA
     this.ventasQueryService.getPartOv().subscribe({
       next: (partes) => {
-        this.Parts.set(partes); 
+        this.Parts.set(partes);
       },
       error: (err) => {
         console.error('Error al obtener partes para orden de venta:', err);
@@ -84,7 +86,7 @@ export class OrdenLines {
   removeLinea(index: number): void {
     this.lineas.removeAt(index);
 
-     this.uomsPorLinea.update(current => {
+    this.uomsPorLinea.update(current => {
       const updated: Record<number, PartUOM[]> = {};
 
       Object.entries(current).forEach(([key, value]) => {
@@ -109,29 +111,59 @@ export class OrdenLines {
 
   onParteChange(index: number) {
 
-   const linea = this.lineas.at(index);
+    const linea = this.lineas.at(index);
     const partNum = linea.get('parte')?.value;
 
-  this.ventasQueryService.getPartUOM(partNum).subscribe({
+    this.ventasQueryService.getPartUOM(partNum).subscribe({
 
-    next: (uoms) => {
+      next: (uoms) => {
 
-       this.uomsPorLinea.update(current => ({
-        ...current,
-        [index]: uoms
-      }));
+        this.uomsPorLinea.update(current => ({
+          ...current,
+          [index]: uoms
+        }));
 
-      const defaultUom = uoms.find(
-        u => u.Calculated_IUMDefault === 1
-      );
+        const defaultUom = uoms.find(
+          u => u.Calculated_IUMDefault === 1
+        );
 
-      linea.get('uom')?.setValue(
-        defaultUom?.UOMConv_UOMCode ?? ''
-      );
+        linea.get('uom')?.setValue(
+          defaultUom?.UOMConv_UOMCode ?? ''
+        );
+        this.ChangeUnitPrice(index);
+      }
 
+    });
+
+  }
+
+  ChangeUnitPrice(index: number) {
+    //Se obtiene la linea actual (formulario) para obtener el PartNum y UOM seleccionados
+    const linea = this.lineas.at(index);
+    //Se obtiene el PartNum y UOM seleccionados en la línea actual
+    const partNum = linea.get('parte')?.value;
+    const uom = linea.get('uom')?.value;
+    const custID = this.custID();
+    const currencyCode = this.currencyCode();
+    if (!partNum || !uom || !custID || !currencyCode) {
+      console.log('Faltan datos para obtener el precio unitario. Parte:', partNum, 'UOM:', uom, 'CustID:', custID, 'CurrencyCode:', currencyCode);
+      return;
     }
+    //Se llama al servicio para obtener el precio unitario basado en el PartNum, UOM, CustID y CurrencyCode
+    this.ventasQueryService.getPrecioUnitario(partNum, uom, custID, currencyCode).subscribe({
+      next: (precios) => {
+        console.log('Precios obtenidos para Parte:', partNum, 'UOM:', uom, 'CustID:', custID, 'CurrencyCode:', currencyCode, precios);
+        const precioUnitario = precios[0]?.PriceLstParts_BasePrice ?? 0;
+        linea.get('precio')?.setValue(precioUnitario);
+      },
+      error: (err) => {
+        console.error('Error al obtener precio unitario:', err);
+        linea.get('precio')?.setValue(0);
+      }
+    });
 
-  });
 
-}
+
+  }
+
 }

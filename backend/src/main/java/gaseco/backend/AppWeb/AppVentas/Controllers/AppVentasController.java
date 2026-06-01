@@ -43,11 +43,11 @@ public class AppVentasController {
 
 
     // Regresa un listado de las monedas de la compañia con su respectivo simbolo
-    @GetMapping("/lmonedas/{Company}")
-    public List<Map<String, Object>> listarMonedas( @PathVariable String Company) {
+    @GetMapping("/lmonedas/{Company}/{CustID}")
+    public List<Map<String, Object>> listarMonedas( @PathVariable String Company, @PathVariable String CustID) {
 
         System.out.println("Listar monedas en Epicor");
-        return appVentasService.ListarMonedas(Company);
+        return appVentasService.ListarMonedas(Company,CustID);
     }
 
     // Regresa un listado de los tipos de cilindros de la compañia
@@ -66,5 +66,19 @@ public class AppVentasController {
         return appVentasService.ListarUOM(Company, PartNum);
     }   
 
+    // Regresa el precio unitario para un cliente, una parte específica y una unidad de medida, 
+    // el precio se calcula con base en las listas de precios de Epicor
+    // Se retorna dos valores: La lista de precios principal y el valor de la lista de precios default
+    // llamada TIPOC la cual se trae a través de un UNION ALL  y solo esta
+    // filtrada por la parte y unidad de medida excluyendo el precio, esto con finalidad de que en el front
+    // Se utilice el primer valor del arreglo, de modo que si no existe un precio para la unidad de medida
+    // para el cliente especificado, se utilice el precio default de la lista TIPOC que tiene mas 
+    // probabilidad de tener un precio para la parte especificada
+    @GetMapping("/lprecio/{Company}/{PartNum}/{UOM}/{CustID}/{CurrencyCode}")
+    public List<Map<String, Object>> listarPrecioUnit(@PathVariable String Company, @PathVariable String PartNum, @PathVariable String UOM, @PathVariable String CustID, @PathVariable String CurrencyCode) {
+
+        System.out.println("Listar precio unitario para la parte " + PartNum + " en Epicor");
+        return appVentasService.PrecioUnit(Company, PartNum, UOM, CustID, CurrencyCode);
+    }
 
 }

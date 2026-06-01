@@ -58,9 +58,17 @@
 
     <div class="p-3 rounded-xl bg-gray-50">
       <label class="text-xs text-gray-500">Descripción Moneda</label>
-      <p class="font-semibold text-gray-800">
-        {{ CustInfoOv()?.Currency_CurrDesc }}
-      </p>
+     <select
+        class="w-full p-2 rounded border bg-white"
+        [ngModel]="CurrencyCode()"
+        (ngModelChange)="CurrencyCode.set($event)"
+      >
+        @for(moneda of LMonedas(); track moneda.RowIdent) {
+          <option [value]="moneda.Currency_CurrencyCode">
+            {{ moneda.Currency_CurrDesc }}
+          </option>
+        }
+      </select>
     </div>
 
      <div>
@@ -97,7 +105,10 @@
 
 
   <div class="overflow-x-auto">
-    <Orden-lines></Orden-lines>
+    <Orden-lines
+      [custID]="custID()"
+      [currencyCode]="CurrencyCode()"
+      />
 <!--
     <div class="flex w-full justify-end gap-4">
       <div class="col-span-9 sm:col-span-6 md:col-span-3">

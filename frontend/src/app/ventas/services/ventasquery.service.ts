@@ -9,6 +9,7 @@ import { PartUOM } from '../interfaces/PartUOM.interface';
 import { Moneda } from '../interfaces/Moneda.interface';
 import { TCilindros } from '../interfaces/TCilindros.interface';
 import { PartOV } from '../interfaces/PartOV.interface';
+import { PrecioUnitario } from '../interfaces/PrecioUnitario.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -52,12 +53,21 @@ export class VentasQueryService {
   }
 
   //PARA OBTENER TODAS LAS MONEDAS PERMITIDAS PARA ORDENES DE VENTAS
-  getMonedas(): Observable<Moneda[]> {
-    return this.http.get<Moneda[]>(`${this.url}/ventas/lmonedas/${this.userInfoService.company()}`);
+  getMonedas(CustID: string): Observable<Moneda[]> {
+    return this.http.get<Moneda[]>(`${this.url}/ventas/lmonedas/${this.userInfoService.company()}/${CustID}`);
   }
 
   //PARA OBTENER LOS TIPOS DE CILINDROS PERMITIDOS PARA ORDENES DE VENTAS
   getTipoCilindros(): Observable<TCilindros[]> {
     return this.http.get<TCilindros[]>(`${this.url}/ventas/ltcilindros/${this.userInfoService.company()}`);
+  }
+
+  //PARA OBTENER EL PRECIO UNITARIO DE UNA PARTE EN ORDENES DE VENTA TOMANDO EN CUENTA
+  //EL UOM, CLIENT EY MONEDA SELECCIONADOS
+  getPrecioUnitario(PartNum: string, UOM: string, CustID: string, CurrencyCode: string): Observable<PrecioUnitario[]> {
+    return this.http.get<PrecioUnitario[]>(
+      //http://localhost:8087/ventas/lprecio/165943/ACE-15-CI/FT3/2010/GTQ
+      `${this.url}/ventas/lprecio/${this.userInfoService.company()}/${PartNum}/${UOM}/${CustID}/${CurrencyCode}`
+    );
   }
 }

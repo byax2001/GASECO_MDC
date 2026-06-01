@@ -83,13 +83,12 @@ public class AppVentasService {
     //YA QUE NO TRAE INFORMACIÓN IMPORTANTE SE CONSULTARA CON LA V1 DEL API DE EPICOR
     //LA CUAL NO REQUIERE EL TOKEN DE AUTENTICACIÓN
     //PERO SI REQUIERE UNA AUTENTICACIÓN BASICA CON EL USUARIO Y CONTRASEÑA DE EPICOR
-    public List<Map<String, Object>> ListarMonedas(String Company){
+    public List<Map<String, Object>> ListarMonedas(String Company, String CustID){
         String username = AppConstants.EPICOR_USER;
         String password = AppConstants.EPICOR_PASS;
 
         //El nombre del BAQ es App_V_Currency
-        String baq_consult = "/BaqSvc/App_V_CurrencyCode("+Company+")/Data";
-
+        String baq_consult = "/BaqSvc/App_V_CurrencyCode("+Company+")/Data?CustID=" + CustID + "";
 
         Map<String, Object> response = webClient.get()
             .uri(AppConstants.EPICOR_URL+"/api/v1/"+ baq_consult)
@@ -114,7 +113,6 @@ public class AppVentasService {
 
         //El nombre del BAQ es App_V_TCilindros
         String baq_consult = "/BaqSvc/App_V_TCilindros("+Company+")/Data";
-
 
         Map<String, Object> response = webClient.get()
             .uri(AppConstants.EPICOR_URL+"/api/v1/"+ baq_consult)
@@ -160,5 +158,36 @@ public class AppVentasService {
 
         return (List<Map<String, Object>>) response.get("value");
     }
+
+    //REGRESA UN LISTADO CON EL PRECIO UNITARIO PARA UN CLIENTE, UNA PARTE ESPECÍFICA Y UNA UNIDAD DE 
+    // MEDIDA, EL PRECIO SE CALCULA CON BASE EN LAS LISTAS DE PRECIOS DE EPICOR
+    //SE RETORNA DOS VALORES: LA LISTA DE PRECIOS PRINCIPAL DEL CLIENTE Y EL VALOR DE LA LISTA DE PRECIOS DEFAULT
+    //LLAMADA TIPOC LA CUAL SE TRAE A TRAVÉS DE UN UNION ALL  Y SOLO ESTA
+    //FILTRADA POR LA PARTE Y UNIDAD DE MEDIDA EXCLUYENDO EL PRECIO, ESTO CON FINALIDAD DE QUE EN EL 
+    // FRONT SE UTILICE EL PRIMER VALOR DEL ARREGLO, DE MODO QUE SI NO EXISTE UN PRECIO PARA LA UNIDAD 
+    //DE MEDIDA ESPECÍFICA SE PUEDA UTILIZar EL PRECIO DE LA LISTA DE PRECIOS DEFAULT
+    // O BIEN SI EL CLIENTE NO TIENE ASIGNADA UNA LISTA DE PRECIOS SE PUEDA UTILIZAR
+    //EL PRECIO DE LA LISTA DE PRECIOS DEFAULT
+    public List<Map<String, Object>> PrecioUnit(String Company, String PartNum, String UOM, String CustID, String CurrencyCode){
+        String username = AppConstants.EPICOR_USER;
+        String password = AppConstants.EPICOR_PASS;
+        //El nombre del BAQ es App_V_PrecioUnit
+        String baq_consult = "BaqSvc/App_V_PrecioUnit("+Company+")/Data?CustID="+CustID+"&PartNum="+PartNum+"&UOM="+UOM+"&CurrencyCode="+CurrencyCode+"";
+        System.out.println("Obteniendo token de Epicor...");
+        System.out.println(baq_consult);
+        System.out.println(AppConstants.EPICOR_URL+"/api/v1/"+ baq_consult);
+
+        Map<String, Object> response = webClient.get()
+            .uri(AppConstants.EPICOR_URL+"/api/v1/"+ baq_consult)
+            .header("Authorization", "Basic "+Base64.getEncoder().encodeToString((username + ":" + password).getBytes()))
+            //.header("Authorization", "Bearer " + token)
+            .accept(MediaType.APPLICATION_JSON)
+            .retrieve()
+            .bodyToMono(Map.class)
+            .block();
+
+        return (List<Map<String, Object>>) response.get("value");
+    }
+
 
 }
