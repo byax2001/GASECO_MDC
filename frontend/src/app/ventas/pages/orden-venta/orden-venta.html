@@ -1,133 +1,128 @@
-<app-header-page PageName="Orden de Venta"/>
-
-
-<div class="w-full min-h-screen p-1 bg-white">
+<app-header-page PageName="Orden de Venta" />
+<modalg #modalG />
+<form [formGroup]="formHeader">
+  <div class="w-full min-h-screen p-1 bg-white">
     <!-- HEADER FORM -->
 
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6 md:mb-10">
 
-  <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6 md:mb-10">
+      <div class="p-3 rounded-xl bg-gray-50">
+        <label class="text-xs text-gray-500">Cliente</label>
+        <p class="font-semibold text-gray-800">
+          {{ CustInfoOv()?.Customer_Name }}
+        </p>
+      </div>
 
-    <div class="p-3 rounded-xl bg-gray-50">
-      <label class="text-xs text-gray-500">Cliente</label>
-      <p class="font-semibold text-gray-800">
-        {{ CustInfoOv()?.Customer_Name }}
-      </p>
-    </div>
+      <div class="p-3 rounded-xl bg-gray-50">
+        <label class="text-xs text-gray-500">Código Cliente</label>
+        <p class="font-semibold text-gray-800">
+          {{ CustInfoOv()?.Customer_CustID }}
+        </p>
+      </div>
 
-    <div class="p-3 rounded-xl bg-gray-50">
-      <label class="text-xs text-gray-500">Código Cliente</label>
-      <p class="font-semibold text-gray-800">
-        {{ CustInfoOv()?.Customer_CustID }}
-      </p>
-    </div>
+      <div class="p-3 rounded-xl bg-gray-50">
+        <label class="text-xs text-gray-500">No. Cliente</label>
+        <p class="font-semibold text-gray-800">
+          {{ CustInfoOv()?.Customer_CustNum }}
+        </p>
+      </div>
 
-    <div class="p-3 rounded-xl bg-gray-50">
-      <label class="text-xs text-gray-500">No. Cliente</label>
-      <p class="font-semibold text-gray-800">
-        {{ CustInfoOv()?.Customer_CustNum }}
-      </p>
-    </div>
+      <div class="p-3 rounded-xl bg-gray-50">
+        <label class="text-xs text-gray-500">Territorio</label>
+        <p class="font-semibold text-gray-800">
+          {{ CustInfoOv()?.Customer_TerritoryID }}
+        </p>
+      </div>
 
-    <div class="p-3 rounded-xl bg-gray-50">
-      <label class="text-xs text-gray-500">Territorio</label>
-      <p class="font-semibold text-gray-800">
-        {{ CustInfoOv()?.Customer_TerritoryID }}
-      </p>
-    </div>
+      <div class="p-3 rounded-xl bg-gray-50">
+        <label class="text-xs text-gray-500">Vendedor</label>
+        <p class="font-semibold text-gray-800">
+          {{ CustInfoOv()?.SalesRep_Name }}
+        </p>
+      </div>
 
-    <div class="p-3 rounded-xl bg-gray-50">
-      <label class="text-xs text-gray-500">Vendedor</label>
-      <p class="font-semibold text-gray-800">
-        {{ CustInfoOv()?.SalesRep_Name }}
-      </p>
-    </div>
+      <div class="p-3 rounded-xl bg-gray-50">
+        <label class="text-xs text-gray-500">Condición de Pago</label>
+        <p class="font-semibold text-gray-800">
+          {{ CustInfoOv()?.Terms_Description }}
+        </p>
+      </div>
 
-    <div class="p-3 rounded-xl bg-gray-50">
-      <label class="text-xs text-gray-500">Condición de Pago</label>
-      <p class="font-semibold text-gray-800">
-        {{ CustInfoOv()?.Terms_Description }}
-      </p>
-    </div>
+      <div class="p-3 rounded-xl bg-gray-50">
+        <label class="text-xs text-gray-500">Código Término</label>
+        <p class="font-semibold text-gray-800">
+          {{ CustInfoOv()?.Customer_TermsCode }}
+        </p>
+      </div>
 
-    <div class="p-3 rounded-xl bg-gray-50">
-      <label class="text-xs text-gray-500">Código Término</label>
-      <p class="font-semibold text-gray-800">
-        {{ CustInfoOv()?.Customer_TermsCode }}
-      </p>
-    </div>
-
-    <div class="p-3 rounded-xl bg-gray-50">
-      <label class="text-xs text-gray-500">Descripción Moneda</label>
-     <select
-        class="w-full p-2 rounded border bg-white"
-        [ngModel]="CurrencyCode()"
-        (ngModelChange)="CurrencyCode.set($event)"
-      >
-        @for(moneda of LMonedas(); track moneda.RowIdent) {
+      <div class="p-3 rounded-xl bg-gray-50">
+        <label class="text-xs text-gray-500">Descripción Moneda</label>
+        <select formControlName="currencyCode" class="select select-bordered w-full">
+          @for(moneda of LMonedas(); track moneda.RowIdent) {
           <option [value]="moneda.Currency_CurrencyCode">
-            {{ moneda.Currency_CurrDesc }}
+            {{ moneda.Currency_CurrencyCode }}
           </option>
-        }
-      </select>
-    </div>
+          }
+        </select>
+      </div>
 
-     <div>
-      <label class="label">
-        <span class="label-text">Fecha requerida</span>
-      </label>
-      <input
-        type="date"
-        class="input input-bordered w-full"
-        (change)="changeFechaRequerida($event)"
-      />
-    </div>
+      <div>
+        <label class="label">
+          <span class="label-text">Fecha requerida</span>
+        </label>
+        <input type="date" class="input input-bordered w-full" formControlName="fechaRequerida" />
+      </div>
 
-    <div>
-      <label class="label">
-        <span class="label-text">Ubicación / Observación</span>
-      </label>
-      <input
-        type="text"
-        placeholder="Ingrese ubicación"
-        class="input input-bordered w-full"
-        (change)="changeUbicacion($event)"
-      />
-    </div>
+      <div>
+        <label class="label">
+          <span class="label-text">Ubicación</span>
+        </label>
+        <input type="text" placeholder="Ingrese ubicación" class="input input-bordered w-full"
+          formControlName="ubicacion" />
+      </div>
+      <div>
+        <label class="label">
+          <span class="label-text">Proyecto</span>
+        </label>
+        <input type="text" placeholder="Ingrese proyecto" class="input input-bordered w-full"
+          formControlName="proyecto" />
+      </div>
 
-  </div>
-
-  <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-5">
-
-   
-
-
-  </div>
-
-
-  <div class="overflow-x-auto">
-    <Orden-lines
-      [custID]="custID()"
-      [currencyCode]="CurrencyCode()"
-      />
-<!--
-    <div class="flex w-full justify-end gap-4">
-      <div class="col-span-9 sm:col-span-6 md:col-span-3">
-        <div class="flex flex-row bg-white shadow-sm rounded p-4">
-          <div class="flex items-center justify-center flex-shrink-0 h-12 w-12 rounded-xl bg-red-100 text-red-500">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z">
-              </path>
-            </svg>
-          </div>
-          <div class="flex flex-col flex-grow ml-4">
-            <div class="text-sm text-gray-500">Cost per Meeting</div>
-            <div class="font-bold text-lg">$ {{ beautifyNumber(meetingTotal) }}</div>
-          </div>
-        </div>
+      <div class="p-3 rounded-xl bg-gray-50">
+        <label class="text-xs text-gray-500">Numero de Orden</label>
+        <p class="font-semibold text-gray-800">
+          {{ formHeader.controls.orderNum.value || 'En Espera de creación' }}
+        </p>
       </div>
 
     </div>
--->
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-5">
+
+
+    </div>
+
+
+    <!-- BOTON CREAR ORDEN DE VENTA -->
+    <div class="flex justify-center md:justify-end">
+      <button class="btn bg-[#A6C441] text-white hover:bg-[#8aa83a] mb-3" (click)="CrearOrdenVenta()"
+        [disabled]="!formHeader.valid || formHeader.controls.orderNum.value>0">
+        @if(formHeader.controls.orderNum.value > 0) {
+        OV Creada
+        } @else {
+        Crear Orden de Venta
+        }</button>
+    </div>
+
+
+
+    <div class="overflow-x-auto">
+      <!-- SE ENVIA EL CUSTID Y EL TIPO DE MONEDA PARA BUSCAR UNA LISTA DE PRECIO CON LA MONEDA SELECCIONADA PARA EL TEMA DEL PRECIO UNITARIO AUTOMATICO-->
+      <Orden-lines [custID]="formHeader.controls.custID.value"
+        [currencyCode]="formHeader.controls.currencyCode.value" />
+
+    </div>
+
+
   </div>
-</div>
+</form>

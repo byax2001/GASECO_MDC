@@ -10,6 +10,8 @@ import { Moneda } from '../interfaces/Moneda.interface';
 import { TCilindros } from '../interfaces/TCilindros.interface';
 import { PartOV } from '../interfaces/PartOV.interface';
 import { PrecioUnitario } from '../interfaces/PrecioUnitario.interface';
+import { CrearOvResponse } from '../interfaces/CrearOvResponse.interface';
+import { CrearOvRequest } from '../interfaces/CrearOvRequest.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -70,4 +72,14 @@ export class VentasQueryService {
       `${this.url}/ventas/lprecio/${this.userInfoService.company()}/${PartNum}/${UOM}/${CustID}/${CurrencyCode}`
     );
   }
+
+  //Crear orden de venta:
+  postCrearOV(data: CrearOvRequest): Observable<CrearOvResponse> {
+    return this.http.post<CrearOvResponse>(
+      `${this.url}/ventas/ov/CrearOV/${this.userInfoService.company()}`,
+      //se envia la data en el body de la solicitud POST
+      data
+    );
+  }
+
 }

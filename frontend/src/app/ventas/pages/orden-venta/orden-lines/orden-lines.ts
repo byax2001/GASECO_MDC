@@ -1,4 +1,4 @@
-import { Component, computed, inject, input, Input, signal } from '@angular/core';
+import { Component, computed, HostListener, inject, input, Input, signal } from '@angular/core';
 import { FormArray, FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import UOM from '../../../interfaces/uom.interface';
 import { Parte } from '../../../interfaces/parte.interface';
@@ -14,25 +14,40 @@ import { PartUOM } from '../../../interfaces/PartUOM.interface';
   styleUrl: './orden-lines.css',
 })
 export class OrdenLines {
+  //Codigo de Cliente
   custID = input.required<string>();
+  //Moneda de la Orden de venta
   currencyCode = input.required<string>();
+  //Representa una linea de pedido
   private fb = new FormBuilder();
-  private ventasQueryService = inject(VentasQueryService);
-
-  Parts = signal<PartOV[]>([]);
-  //UOMs por línea, se actualizan dinámicamente al seleccionar una parte
-  uomsPorLinea = signal<Record<number, PartUOM[]>>({});
-
-  Presentaciones = signal<TCilindros[]>([]);
-
+  //Formulario principal que contiene un FormArray de líneas de pedido
   form = this.fb.nonNullable.group({
     lineas: this.fb.array([])
   });
+  //Servicio para obtener datos relacionados con ventas, como partes, UOMs, precios, etc.
+  private ventasQueryService = inject(VentasQueryService);
+  
+  //Partes disponibles para la orden de venta, se cargan al iniciar el componente en el combobox
+  Parts = signal<PartOV[]>([]);
+  //UOMs por línea, se actualizan dinámicamente al seleccionar una parte
+  uomsPorLinea = signal<Record<number, PartUOM[]>>({});
+  //Tipos de cilindros disponibles para la orden de venta, se cargan al iniciar el componente en el combobox
+  Presentaciones = signal<TCilindros[]>([]);
+  
+  //APARTADO PARA VERIFICAR SI EL USUARIO ESTA EN MOVIL O DESKTOP
+  @HostListener('window:resize')
+  onResize() {
+    this.isMobile.set(window.innerWidth < 768);
+  }
+  isMobile = signal(window.innerWidth < 768);
+
 
   get lineas() {
     return this.form.get('lineas') as FormArray;
   }
 
+  // Método para crear una nueva línea de pedido con valores por defecto
+  // Se utiliza al agregar una nueva línea para inicializar el formulario de la línea
   createLinea(parte = '', cilindros = 0, presentacion = 0, uom = 'UND') {
     const group = this.fb.nonNullable.group({
       parte: [parte, Validators.required],
@@ -41,15 +56,37 @@ export class OrdenLines {
       uom: [uom, Validators.required],
       precio: [0, [Validators.required, Validators.min(0)]],
       ncertificado: [false, Validators.required],
+      Qty: [{ value: cilindros * presentacion, disabled: true }],
       total: [{ value: cilindros * presentacion * 0, disabled: true }],
     });
 
-    group.valueChanges.subscribe(value => {
-      const total =
-        Number(value.cilindros ?? 0) *
-        Number(value.presentacion ?? 0) *
-        Number(value.precio ?? 0);
+    group.get('uom')?.valueChanges.subscribe(uom => {
 
+        const presCtrl = group.get('presentacion');
+
+        if (uom === 'UND' || uom === 'SERV') {
+          presCtrl?.setValue(1);
+          presCtrl?.disable({ emitEvent: false });
+        } else {
+          presCtrl?.enable({ emitEvent: false });
+        }
+
+    });
+
+    //Escucha constantemente los cambios en los campos relevantes para calcular el total (cilindros, presentación, precio y UOM)
+    group.valueChanges.subscribe(value => {
+      //EN EL CASO DE QUE LA UNIDAD SEA UND O SER LA PRESENTACION SE CONSIDERA 1, 
+      //DE LO CONTRARIO SE TOMA EL VALOR INGRESADO EN PRESENTACION
+      const uom = value.uom;
+      const presentacion = (uom === 'UND' || uom === 'SER')
+        ? 1
+        : Number(value.presentacion ?? 0);
+
+      const qty = Number(value.cilindros ?? 0) * presentacion; //Cantidad de Producto a vender
+      const total = qty *Number(value.precio ?? 0); //Total de la línea (Cantidad * Precio Unitario)
+
+      
+      group.get('Qty')?.setValue(qty, { emitEvent: false });
       group.get('total')?.setValue(total, { emitEvent: false });
     });
 
@@ -79,10 +116,15 @@ export class OrdenLines {
     });
   }
 
+  //Metodo para agregar una linea de pedido en blanco, se pueden agregar tantas como se necesiten
   addLinea(): void {
     this.lineas.push(this.createLinea());
   }
 
+  // Metodo para eliminar una línea del pedido, 
+  // también se encarga de actualizar las UOMs por línea para evitar inconsistencias en los índices
+  // Por tanto elimina la lista de uoms de la línea eliminada y desplaza las siguientes para llenar 
+  // el espacio
   removeLinea(index: number): void {
     this.lineas.removeAt(index);
 
@@ -105,10 +147,14 @@ export class OrdenLines {
     });
   }
 
+  // Método para obtener las líneas del pedido en formato de formulario
   getLineasPedido() {
     return this.form.getRawValue().lineas;
   }
 
+  // Método para actualizar las UOM disponibles al cambiar la parte
+  // Colocar el UOM default 
+  // Colocar el precio unitario basado en la parte, UOM, cliente y moneda seleccionados
   onParteChange(index: number) {
 
     const linea = this.lineas.at(index);
@@ -137,6 +183,7 @@ export class OrdenLines {
 
   }
 
+  // Método para cambiar el precio unitario de la Parte
   ChangeUnitPrice(index: number) {
     //Se obtiene la linea actual (formulario) para obtener el PartNum y UOM seleccionados
     const linea = this.lineas.at(index);
@@ -161,8 +208,6 @@ export class OrdenLines {
         linea.get('precio')?.setValue(0);
       }
     });
-
-
 
   }
 

@@ -18,8 +18,7 @@ import { UserInfoService } from '../services/userInfo.service';
 export default class Home {
 
   @ViewChild('modalG') modalG!: Modalg;
-  msgModal = signal('');
-  TitleModal = signal('');
+ 
   cookieService = inject(CookieService);
   userInfoService = inject(UserInfoService);
   companies = computed(() => {
@@ -35,8 +34,8 @@ export default class Home {
       const welcomeShown = sessionStorage.getItem('welcomeShown');
       if (!welcomeShown) {
 
-        this.TitleModal.set(`¡Bienvenido!`);
-        this.msgModal.set('Inicio de sesión exitoso');
+        this.modalG.setModalTitle(`¡Bienvenido!`);
+        this.modalG.setModalMessage('Inicio de sesión exitoso');
         this.modalG.openModal();
         sessionStorage.setItem('welcomeShown', 'true');
       }

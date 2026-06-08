@@ -1,12 +1,12 @@
 import { Component, computed, HostListener, inject, input, signal } from '@angular/core';
 import { Cliente } from '../../../interfaces/cliente.interface';
 import { PaginationTable } from "../../../../shared/components/pagination-table/pagination-table";
-import { Router } from '@angular/router';
+import { Router, RouterLink} from '@angular/router';
 
 
 @Component({
   selector: 'app-table-clientes',
-  imports: [PaginationTable],
+  imports: [PaginationTable, RouterLink],
   templateUrl: './table-clientes.html',
   styleUrl: './table-clientes.css',
 })
