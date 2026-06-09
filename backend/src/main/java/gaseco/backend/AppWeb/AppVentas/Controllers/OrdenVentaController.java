@@ -8,7 +8,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import gaseco.backend.AppWeb.AppVentas.DTO.Request.OrdenVentaLineRequest;
 import gaseco.backend.AppWeb.AppVentas.DTO.Request.OrdenVentaRequest;
+import gaseco.backend.AppWeb.AppVentas.DTO.Response.OrdenVentaLineResponse;
 import gaseco.backend.AppWeb.AppVentas.DTO.Response.OrdenVentaResponse;
 import gaseco.backend.AppWeb.AppVentas.Services.OrdenVentaService;
 import lombok.RequiredArgsConstructor;
@@ -39,5 +41,11 @@ public class OrdenVentaController {
         return ResponseEntity.ok(
             response
         );
+    }
+
+    @PostMapping("/AddLineas/{Company}")
+    public ResponseEntity<OrdenVentaLineResponse> agregarLineas(@RequestBody OrdenVentaLineRequest[] request, @PathVariable String Company) {
+        OrdenVentaLineResponse response = ordenVentaService.AddLines(request, Company);
+        return ResponseEntity.ok(response);
     }
 }

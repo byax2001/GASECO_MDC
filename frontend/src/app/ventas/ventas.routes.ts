@@ -17,6 +17,10 @@ export const ventasRoutes: Routes = [
       {
         path: 'ov/:custid',
         loadComponent: () => import('./pages/orden-venta/orden-venta')
+      },
+      {
+        path: 'presupuestos',
+        loadComponent: () => import('./pages/presupuestos/presupuestos')
       }
 
 

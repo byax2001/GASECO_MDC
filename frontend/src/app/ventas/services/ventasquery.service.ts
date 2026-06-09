@@ -12,6 +12,8 @@ import { PartOV } from '../interfaces/PartOV.interface';
 import { PrecioUnitario } from '../interfaces/PrecioUnitario.interface';
 import { CrearOvResponse } from '../interfaces/CrearOvResponse.interface';
 import { CrearOvRequest } from '../interfaces/CrearOvRequest.interface';
+import { AddLineOvRequest } from '../interfaces/AddLineOvRequest.interface';
+import { AddLineOvResponse } from '../interfaces/AddLineOvResponse.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -78,6 +80,14 @@ export class VentasQueryService {
     return this.http.post<CrearOvResponse>(
       `${this.url}/ventas/ov/CrearOV/${this.userInfoService.company()}`,
       //se envia la data en el body de la solicitud POST
+      data
+    );
+  }
+
+  //Agregar lineas a orden de venta existente:
+  postAddLineas(data: AddLineOvRequest[]): Observable<AddLineOvResponse> {
+    return this.http.post<AddLineOvResponse>(
+      `${this.url}/ventas/ov/AddLineas/${this.userInfoService.company()}`,
       data
     );
   }

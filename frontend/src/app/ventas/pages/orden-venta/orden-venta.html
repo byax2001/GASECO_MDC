@@ -91,7 +91,11 @@
       <div class="p-3 rounded-xl bg-gray-50">
         <label class="text-xs text-gray-500">Numero de Orden</label>
         <p class="font-semibold text-gray-800">
-          {{ formHeader.controls.orderNum.value || 'En Espera de creación' }}
+         @if(orderNumView() > 0) {
+  {{ orderNumView() }}
+} @else {
+  En Espera de creación
+}
         </p>
       </div>
 
@@ -118,8 +122,12 @@
 
     <div class="overflow-x-auto">
       <!-- SE ENVIA EL CUSTID Y EL TIPO DE MONEDA PARA BUSCAR UNA LISTA DE PRECIO CON LA MONEDA SELECCIONADA PARA EL TEMA DEL PRECIO UNITARIO AUTOMATICO-->
-      <Orden-lines [custID]="formHeader.controls.custID.value"
-        [currencyCode]="formHeader.controls.currencyCode.value" />
+      <Orden-lines 
+        #ordenLines
+        [custID]="formHeader.controls.custID.value"
+        [CustNum]="CustInfoOv()?.Customer_CustNum || 0"
+        [currencyCode]="formHeader.controls.currencyCode.value"
+        [OrderNum]="formHeader.controls.orderNum.value" />
 
     </div>
 

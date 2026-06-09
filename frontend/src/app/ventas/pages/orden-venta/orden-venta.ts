@@ -31,6 +31,8 @@ export default class OrdenVenta {
     currencyCode: ['GTQ', Validators.required],
   });
 
+  orderNumView = signal<number>(0);
+
   CustInfoOv = signal<ClienteInfoOv | null>(null);
   LMonedas = signal<Moneda[]>([]);
   creandoOV = signal(false);
@@ -38,6 +40,9 @@ export default class OrdenVenta {
   private route = inject(ActivatedRoute);
   private ventasQueryService = inject(VentasQueryService);
   @ViewChild('modalG') modalG!: Modalg;
+  @ViewChild('ordenLines') ordenLines!: OrdenLines;
+
+
 
   ngOnInit(): void {
     // Cargar Datos del Cliente al cargar la página
@@ -124,9 +129,23 @@ export default class OrdenVenta {
           orderNum: response.OrderNum
         });
 
-        this.modalG.setModalTitle('Orden de Venta Creada');
-        this.modalG.setModalMessage(`La orden de venta número ${response.OrderNum} ha sido creada exitosamente.`);
-        this.modalG.openModal();
+        this.ordenLines.AgregarLineasOv(response.OrderNum).subscribe({
+          next: (addLineResponse) => {
+       
+              this.orderNumView.set(response.OrderNum);
+              this.modalG.setModalTitle('Orden de Venta Creada');
+              this.modalG.setModalMessage(
+                `La orden de venta número ${response.OrderNum} ha sido creada exitosamente.`
+              );
+              this.modalG.openModal();
+            console.log('Lineas agregadas exitosamente:', addLineResponse);
+          }
+          ,error: (error) => {
+            console.error('Error agregando lineas a la orden de venta:', error);
+          }
+        });
+
+        
         
       },
       error: (error) => {

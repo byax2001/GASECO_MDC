@@ -1,11 +1,28 @@
 import { Component, computed, HostListener, inject, input, Input, signal } from '@angular/core';
-import { FormArray, FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormArray, FormBuilder, ReactiveFormsModule, Validators, FormControl, FormGroup } from '@angular/forms';
 import UOM from '../../../interfaces/uom.interface';
 import { Parte } from '../../../interfaces/parte.interface';
 import { PartOV } from '../../../interfaces/PartOV.interface';
 import { VentasQueryService } from '../../../services/ventasquery.service';
 import { TCilindros } from '../../../interfaces/TCilindros.interface';
 import { PartUOM } from '../../../interfaces/PartUOM.interface';
+import { AddLineOvRequest } from '../../../interfaces/AddLineOvRequest.interface';
+import { AddLineOvResponse } from '../../../interfaces/AddLineOvResponse.interface';
+import { Observable } from 'rxjs';
+
+type LineaOvForm = FormGroup<{
+  noLinea: FormControl<number>;
+  parte: FormControl<string>;
+  cilindros: FormControl<number>;
+  presentacion: FormControl<string>;
+  uom: FormControl<string>;
+  precio: FormControl<number>;
+  ncertificado: FormControl<boolean>;
+  Qty: FormControl<number>;
+  total: FormControl<number>;
+}>;
+
+
 
 @Component({
   selector: 'Orden-lines',
@@ -13,16 +30,19 @@ import { PartUOM } from '../../../interfaces/PartUOM.interface';
   templateUrl: './orden-lines.html',
   styleUrl: './orden-lines.css',
 })
+
 export class OrdenLines {
   //Codigo de Cliente
   custID = input.required<string>();
+  CustNum = input.required<number>();
+  OrderNum = input.required<number>();
   //Moneda de la Orden de venta
   currencyCode = input.required<string>();
   //Representa una linea de pedido
   private fb = new FormBuilder();
   //Formulario principal que contiene un FormArray de líneas de pedido
   form = this.fb.nonNullable.group({
-    lineas: this.fb.array([])
+    lineas: this.fb.array<LineaOvForm>([])
   });
   //Servicio para obtener datos relacionados con ventas, como partes, UOMs, precios, etc.
   private ventasQueryService = inject(VentasQueryService);
@@ -46,10 +66,14 @@ export class OrdenLines {
     return this.form.get('lineas') as FormArray;
   }
 
+  //TIPAR FORMULARIO:
+  
+
   // Método para crear una nueva línea de pedido con valores por defecto
   // Se utiliza al agregar una nueva línea para inicializar el formulario de la línea
   createLinea(parte = '', cilindros = 0, presentacion = 0, uom = 'UND') {
     const group = this.fb.nonNullable.group({
+      noLinea: [0],
       parte: [parte, Validators.required],
       cilindros: [cilindros, [Validators.required, Validators.min(0)]],
       presentacion: [presentacion, [Validators.required, Validators.min(0)]],
@@ -147,10 +171,6 @@ export class OrdenLines {
     });
   }
 
-  // Método para obtener las líneas del pedido en formato de formulario
-  getLineasPedido() {
-    return this.form.getRawValue().lineas;
-  }
 
   // Método para actualizar las UOM disponibles al cambiar la parte
   // Colocar el UOM default 
@@ -209,6 +229,28 @@ export class OrdenLines {
       }
     });
 
+  }
+
+  AgregarLineasOv(OrderNum: number):Observable<AddLineOvResponse> {
+    if (this.form.invalid) {
+      this.form.markAllAsTouched();
+      return new Observable<AddLineOvResponse>(subscriber => {
+        subscriber.error('El formulario contiene errores. Por favor, corríjalos antes de agregar las líneas a la orden de venta.');
+      });
+    }
+    const lineasPedido: AddLineOvRequest[] =   this.form.getRawValue().lineas.map(linea => ({
+      CustID: this.custID(),
+      CustNum: this.CustNum(),
+      PartNum: linea.parte,
+      NoCilindros: linea.cilindros,
+      TipoCilindro: linea.presentacion,
+      Qty: linea.Qty,
+      PrecioUnit: linea.precio,
+      UOM: linea.uom,
+      OrderNum: OrderNum
+    }));
+
+    return this.ventasQueryService.postAddLineas(lineasPedido)
   }
 
 }

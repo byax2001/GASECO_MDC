@@ -7,7 +7,9 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import gaseco.backend.AppWeb.AppVentas.DTO.Request.OrdenVentaLineRequest;
 import gaseco.backend.AppWeb.AppVentas.DTO.Request.OrdenVentaRequest;
+import gaseco.backend.AppWeb.AppVentas.DTO.Response.OrdenVentaLineResponse;
 import gaseco.backend.AppWeb.AppVentas.DTO.Response.OrdenVentaResponse;
 import gaseco.backend.Constants.AppConstants;
 import gaseco.backend.Epicor.services.EpicorService;
@@ -74,6 +76,49 @@ public class OrdenVentaService {
             .block();
 
         return response;
+        }
+
+        public OrdenVentaLineResponse AddLines(OrdenVentaLineRequest[] request, String Company){
+            String username = AppConstants.EPICOR_USER;
+            String password = AppConstants.EPICOR_PASS;
+             //El nombre de la Función en Epicor para crear una orden de Venta
+            String fx_consult = "/api/v2/efx/"+Company+"/CrearOV/AddLineas";
+        
+            System.out.println("Obteniendo token de Epicor...");
+            String token = epicorService.getToken(username, password);
+            System.out.println("Token obtenido: " + token);
+
+            if (token == null) {
+            return OrdenVentaLineResponse.builder()
+                    .Result("Error al obtener el token de Epicor")
+                    .build();
+            }
+
+            OrdenVentaLineResponse response = null;
+
+            try{
+                for(OrdenVentaLineRequest line : request){
+                    System.out.println("Agregando línea: " + line);
+
+                    response = webClient.post()
+                    .uri(AppConstants.EPICOR_URL + fx_consult)
+                    .header("x-api-key", AppConstants.EPICOR_API_KEY)
+                    .header("Authorization", "Bearer " + token)
+                    .bodyValue(line)
+                    .accept(MediaType.APPLICATION_JSON)
+                    .retrieve()
+                    .bodyToMono(OrdenVentaLineResponse.class)
+                    .block();
+                }
+
+            }catch(Exception e){
+                return OrdenVentaLineResponse.builder()
+                    .Result("Error al agregar las líneas: " + e.getMessage())
+                    .build();
+            }
+            
+
+            return response;
         }
 
 }

@@ -1,4 +1,4 @@
-import { Component, computed, HostListener, inject, input, signal } from '@angular/core';
+import { Component, computed, effect, HostListener, inject, input, signal } from '@angular/core';
 import { Cliente } from '../../../interfaces/cliente.interface';
 import { PaginationTable } from "../../../../shared/components/pagination-table/pagination-table";
 import { Router, RouterLink} from '@angular/router';
@@ -30,13 +30,18 @@ export class TableClientes {
     return clientes.slice(start, end);
   });
 
+  constructor() {
+    effect(() => {
+      const total = this.lclientes().length;
+      this.currentPage.set(1);
+    });
+  }
    createOV(custId: string) {
     console.log('Crear OV para cliente:', custId);
     this.router.navigate([
       '/ventas/ov',
       custId
     ]);
-
    }
 
   
