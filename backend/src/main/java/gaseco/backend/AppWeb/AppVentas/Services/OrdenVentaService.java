@@ -2,6 +2,7 @@ package gaseco.backend.AppWeb.AppVentas.Services;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Base64;
 
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
@@ -28,18 +29,11 @@ public class OrdenVentaService {
         //El nombre de la Función en Epicor para crear una orden de Venta
         String baq_consult = "/api/v2/odata/"+Company+"/BaqSvc/App_V_CustInfo/Data?CustID="+CustID;
        
-        System.out.println("Obteniendo token de Epicor...");
-        String token = epicorService.getToken(username, password);
-        System.out.println("Token obtenido: " + token);
-
-         if (token == null) {
-            return List.of(Map.of("error", "Error al obtener el token de Epicor"));
-        }
-
         Map<String, Object> response = webClient.get()
             .uri(AppConstants.EPICOR_URL+baq_consult)
             .header("x-api-key", AppConstants.EPICOR_API_KEY)
-            .header("Authorization", "Bearer " + token)
+            .header("Authorization", "Basic "+Base64.getEncoder().encodeToString((username + ":" + password).getBytes()))
+            //.header("Authorization", "Bearer " + token)
             .accept(MediaType.APPLICATION_JSON)
             .retrieve()
             .bodyToMono(Map.class)

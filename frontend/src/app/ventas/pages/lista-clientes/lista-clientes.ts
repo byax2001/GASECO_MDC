@@ -2,16 +2,18 @@ import { Component, computed, inject, signal } from '@angular/core';
 import { HeaderPage } from "../../../shared/components/header-page/header-page";
 import { TableClientes } from "./table-clientes/table-clientes";
 import { rxResource } from '@angular/core/rxjs-interop';
-import { of } from 'rxjs';
+import { finalize, of } from 'rxjs';
 import { Cliente } from '../../interfaces/cliente.interface';
 import { SearchDebounce } from "../../components/search-debounce/search-debounce";
 
 import {VentasQueryService } from '../../services/ventasquery.service';
 import { UserInfoService } from '../../../services/userInfo.service';
+import { SpinnerLoad } from '../../../shared/components/spinner-load/spinner-load';
+
 
 @Component({
   selector: 'app-lista-clientes',
-  imports: [HeaderPage, TableClientes, SearchDebounce],
+  imports: [HeaderPage, TableClientes, SearchDebounce, SpinnerLoad],
   templateUrl: './lista-clientes.html',
   styleUrl: './lista-clientes.css',
 })
@@ -20,6 +22,7 @@ export default class ListaClientes {
 
   ventasQueryService = inject(VentasQueryService);
   searchText = signal('');
+  loading = signal(true);
 
   clientesResource = rxResource({
 
@@ -31,7 +34,10 @@ export default class ListaClientes {
       if (!params.company) {
         return of([]); // Retorna un observable con un array vacío si no hay empresa seleccionada
       }
-      return this.ventasQueryService.getClientes();
+      this.loading.set(false);
+      return this.ventasQueryService.getClientes().pipe(
+        finalize(() => this.loading.set(true))
+      );
     }
 
   }); 

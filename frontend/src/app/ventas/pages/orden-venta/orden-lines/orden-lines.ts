@@ -2,12 +2,12 @@ import { Component, computed, HostListener, inject, input, Input, signal } from 
 import { FormArray, FormBuilder, ReactiveFormsModule, Validators, FormControl, FormGroup } from '@angular/forms';
 import UOM from '../../../interfaces/uom.interface';
 import { Parte } from '../../../interfaces/parte.interface';
-import { PartOV } from '../../../interfaces/PartOV.interface';
+import { PartOV } from '../components/interface/PartOV.interface';
 import { VentasQueryService } from '../../../services/ventasquery.service';
 import { TCilindros } from '../../../interfaces/TCilindros.interface';
 import { PartUOM } from '../../../interfaces/PartUOM.interface';
-import { AddLineOvRequest } from '../../../interfaces/AddLineOvRequest.interface';
-import { AddLineOvResponse } from '../../../interfaces/AddLineOvResponse.interface';
+import { AddLineOvRequest } from '../components/interface/AddLineOvRequest.interface';
+import { AddLineOvResponse } from '../components/interface/AddLineOvResponse.interface';
 import { Observable } from 'rxjs';
 
 type LineaOvForm = FormGroup<{

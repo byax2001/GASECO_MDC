@@ -16,6 +16,13 @@ export class Modalg {
     this.showModal.set(true);
   }
 
+  showModalG(title: string, message: string) {
+    this.setModalTitle(title);
+    this.setModalMessage(message);
+    this.openModal();
+    this.showModal.set(true);
+  }
+
   closeModal() {
     this.showModal.set(false);
   }

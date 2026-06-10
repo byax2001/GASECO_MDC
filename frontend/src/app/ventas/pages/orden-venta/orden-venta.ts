@@ -7,10 +7,10 @@ import { FormBuilder, FormsModule, Validators, ReactiveFormsModule } from '@angu
 import { OrdenLines } from "./orden-lines/orden-lines";
 import { Inputg } from "../../../shared/components/inputg/inputg";
 import { VentasQueryService } from '../../services/ventasquery.service';
-import { ClienteInfoOv } from '../../interfaces/ClienteInfoOv.interface';
+import { ClienteInfoOv } from './components/interface/ClienteInfoOv.interface';
 import { Moneda } from '../../interfaces/Moneda.interface';
-import { CrearOvResponse } from '../../interfaces/CrearOvResponse.interface';
-import { CrearOvRequest } from '../../interfaces/CrearOvRequest.interface';
+import { CrearOvResponse } from './components/interface/CrearOvResponse.interface';
+import { CrearOvRequest } from './components/interface/CrearOvRequest.interface';
 import { Modalg } from '../../../shared/components/modalg/modalg';
 
 @Component({

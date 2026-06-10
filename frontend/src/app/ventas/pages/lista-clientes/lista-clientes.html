@@ -1,4 +1,8 @@
 
 <app-header-page [PageName]="'Clientes'" />
+@if(!loading()){
+  <SpinnerLoad/>
+}@else{
 <app-search-debounce (searchEmisor)="onSearch($event)" />
 <app-table-clientes [lclientes]="clientesFiltrados()" />
+}
