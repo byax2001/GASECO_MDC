@@ -24,6 +24,17 @@
           }
         </select>
       </div>
+      
+      <div class="p-1 rounded-xl bg-gray-50">
+        <label class="text-xs text-gray-500">Presupuesto Por</label>
+        <select formControlName="CodPresupuestoPor" class="select select-bordered w-full">
+          @for(ppor of LTipoDato(); track ppor.code) {
+          <option [value]="ppor.code">
+            {{ ppor.description }}
+          </option>
+          }
+        </select>
+      </div>
 
     <div class="p-1 rounded-xl bg-gray-50 flex items-end">
       <button

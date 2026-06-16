@@ -1,112 +1,21 @@
 <app-header-page PageName="Orden de Venta" />
 <modalg #modalG />
-<form [formGroup]="formHeader">
-  <div class="w-full min-h-screen p-1 bg-white">
-    <!-- HEADER FORM -->
 
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6 md:mb-10">
-
-      <div class="p-3 rounded-xl bg-gray-50">
-        <label class="text-xs text-gray-500">Cliente</label>
-        <p class="font-semibold text-gray-800">
-          {{ CustInfoOv()?.Customer_Name }}
-        </p>
-      </div>
-
-      <div class="p-3 rounded-xl bg-gray-50">
-        <label class="text-xs text-gray-500">Código Cliente</label>
-        <p class="font-semibold text-gray-800">
-          {{ CustInfoOv()?.Customer_CustID }}
-        </p>
-      </div>
-
-      <div class="p-3 rounded-xl bg-gray-50">
-        <label class="text-xs text-gray-500">No. Cliente</label>
-        <p class="font-semibold text-gray-800">
-          {{ CustInfoOv()?.Customer_CustNum }}
-        </p>
-      </div>
-
-      <div class="p-3 rounded-xl bg-gray-50">
-        <label class="text-xs text-gray-500">Territorio</label>
-        <p class="font-semibold text-gray-800">
-          {{ CustInfoOv()?.Customer_TerritoryID }}
-        </p>
-      </div>
-
-      <div class="p-3 rounded-xl bg-gray-50">
-        <label class="text-xs text-gray-500">Vendedor</label>
-        <p class="font-semibold text-gray-800">
-          {{ CustInfoOv()?.SalesRep_Name }}
-        </p>
-      </div>
-
-      <div class="p-3 rounded-xl bg-gray-50">
-        <label class="text-xs text-gray-500">Condición de Pago</label>
-        <p class="font-semibold text-gray-800">
-          {{ CustInfoOv()?.Terms_Description }}
-        </p>
-      </div>
-
-      <div class="p-3 rounded-xl bg-gray-50">
-        <label class="text-xs text-gray-500">Código Término</label>
-        <p class="font-semibold text-gray-800">
-          {{ CustInfoOv()?.Customer_TermsCode }}
-        </p>
-      </div>
-
-      <div class="p-3 rounded-xl bg-gray-50">
-        <label class="text-xs text-gray-500">Descripción Moneda</label>
-        <select formControlName="currencyCode" class="select select-bordered w-full">
-          @for(moneda of LMonedas(); track moneda.RowIdent) {
-          <option [value]="moneda.Currency_CurrencyCode">
-            {{ moneda.Currency_CurrencyCode }}
-          </option>
-          }
-        </select>
-      </div>
-
-      <div>
-        <label class="label">
-          <span class="label-text">Fecha requerida</span>
-        </label>
-        <input type="date" class="input input-bordered w-full" formControlName="fechaRequerida" />
-      </div>
-
-      <div>
-        <label class="label">
-          <span class="label-text">Ubicación</span>
-        </label>
-        <input type="text" placeholder="Ingrese ubicación" class="input input-bordered w-full"
-          formControlName="ubicacion" />
-      </div>
-      <div>
-        <label class="label">
-          <span class="label-text">Proyecto</span>
-        </label>
-        <input type="text" placeholder="Ingrese proyecto" class="input input-bordered w-full"
-          formControlName="proyecto" />
-      </div>
-
-      <div class="p-3 rounded-xl bg-gray-50">
-        <label class="text-xs text-gray-500">Numero de Orden</label>
-        <p class="font-semibold text-gray-800">
-         @if(orderNumView() > 0) {
-  {{ orderNumView() }}
-} @else {
-  En Espera de creación
+@if(loading()){
+  <SpinnerLoad/>
 }
-        </p>
-      </div>
-
-    </div>
-
+<form [formGroup]="formHeader">
+  <div class="w-full min-h-screen p-1 bg-white" [class.opacity-50]="loading()" [class.pointer-events-none]="loading()">
+  <!-- HEADER FORM -->
+    <orden-venta-header
+      [formHeader]="formHeader"
+      [CustInfoOv]="CustInfoOv()"
+      [LMonedas]="LMonedas()"
+      [creandoOV]="creandoOV()"
+      [orderNumView]="orderNumView()"
+    />
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-5">
-
-
     </div>
-
-
     <!-- BOTON CREAR ORDEN DE VENTA -->
     <div class="flex justify-center md:justify-end">
       <button class="btn bg-[#A6C441] text-white hover:bg-[#8aa83a] mb-3" (click)="CrearOrdenVenta()"
@@ -118,19 +27,16 @@
         }</button>
     </div>
 
-
-
+<!-- LINEAS DE ORDEN  -->
     <div class="overflow-x-auto">
       <!-- SE ENVIA EL CUSTID Y EL TIPO DE MONEDA PARA BUSCAR UNA LISTA DE PRECIO CON LA MONEDA SELECCIONADA PARA EL TEMA DEL PRECIO UNITARIO AUTOMATICO-->
       <Orden-lines 
         #ordenLines
         [custID]="formHeader.controls.custID.value"
-        [CustNum]="CustInfoOv()?.Customer_CustNum || 0"
+        [CustNum]="CustInfoOv().Customer_CustNum"
         [currencyCode]="formHeader.controls.currencyCode.value"
         [OrderNum]="formHeader.controls.orderNum.value" />
 
     </div>
-
-
   </div>
 </form>

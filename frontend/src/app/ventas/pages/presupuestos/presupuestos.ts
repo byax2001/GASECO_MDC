@@ -8,10 +8,12 @@ import { FormBuilder, FormControl, FormGroup, Validators, ReactiveFormsModule, F
 import { Modalg } from "../../../shared/components/modalg/modalg";
 import { SpinnerLoad } from "../../../shared/components/spinner-load/spinner-load";
 import { Vendedores } from '../../interfaces/Vendedores.interface';
+import { ComboDefault } from '../../../interfaces/ComboDefault.interface';
 
 type PresupuestoHeaderForm = {
   anio: FormControl<number>;
   CodVendedor: FormControl<number>;
+  CodPresupuestoPor: FormControl<string>;
 };
 
 @Component({
@@ -25,6 +27,10 @@ export default class Presupuestos {
   presupuestoData= signal< VentasPresupuestoResponse[] >([]);
   loading = signal<boolean>(true);
   Lvendedores = signal <Vendedores[]>([]);
+  LTipoDato = signal<ComboDefault[]>([
+    { code: 'V', description: 'Volumen' },
+    { code: 'F', description: 'Facturación' }
+  ]);
 
   @ViewChild('modalG') modalG!: Modalg;
 
@@ -32,6 +38,7 @@ export default class Presupuestos {
   formHeader: FormGroup<PresupuestoHeaderForm> = this.fb.nonNullable.group({
   anio: [0, Validators.required],
   CodVendedor: [0, Validators.required],
+  CodPresupuestoPor: ['V', Validators.required]
 });
   
 
@@ -49,13 +56,13 @@ export default class Presupuestos {
 
   buscarVentas() {
     this.loading.set(false);
-    const { anio, CodVendedor } = this.formHeader.getRawValue();
+    const { anio,CodPresupuestoPor, CodVendedor } = this.formHeader.getRawValue();
     if(this.formHeader.invalid) {
       this.modalG.showModalG("Error", "Por favor, complete todos los campos requeridos.");
       return;
     }
 
-    this.presupuestoService.getVentasPresupuesto(anio, CodVendedor).subscribe({
+    this.presupuestoService.getVentasPresupuesto(anio, CodPresupuestoPor, CodVendedor).subscribe({
       next: (data) => {
         this.presupuestoData.set(data);
         if (this.presupuestoData().length === 0) {

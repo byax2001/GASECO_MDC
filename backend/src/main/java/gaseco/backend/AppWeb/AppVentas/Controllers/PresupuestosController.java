@@ -17,10 +17,10 @@ import lombok.RequiredArgsConstructor;
 public class PresupuestosController {
     private final PresupuestosService presupuestosService;
 
-    @GetMapping("/{Company}/{Anio}/{CodVendedor}")
-    public List<Map<String, Object>> GetVentas(@PathVariable String Company, @PathVariable  int Anio, @PathVariable int CodVendedor) {
+    @GetMapping("/{Company}/{Anio}/{PresupuestoPor}/{CodVendedor}")
+    public List<Map<String, Object>> GetVentas(@PathVariable String Company, @PathVariable  int Anio, @PathVariable String PresupuestoPor, @PathVariable int CodVendedor) {
         //Aquí se llamaría al servicio de presupuestos para obtener la información
-         return presupuestosService.GetVentas(Company, Anio, CodVendedor);
+         return presupuestosService.GetVentas(Company, Anio, PresupuestoPor, CodVendedor);
     }
 
     @GetMapping("/vendedores/{Company}")

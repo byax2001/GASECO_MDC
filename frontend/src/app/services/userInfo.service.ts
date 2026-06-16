@@ -27,6 +27,19 @@ export class UserInfoService {
   //Modulos:
   // VENTAS: Modulo de ventas.
   // MDC: Modulo de Cilindros.
+  // Ejemplo de estructura de userInfo:
+  /*
+  {
+    "165943": {
+      "VENTAS": "codigo_usuario_ventas",
+      "MDC": "codigo_usuario_mdc"
+    },
+    "165943B": {
+      "VENTAS": "codigo_usuario_ventas_hn",
+      "MDC": "codigo_usuario_mdc_hn"
+    }
+  }
+  */
 
   getUserInfo(username: string): Observable<InfoAppResponse[]> {
     //Ya no es necesario el token porque el interceptor se encarga de agregarlo a cada petición
@@ -72,4 +85,11 @@ export class UserInfoService {
     const codUser = this.userInfo()[this.company()]?.[modulo];
     return codUser || '';
   }
+
+  verifyAccess(modulo: string): boolean {
+    // El !! simplemente convierte el resultado a un booleano, devolviendo true si el código de usuario 
+    // existe para el módulo dado, o false si no existe.
+    return !!this.getCodeUser(modulo);
+  }
+
 }

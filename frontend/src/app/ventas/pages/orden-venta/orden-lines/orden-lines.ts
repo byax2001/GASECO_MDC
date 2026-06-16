@@ -102,11 +102,11 @@ export class OrdenLines {
       //EN EL CASO DE QUE LA UNIDAD SEA UND O SER LA PRESENTACION SE CONSIDERA 1, 
       //DE LO CONTRARIO SE TOMA EL VALOR INGRESADO EN PRESENTACION
       const uom = value.uom;
-      const presentacion = (uom === 'UND' || uom === 'SER')
+      const qtyPres = (uom === 'UND' || uom === 'SER')
         ? 1
-        : Number(value.presentacion ?? 0);
+        : this.qtyPresentación(String(value.presentacion));
 
-      const qty = Number(value.cilindros ?? 0) * presentacion; //Cantidad de Producto a vender
+      const qty = Number(value.cilindros ?? 0) * Number(qtyPres); //Cantidad de Producto a vender
       const total = qty *Number(value.precio ?? 0); //Total de la línea (Cantidad * Precio Unitario)
 
       
@@ -180,6 +180,8 @@ export class OrdenLines {
     const linea = this.lineas.at(index);
     const partNum = linea.get('parte')?.value;
 
+    // SE BUSCA LAS UOMS DISPONIBLES PARA LA PARTE SELECCIONADA Y 
+    // SE SETEA POR DEFAULT LA UOM QUE TIENE ASIGNADA COMO DEFAULT EN EL SISTEMA EPICOR
     this.ventasQueryService.getPartUOM(partNum).subscribe({
 
       next: (uoms) => {
@@ -196,6 +198,7 @@ export class OrdenLines {
         linea.get('uom')?.setValue(
           defaultUom?.UOMConv_UOMCode ?? ''
         );
+        //SE OBTIENE EL PRECIO UNITARIO BASADO EN LA PARTE, UOM, CLIENTE Y MONEDA SELECCIONADOS
         this.ChangeUnitPrice(index);
       }
 
@@ -251,6 +254,15 @@ export class OrdenLines {
     }));
 
     return this.ventasQueryService.postAddLineas(lineasPedido)
+  }
+
+  //RETORNA LA CANTIDAD QUE REPRESENTA LA PRESENTACION EN BASE A SU CODIGO, 
+  // SE UTILIZA PARA CALCULAR LA CANTIDAD TOTAL A VENDER EN BASE AL NUMERO DE CILINDROS 
+  // Y LA PRESENTACION
+  qtyPresentación(presentacion: string):Number{
+    return this.Presentaciones()
+    .find(p => p.UDCodes_CodeID === presentacion)
+    ?.UDCodes_NUMERO01_c ?? 0;
   }
 
 }

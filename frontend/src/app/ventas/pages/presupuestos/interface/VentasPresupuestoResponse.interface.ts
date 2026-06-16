@@ -1,8 +1,10 @@
 export interface VentasPresupuestoResponse {
     Customer_CustID:       string;
     Customer_Name:         string;
+    Customer_TipoCustomer_c: string;
     InvcDtl_PartNum:       string;
     Part_PartDescription:  string;
+    Calculated_PrecioU:    number;
     Calculated_Enero:      number;
     Calculated_Febrero:    number;
     Calculated_Marzo:      number;

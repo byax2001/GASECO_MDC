@@ -8,14 +8,17 @@ import {
   ReactiveFormsModule,
   Validators
 } from '@angular/forms';
+import * as XLSX from 'xlsx';
 import { VentasPresupuestoResponse } from '../../interface/VentasPresupuestoResponse.interface';
-import { Modalg } from '../../../../../shared/components/modalg/modalg';
+import { DecimalPipe } from '@angular/common';
 
 type PresupuestoRowForm = FormGroup<{
-  customerCustID: FormControl<string>;
+  CustID: FormControl<string>;
   customerName: FormControl<string>;
+  TipoCustomer: FormControl<string>;
   partNum: FormControl<string>;
   partDescription: FormControl<string>;
+  precioU: FormControl<number>;
 
   eneroBase: FormControl<number>;
   febreroBase: FormControl<number>;
@@ -29,6 +32,8 @@ type PresupuestoRowForm = FormGroup<{
   octubreBase: FormControl<number>;
   noviembreBase: FormControl<number>;
   diciembreBase: FormControl<number>;
+
+  porcentaje: FormControl<number>;
 
   eneroP: FormControl<number>;
   febreroP: FormControl<number>;
@@ -48,14 +53,14 @@ type PresupuestoRowForm = FormGroup<{
 
 @Component({
   selector: 'presupuesto-table',
-  imports: [ReactiveFormsModule,FormsModule,ReactiveFormsModule, Modalg],
+  imports: [ReactiveFormsModule, FormsModule, ReactiveFormsModule, DecimalPipe],
   templateUrl: './presupuesto-table.html',
   styleUrl: './presupuesto-table.css',
 })
 export class PresupuestoTable {
- private fb = inject(FormBuilder);
- porcentaje = signal<number>(0);
- presupuestoData = input.required<VentasPresupuestoResponse[]>()
+  private fb = inject(FormBuilder);
+  porcentaje = signal<number>(0);
+  presupuestoData = input.required<VentasPresupuestoResponse[]>()
 
   form = this.fb.nonNullable.group({
     porcentaje: [0, Validators.required],
@@ -73,12 +78,16 @@ export class PresupuestoTable {
     });
   }
 
+  // Crear un FormGroup para cada fila de datos, 
+  // inicializando los controles con los valores base y calculados
   crearFila(row: VentasPresupuestoResponse): PresupuestoRowForm {
-    return this.fb.nonNullable.group({
-      customerCustID: row.Customer_CustID,
+    const fila = this.fb.nonNullable.group({
+      CustID: row.Customer_CustID,
       customerName: row.Customer_Name,
+      TipoCustomer: row.Customer_TipoCustomer_c,
       partNum: row.InvcDtl_PartNum,
       partDescription: row.Part_PartDescription,
+      precioU: row.Calculated_PrecioU,
 
       eneroBase: row.Calculated_Enero,
       febreroBase: row.Calculated_Febrero,
@@ -93,41 +102,57 @@ export class PresupuestoTable {
       noviembreBase: row.Calculated_Noviembre,
       diciembreBase: row.Calculated_Diciembre,
 
-      eneroP: 0,
-      febreroP: 0,
-      marzoP: 0,
-      abrilP: 0,
-      mayoP: 0,
-      junioP: 0,
-      julioP: 0,
-      agostoP: 0,
-      septiembreP: 0,
-      octubreP: 0,
-      noviembreP: 0,
-      diciembreP: 0,
+      porcentaje: 0,
+
+      eneroP: [{ value: row.Calculated_Enero, disabled: false }],
+      febreroP: [{ value: row.Calculated_Febrero, disabled: false }],
+      marzoP: [{ value: row.Calculated_Marzo, disabled: false }],
+      abrilP: [{ value: row.Calculated_Abril, disabled: false }],
+      mayoP: [{ value: row.Calculated_Mayo, disabled: false }],
+      junioP: [{ value: row.Calculated_Junio, disabled: false }],
+      julioP: [{ value: row.Calculated_Julio, disabled: false }],
+      agostoP: [{ value: row.Calculated_Agosto, disabled: false }],
+      septiembreP: [{ value: row.Calculated_Septiembre, disabled: false }],
+      octubreP: [{ value: row.Calculated_Octubre, disabled: false }],
+      noviembreP: [{ value: row.Calculated_Noviembre, disabled: false }],
+      diciembreP: [{ value: row.Calculated_Diciembre, disabled: false }],
 
       rowIdent: row.RowIdent
+
     });
+
+    fila.controls.porcentaje.valueChanges.subscribe(porcentaje => {
+      this.aplicarPorcentajeFila(fila, porcentaje);
+    });
+
+    return fila;
   }
 
-  aplicarPorcentaje() {
-    const porcentaje = Number(this.form.controls.porcentaje.value) / 100;
+  //APLICAR UN PORCENTAJE A UNA FILA EN ESPECIFICO
+  aplicarPorcentajeFila(fila: PresupuestoRowForm, porcentajeValue: number) {
+    const porcentaje = Number(porcentajeValue || 0) / 100;
 
+    fila.patchValue({
+      eneroP: fila.controls.eneroBase.value + fila.controls.eneroBase.value * porcentaje,
+      febreroP: fila.controls.febreroBase.value + fila.controls.febreroBase.value * porcentaje,
+      marzoP: fila.controls.marzoBase.value + fila.controls.marzoBase.value * porcentaje,
+      abrilP: fila.controls.abrilBase.value + fila.controls.abrilBase.value * porcentaje,
+      mayoP: fila.controls.mayoBase.value + fila.controls.mayoBase.value * porcentaje,
+      junioP: fila.controls.junioBase.value + fila.controls.junioBase.value * porcentaje,
+      julioP: fila.controls.julioBase.value + fila.controls.julioBase.value * porcentaje,
+      agostoP: fila.controls.agostoBase.value + fila.controls.agostoBase.value * porcentaje,
+      septiembreP: fila.controls.septiembreBase.value + fila.controls.septiembreBase.value * porcentaje,
+      octubreP: fila.controls.octubreBase.value + fila.controls.octubreBase.value * porcentaje,
+      noviembreP: fila.controls.noviembreBase.value + fila.controls.noviembreBase.value * porcentaje,
+      diciembreP: fila.controls.diciembreBase.value + fila.controls.diciembreBase.value * porcentaje,
+    }, { emitEvent: false });
+  }
+
+  // APLICAR PORCENTAJE A TODAS LAS FILAS
+  aplicarPorcentaje() {
+    const porcentaje = this.form.controls.porcentaje.value;
     this.filas.controls.forEach(fila => {
-      fila.patchValue({
-        eneroP: fila.controls.eneroBase.value+ fila.controls.eneroBase.value * porcentaje,
-        febreroP: fila.controls.febreroBase.value + fila.controls.febreroBase.value * porcentaje,
-        marzoP: fila.controls.marzoBase.value + fila.controls.marzoBase.value * porcentaje,
-        abrilP: fila.controls.abrilBase.value + fila.controls.abrilBase.value * porcentaje,
-        mayoP: fila.controls.mayoBase.value + fila.controls.mayoBase.value * porcentaje,
-        junioP: fila.controls.junioBase.value + fila.controls.junioBase.value * porcentaje,
-        julioP: fila.controls.julioBase.value + fila.controls.julioBase.value * porcentaje,
-        agostoP: fila.controls.agostoBase.value + fila.controls.agostoBase.value * porcentaje,
-        septiembreP: fila.controls.septiembreBase.value + fila.controls.septiembreBase.value * porcentaje,
-        octubreP: fila.controls.octubreBase.value + fila.controls.octubreBase.value * porcentaje,
-        noviembreP: fila.controls.noviembreBase.value + fila.controls.noviembreBase.value * porcentaje,
-        diciembreP: fila.controls.diciembreBase.value + fila.controls.diciembreBase.value * porcentaje,
-      });
+      fila.controls.porcentaje.setValue(porcentaje);
     });
   }
 
@@ -144,7 +169,64 @@ export class PresupuestoTable {
       );
 
       this.form.setControl('filas', filasArray);
-      });
-    }
-
+    });
   }
+
+  //DESCARGAR COMO EXCEL EL PRESUPUESTO:
+
+  descargarExcel() {
+  const filas = this.form.getRawValue().filas;
+
+  const data = filas.map(f => ({
+    CustID: f.CustID,
+    customerName: f.customerName,
+    TipoCustomer: f.TipoCustomer,
+    PartNum: f.partNum,
+    PartDescription: f.partDescription,
+    PrecioU: f.precioU,
+
+    EneroBase: f.eneroBase,
+    FebreroBase: f.febreroBase,
+    MarzoBase: f.marzoBase,
+    AbrilBase: f.abrilBase,
+    MayoBase: f.mayoBase,
+    JunioBase: f.junioBase,
+    JulioBase: f.julioBase,
+    AgostoBase: f.agostoBase,
+    SeptiembreBase: f.septiembreBase,
+    OctubreBase: f.octubreBase,
+    NoviembreBase: f.noviembreBase,
+    DiciembreBase: f.diciembreBase,
+
+    porcentaje: f.porcentaje,
+
+    EneroP: f.eneroP,
+    FebreroP: f.febreroP,
+    MarzoP: f.marzoP,
+    AbrilP: f.abrilP,
+    MayoP: f.mayoP,
+    JunioP: f.junioP,
+    JulioP: f.julioP,
+    AgostoP: f.agostoP,
+    SeptiembreP: f.septiembreP,
+    OctubreP: f.octubreP,
+    NoviembreP: f.noviembreP,
+    DiciembreP: f.diciembreP
+  }));
+
+  const worksheet = XLSX.utils.json_to_sheet(data);
+
+  const workbook = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(
+    workbook,
+    worksheet,
+    'Presupuesto'
+  );
+
+  XLSX.writeFile(
+    workbook,
+    'Presupuesto.xlsx'
+  );
+}
+
+}

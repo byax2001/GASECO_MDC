@@ -12,10 +12,12 @@ import { Moneda } from '../../interfaces/Moneda.interface';
 import { CrearOvResponse } from './components/interface/CrearOvResponse.interface';
 import { CrearOvRequest } from './components/interface/CrearOvRequest.interface';
 import { Modalg } from '../../../shared/components/modalg/modalg';
+import OrdenHeader from './orden-header/orden-header';
+import { SpinnerLoad } from '../../../shared/components/spinner-load/spinner-load';
 
 @Component({
   selector: 'app-orden-venta',
-  imports: [HeaderPage, FormsModule, OrdenLines, ReactiveFormsModule, Modalg],
+  imports: [HeaderPage, FormsModule, OrdenLines, ReactiveFormsModule, Modalg,OrdenHeader, SpinnerLoad],
   templateUrl: './orden-venta.html',
   styleUrl: './orden-venta.css',
 })
@@ -33,7 +35,19 @@ export default class OrdenVenta {
 
   orderNumView = signal<number>(0);
 
-  CustInfoOv = signal<ClienteInfoOv | null>(null);
+  CustInfoOv = signal<ClienteInfoOv>({
+    Customer_CustID: '',
+    Customer_CustNum: 0,
+    Customer_Name: '',
+    Customer_TerritoryID: '',
+    Customer_SalesRepCode: '',
+    SalesRep_Name: '',
+    Customer_TermsCode: '',
+    Terms_Description: '',
+    Customer_CurrencyCode: '',
+    Currency_CurrDesc: '',
+    RowIdent: ''
+  });
   LMonedas = signal<Moneda[]>([]);
   creandoOV = signal(false);
 
@@ -41,7 +55,7 @@ export default class OrdenVenta {
   private ventasQueryService = inject(VentasQueryService);
   @ViewChild('modalG') modalG!: Modalg;
   @ViewChild('ordenLines') ordenLines!: OrdenLines;
-
+  loading = signal (false);
 
 
   ngOnInit(): void {
@@ -122,6 +136,14 @@ export default class OrdenVenta {
       FechaR: new Date(this.formHeader.value.fechaRequerida!)
     }; 
 
+    //Se muestra el spinner de carga mientras se procesa la solicitud de creación de orden de venta
+    //Se hace scroll hacia arriba para mostrar el spinner de carga y evitar que el usuario piense que la aplicación no está respondiendo
+     window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+              });
+    this.loading.set(true);
+
     this.ventasQueryService.postCrearOV(ordenRequest).subscribe({
       next: (response: CrearOvResponse) => {
         console.log('Orden de venta creada exitosamente:', response);
@@ -131,7 +153,9 @@ export default class OrdenVenta {
 
         this.ordenLines.AgregarLineasOv(response.OrderNum).subscribe({
           next: (addLineResponse) => {
-       
+              //Finalizo el Proceso de creación de Orden de Venta
+              //Se oculta el Spinner de carga
+              this.loading.set(false);
               this.orderNumView.set(response.OrderNum);
               this.modalG.setModalTitle('Orden de Venta Creada');
               this.modalG.setModalMessage(

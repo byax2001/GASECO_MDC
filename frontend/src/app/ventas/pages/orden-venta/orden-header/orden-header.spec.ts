@@ -1,20 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import OrdenVenta from './orden-venta';
+import { OrdenHeader } from './orden-header';
 
-describe('OrdenVenta', () => {
-  let component: OrdenVenta;
-  let fixture: ComponentFixture<OrdenVenta>;
+describe('OrdenHeader', () => {
+  let component: OrdenHeader;
+  let fixture: ComponentFixture<OrdenHeader>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [OrdenVenta]
+      imports: [OrdenHeader]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(OrdenVenta);
+    fixture = TestBed.createComponent(OrdenHeader);
     component = fixture.componentInstance;
-    fixture.detectChanges();
+    await fixture.whenStable();
   });
 
   it('should create', () => {

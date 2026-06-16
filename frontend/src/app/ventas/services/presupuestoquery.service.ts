@@ -17,9 +17,9 @@ export class PresupuestoqueryServiceTs {
 
 
   // Retorna las ventas para presupuestos
-  getVentasPresupuesto(Anio:number, CodVendedor:number): Observable<VentasPresupuestoResponse[]> {
+  getVentasPresupuesto(Anio:number, PresupuestoPor:string, CodVendedor:number): Observable<VentasPresupuestoResponse[]> {
     return this.http.get<VentasPresupuestoResponse[]>(
-      `${this.url}/ventas/ppto/${this.userInfoService.company()}/${Anio}/${CodVendedor}`
+      `${this.url}/ventas/ppto/${this.userInfoService.company()}/${Anio}/${PresupuestoPor}/${CodVendedor}`
     );
   }
 

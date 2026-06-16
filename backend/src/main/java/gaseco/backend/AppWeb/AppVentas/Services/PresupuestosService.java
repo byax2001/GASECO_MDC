@@ -18,11 +18,11 @@ import org.springframework.http.MediaType;
 public class PresupuestosService {
     private  final WebClient webClient;
 
-    public List<Map<String, Object>> GetVentas(String Company, int Anio, int CodVendedor) {
+    public List<Map<String, Object>> GetVentas(String Company, int Anio, String PresupuestoPor, int CodVendedor) {
         String username = AppConstants.EPICOR_USER;
         String password = AppConstants.EPICOR_PASS;
 
-        String baq_consult = "/api/v1/BaqSvc/App_V_Presupuestos("+Company+")/Data?Anio="+Anio;
+        String baq_consult = "/api/v1/BaqSvc/App_V_Presupuestos("+Company+")/Data?Anio="+Anio+"&PresupuestoPor="+PresupuestoPor;
         if(CodVendedor != 0){
             baq_consult +="&CodVendedor="+CodVendedor;
         }

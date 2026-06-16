@@ -1,0 +1,16 @@
+<div class="card bg-base-100 image-full shadow-sm">
+  <figure>
+    <img
+      src="{{ Modulo().icon }}"
+      alt="{{ Modulo().name }}" />
+  </figure>
+  <div class="card-body justify-center gap-3">
+    <h2 class="card-title">{{ Modulo().name }}</h2>
+    <p class="flex-none">
+      {{ Modulo().description }}
+    </p>
+    <div class="card-actions justify-center">
+      <button class="btn bg-[#A6C441] text-white  w-full md:w-auto" (click)="Execute()">{{ ButtonText() }}</button>
+    </div>
+  </div>
+</div>

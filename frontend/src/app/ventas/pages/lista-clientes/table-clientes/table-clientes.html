@@ -10,7 +10,7 @@
           <th class="px-4 py-2 bg-gray-100">Cliente</th>
           <th class="px-4 py-2 bg-gray-100">Código</th>
           <th class="px-4 py-2 bg-gray-100">Tipo</th>
-          <th class="px-4 py-2 bg-gray-100">Estado</th>
+          <th class="px-4 py-2 bg-gray-100 w-40 min-w-40">Estado</th>
           <th class="px-4 py-2 bg-gray-100">Ord. de Venta</th>
           <th class="px-4 py-2 bg-gray-100">Cil. en Cliente</th>
         </tr>
@@ -38,7 +38,7 @@
               {{ cliente.Customer_TipoCustomer_c }}
             </td>
 
-            <td class="px-4 py-4">
+            <td class="px-4 py-4 break-words whitespace-normal">
               {{ cliente.Calculated_Estado }}
             </td>
 

@@ -1,20 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import OrdenVenta from './orden-venta';
+import { ModalAddLP } from './modal-add-lp';
 
-describe('OrdenVenta', () => {
-  let component: OrdenVenta;
-  let fixture: ComponentFixture<OrdenVenta>;
+describe('ModalAddLP', () => {
+  let component: ModalAddLP;
+  let fixture: ComponentFixture<ModalAddLP>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [OrdenVenta]
+      imports: [ModalAddLP]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(OrdenVenta);
+    fixture = TestBed.createComponent(ModalAddLP);
     component = fixture.componentInstance;
-    fixture.detectChanges();
+    await fixture.whenStable();
   });
 
   it('should create', () => {
