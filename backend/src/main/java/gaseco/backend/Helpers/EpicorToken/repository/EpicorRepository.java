@@ -1,4 +1,4 @@
-package gaseco.backend.Epicor.repository;
+package gaseco.backend.Helpers.EpicorToken.repository;
 
 import org.springframework.stereotype.Repository;
 

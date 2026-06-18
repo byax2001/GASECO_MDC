@@ -3,12 +3,17 @@ import { HeaderPage } from "../../../shared/components/header-page/header-page";
 import { PresupuestoTable } from "./components/presupuesto-table/presupuesto-table";
 import { VentasPresupuestoResponse } from './interface/VentasPresupuestoResponse.interface';
 import { PresupuestoqueryServiceTs } from '../../services/presupuestoquery.service';
-import { Inputg } from "../../../shared/components/inputg/inputg";
+import { rxResource } from '@angular/core/rxjs-interop';
 import { FormBuilder, FormControl, FormGroup, Validators, ReactiveFormsModule, FormsModule  } from '@angular/forms';
 import { Modalg } from "../../../shared/components/modalg/modalg";
 import { SpinnerLoad } from "../../../shared/components/spinner-load/spinner-load";
 import { Vendedores } from '../../interfaces/Vendedores.interface';
 import { ComboDefault } from '../../../interfaces/ComboDefault.interface';
+import { ButtonIcon } from "../../../shared/components/button-icon/button-icon";
+import { ModalAddLP } from "./components/modal-add-lp/modal-add-lp";
+import { PresupuestoRowForm } from './components/Interface/PresupuestoRowForm.type';
+import { UserInfoService } from '../../../services/userInfo.service';
+import { finalize, of } from 'rxjs';
 
 type PresupuestoHeaderForm = {
   anio: FormControl<number>;
@@ -18,21 +23,47 @@ type PresupuestoHeaderForm = {
 
 @Component({
   selector: 'app-presupuestos',
-  imports: [HeaderPage, PresupuestoTable, ReactiveFormsModule, FormsModule, ReactiveFormsModule, Modalg, SpinnerLoad],
+  imports: [HeaderPage, PresupuestoTable, ReactiveFormsModule, FormsModule, ReactiveFormsModule, Modalg, SpinnerLoad, ButtonIcon],
   templateUrl: './presupuestos.html',
   styleUrl: './presupuestos.css',
 })
 export default class Presupuestos {
   presupuestoService = inject(PresupuestoqueryServiceTs);
   presupuestoData= signal< VentasPresupuestoResponse[] >([]);
-  loading = signal<boolean>(true);
-  Lvendedores = signal <Vendedores[]>([]);
+  userInfoService = inject(UserInfoService);
+
+  loading = signal<boolean>(false);
+
+  Lvendedores = rxResource({
+    params: () => ({
+      //CUANDO CAMBIE ESTO SE EJECUTARA EL STREAM
+      company: this.userInfoService.company()
+    }),
+    stream: ({ params }) => {
+    if (!params.company) { return of([]);}
+
+    this.formHeader.patchValue({
+      CodVendedor: 0
+    });
+
+
+    this.loading.set(true);
+    return this.presupuestoService.getVendedores().pipe(
+      finalize(() => {
+        this.loading.set(false);
+      })
+    );
+  }
+  });
+
+
   LTipoDato = signal<ComboDefault[]>([
     { code: 'V', description: 'Volumen' },
     { code: 'F', description: 'Facturación' }
   ]);
 
   @ViewChild('modalG') modalG!: Modalg;
+  @ViewChild('presupuestoTable') presupuestoTable!: PresupuestoTable;
 
   private fb = inject(FormBuilder);
   formHeader: FormGroup<PresupuestoHeaderForm> = this.fb.nonNullable.group({
@@ -43,24 +74,55 @@ export default class Presupuestos {
   
 
   ngOnInit(): void {
-    this.presupuestoService.getVendedores().subscribe({
-      next: (data) => {
-        this.Lvendedores.set(data);
-      },
-      error: (error) => {
-        this.modalG.showModalG("Error", "Ocurrió un error al obtener los vendedores. Por favor, inténtelo de nuevo más tarde.");
-        console.error('Error al obtener los vendedores:', error);
-      }
-    });
+    //Carga Información del usuario y vendedores al iniciar la página
+      this.formHeader.controls.CodPresupuestoPor.valueChanges.subscribe(value => {
+        if (!this.presupuestoTable) return;
+
+        if (this.presupuestoTable.filas.length === 0) return;
+
+        if (value === 'F') {
+          this.presupuestoTable.convertirVolumenAFacturacion();
+        }
+
+        if (value === 'V') {
+          this.presupuestoTable.convertirFacturacionAVolumen();
+        }
+      });
   }
 
+  getVendedores(){
+       //Una vez cargada la información del usuario, se procede a cargar los vendedores
+          this.presupuestoService.getVendedores().subscribe({
+          next: (data) => {
+            this.Lvendedores.set(data);
+          },
+          error: (error) => {
+            this.modalG.showModalG("Error", "Ocurrió un error al obtener los vendedores. Por favor, inténtelo de nuevo más tarde.");
+            console.error('Error al obtener los vendedores:', error);
+          }
+          // =====================================================================
+        });
+    }
+
   buscarVentas() {
-    this.loading.set(false);
+    this.loading.set(true);
     const { anio,CodPresupuestoPor, CodVendedor } = this.formHeader.getRawValue();
     if(this.formHeader.invalid) {
       this.modalG.showModalG("Error", "Por favor, complete todos los campos requeridos.");
+      this.loading.set(false);
       return;
     }
+    if(this.formHeader.controls.anio.value! < 2025 || this.formHeader.controls.anio.value! > new Date().getFullYear()) {
+      this.modalG.showModalG("Error", "Por favor, ingrese un año válido.");
+      this.loading.set(false);
+      return;
+    }
+    if(this.formHeader.controls.CodVendedor.value! <= 0) {
+      this.modalG.showModalG("Error", "Por favor, seleccione un vendedor.");
+      this.loading.set(false);
+      return;
+    }
+
 
     this.presupuestoService.getVentasPresupuesto(anio, CodPresupuestoPor, CodVendedor).subscribe({
       next: (data) => {
@@ -68,7 +130,7 @@ export default class Presupuestos {
         if (this.presupuestoData().length === 0) {
           this.modalG.showModalG("Información", `No se encontraron datos para el año ${anio} y vendedor especificados.`);
         }
-        this.loading.set(true);
+        this.loading.set(false);
       },
       error: (error) => {
         this.modalG.showModalG("Error", "Ocurrió un error al obtener los datos de presupuesto. Por favor, inténtelo de nuevo más tarde.");

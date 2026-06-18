@@ -13,7 +13,7 @@ import gaseco.backend.AppWeb.AppVentas.DTO.Request.OrdenVentaRequest;
 import gaseco.backend.AppWeb.AppVentas.DTO.Response.OrdenVentaLineResponse;
 import gaseco.backend.AppWeb.AppVentas.DTO.Response.OrdenVentaResponse;
 import gaseco.backend.Constants.AppConstants;
-import gaseco.backend.Epicor.services.EpicorService;
+import gaseco.backend.Helpers.EpicorToken.services.EpicorService;
 import lombok.RequiredArgsConstructor;
 
 @Service

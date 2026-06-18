@@ -1,4 +1,4 @@
-package gaseco.backend.Epicor;
+package gaseco.backend.Helpers.EpicorToken;
 
 import lombok.Data;
 

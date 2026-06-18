@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import gaseco.backend.Epicor.services.EpicorService;
+import gaseco.backend.Helpers.EpicorToken.services.EpicorService;
 import gaseco.backend.epicor_mdc.services.EpicorMdcService;
 
 import org.springframework.jdbc.core.JdbcTemplate;

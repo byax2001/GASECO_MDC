@@ -1,1 +1,38 @@
-<p>modal-add-lp works!</p>
+
+@if(showModal()) {
+
+<div class="modal modal-open" role="dialog">
+  <div class="modal-box">
+
+    <h3 
+      class="text-lg font-bold"
+    >
+      {{ TitleModal() }}
+    </h3>
+
+    <p class="py-4">
+     {{ msgModal() }}
+    </p>
+    <form [formGroup]="LineaPresupuesto">
+      <input formControlName="customerName" type="text" placeholder="Nombre de cliente" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" required>
+      <input formControlName="TipoCustomer" type="text"  placeholder = "Tipo de Cliente" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" required>
+      <input formControlName="partNum" type="text" placeholder="Número de parte" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" required>
+      <input formControlName="partDescription" type="text" placeholder="Descripción de la parte" class="bg-gray-50  border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" required>
+      <input formControlName="InvcDtl_SalesUM" type="text" placeholder="UOM" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" required>
+      <input formControlName="precioU" type="number" placeholder="Precio Unitario" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" required>
+      
+    </form>
+
+    <div class="modal-action">
+      <button class="btn" (click)="guardarLinea()">
+        Confirmar
+      </button>
+      <button class="btn" (click)="closeModal()">
+        Cancelar
+      </button>
+    </div>
+
+  </div>
+</div>
+
+}

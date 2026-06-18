@@ -1,5 +1,5 @@
+<modalg #ModalG />
 <div class="mt-6">
-
   @if(!isMobile()) {
   <!-- DESKTOP -->
   <div class="hidden md:block overflow-x-auto">
@@ -7,6 +7,7 @@
 
       <thead>
         <tr class="text-sm font-medium text-gray-700 text-left">
+          <th class="px-4 py-2 bg-gray-100">No.</th>
           <th class="px-4 py-2 bg-gray-100">Cliente</th>
           <th class="px-4 py-2 bg-gray-100">Código</th>
           <th class="px-4 py-2 bg-gray-100">Tipo</th>
@@ -25,6 +26,9 @@
             [class.bg-white]="index % 2 === 0"
             [class.bg-[#EEEEEE]]="index % 2 !== 0"
           >
+          <td class="px-4 py-4">
+              {{ (currentPage() - 1) * pageSize + index + 1 }}
+            </td>
 
             <td class="px-4 py-4">
               {{ cliente.Customer_Name }}
@@ -43,12 +47,12 @@
             </td>
 
             <td class="px-4 py-4">
-              <button class="btn bg-green-500 text-white px-3 py-1 rounded-md" (click)="createOV(cliente.Customer_CustID)">
+              <button class="btn bg-green-500 text-white px-3 py-1 rounded-md" (click)="createOV(cliente)">
                 Crear Orden
               </button>
             </td>
             <td class="px-4 py-4">
-              <button class="btn bg-[#1A77F2] text-white px-3 py-1 rounded-md" [routerLink]="['/ventas/cilcli']">
+              <button class="btn bg-[#1A77F2] text-white px-3 py-1 rounded-md" (click)="CilEnCliente(cliente)">
                 Ir a Listado
               </button>
             </td>
@@ -107,10 +111,10 @@
           {{ cliente.Calculated_Estado }}
         </div>
 
-        <button class="btn mt-4 bg-green-500 text-white px-3 py-2 rounded-md w-full" (click)="createOV(cliente.Customer_CustID)">
+        <button class="btn mt-4 bg-green-500 text-white px-3 py-2 rounded-md w-full" (click)="createOV(cliente)">
           Crear OV
         </button>
-         <button class="btn bg-[#1A77F2] text-white px-3 py-1 rounded-md w-full" (click)="createOV(cliente.Customer_CustID)">
+         <button class="btn bg-[#1A77F2] text-white px-3 py-1 rounded-md w-full" (click)="CilEnCliente(cliente)">
           Ir a Listado
         </button>
 

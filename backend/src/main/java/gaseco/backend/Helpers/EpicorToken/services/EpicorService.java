@@ -1,4 +1,4 @@
-package gaseco.backend.Epicor.services;
+package gaseco.backend.Helpers.EpicorToken.services;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -9,7 +9,7 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import gaseco.backend.Constants.AppConstants;
-import gaseco.backend.Epicor.EpicorTokenResponse;
+import gaseco.backend.Helpers.EpicorToken.EpicorTokenResponse;
 import lombok.RequiredArgsConstructor;
 
 @Service

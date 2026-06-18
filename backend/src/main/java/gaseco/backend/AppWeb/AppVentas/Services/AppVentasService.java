@@ -10,7 +10,7 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import gaseco.backend.Constants.AppConstants;
-import gaseco.backend.Epicor.services.EpicorService;
+import gaseco.backend.Helpers.EpicorToken.services.EpicorService;
 import lombok.RequiredArgsConstructor;
 
 @Service

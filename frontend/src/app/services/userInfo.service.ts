@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { inject, Injectable, signal } from '@angular/core';
 import { InfoUser } from '../interfaces/InfoUser.interface';
 import { InfoAppResponse } from '../interfaces/InfoAppResponse.interface';
-import { Observable } from 'rxjs';
+import { Observable, switchMap, tap } from 'rxjs';
 import { environment } from '../../environments/environment';
 import mapToInfoUser from '../Mapper/InfoUser.mapper';
 import { CookieService } from 'ngx-cookie-service';
@@ -60,6 +60,7 @@ export class UserInfoService {
             this.userInfo.set(mapToInfoUser(response));
             this.company.set(this.getCompaniesCmb()[0]?.code ?? '');
             this.rol.set(resp_user.rol);
+            console.log('User info cargada:', this.userInfo())
           },
           error: (error) => {
             console.error('Error cargando user info', error);
@@ -72,6 +73,20 @@ export class UserInfoService {
     });
     
 
+  }
+
+  awaitloadUserInfo() {
+    return this.getUserName().pipe(
+        switchMap(resp_user =>
+          this.getUserInfo(resp_user.username).pipe(
+            tap(response => {
+              this.userInfo.set(mapToInfoUser(response));
+              this.company.set(this.getCompaniesCmb()[0]?.code ?? '');
+              this.rol.set(resp_user.rol);
+            })
+          )
+        )
+      );
   }
 
   getCompaniesCmb():Company[]{

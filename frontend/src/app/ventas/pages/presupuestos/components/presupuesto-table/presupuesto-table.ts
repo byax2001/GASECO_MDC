@@ -1,4 +1,4 @@
-import { Component, effect, inject, input, signal } from '@angular/core';
+import { Component, computed, effect, inject, input, signal, ViewChild } from '@angular/core';
 import {
   FormArray,
   FormBuilder,
@@ -11,53 +11,22 @@ import {
 import * as XLSX from 'xlsx';
 import { VentasPresupuestoResponse } from '../../interface/VentasPresupuestoResponse.interface';
 import { DecimalPipe } from '@angular/common';
+import { ButtonIcon } from "../../../../../shared/components/button-icon/button-icon";
+import { PresupuestoRowForm } from '../Interface/PresupuestoRowForm.type';
+import { ModalAddLP } from "../modal-add-lp/modal-add-lp";
+import { PaginationTable } from "../../../../../shared/components/pagination-table/pagination-table";
+import { FilesAdmin } from '../../../../../services/files-admin.service';
 
-type PresupuestoRowForm = FormGroup<{
-  CustID: FormControl<string>;
-  customerName: FormControl<string>;
-  TipoCustomer: FormControl<string>;
-  partNum: FormControl<string>;
-  partDescription: FormControl<string>;
-  precioU: FormControl<number>;
-
-  eneroBase: FormControl<number>;
-  febreroBase: FormControl<number>;
-  marzoBase: FormControl<number>;
-  abrilBase: FormControl<number>;
-  mayoBase: FormControl<number>;
-  junioBase: FormControl<number>;
-  julioBase: FormControl<number>;
-  agostoBase: FormControl<number>;
-  septiembreBase: FormControl<number>;
-  octubreBase: FormControl<number>;
-  noviembreBase: FormControl<number>;
-  diciembreBase: FormControl<number>;
-
-  porcentaje: FormControl<number>;
-
-  eneroP: FormControl<number>;
-  febreroP: FormControl<number>;
-  marzoP: FormControl<number>;
-  abrilP: FormControl<number>;
-  mayoP: FormControl<number>;
-  junioP: FormControl<number>;
-  julioP: FormControl<number>;
-  agostoP: FormControl<number>;
-  septiembreP: FormControl<number>;
-  octubreP: FormControl<number>;
-  noviembreP: FormControl<number>;
-  diciembreP: FormControl<number>;
-
-  rowIdent: FormControl<string>;
-}>;
 
 @Component({
   selector: 'presupuesto-table',
-  imports: [ReactiveFormsModule, FormsModule, ReactiveFormsModule, DecimalPipe],
+  imports: [ReactiveFormsModule, FormsModule, ReactiveFormsModule, DecimalPipe, ButtonIcon, ModalAddLP, PaginationTable],
   templateUrl: './presupuesto-table.html',
   styleUrl: './presupuesto-table.css',
 })
 export class PresupuestoTable {
+  fileService = inject(FilesAdmin);
+
   private fb = inject(FormBuilder);
   porcentaje = signal<number>(0);
   presupuestoData = input.required<VentasPresupuestoResponse[]>()
@@ -65,6 +34,53 @@ export class PresupuestoTable {
   form = this.fb.nonNullable.group({
     porcentaje: [0, Validators.required],
     filas: this.fb.array<PresupuestoRowForm>([])
+  });
+
+  @ViewChild('ModalAdd') ModalAdd!: ModalAddLP;
+
+  private mesesBase = [
+  'eneroBase',
+  'febreroBase',
+  'marzoBase',
+  'abrilBase',
+  'mayoBase',
+  'junioBase',
+  'julioBase',
+  'agostoBase',
+  'septiembreBase',
+  'octubreBase',
+  'noviembreBase',
+  'diciembreBase'
+] as const;
+
+private mesesP = [
+  'eneroP',
+  'febreroP',
+  'marzoP',
+  'abrilP',
+  'mayoP',
+  'junioP',
+  'julioP',
+  'agostoP',
+  'septiembreP',
+  'octubreP',
+  'noviembreP',
+  'diciembreP'
+] as const;
+
+  currentPage = signal(1);
+  pageSize = 100;
+
+  //Siempre habria referencia a todas las filas del presupuesto, 
+  // pero esta propiedad se encarga de mostrar solo las filas correspondientes a 
+  // la pagina actual segun el pageSize
+  // Por tanto un cambio realizado en cualquier fila tambien afectara las filas de 
+  // la data original, ya que ambas referencias apuntan a los mismos objetos FormGroup
+  paginatedPresupuesto = computed(() => {
+    const presupuesto = this.filas.controls; // Utiliza el Get para obtener el FormArray de filas
+    const start = (this.currentPage() - 1) * this.pageSize;
+    const end = start + this.pageSize;
+    return presupuesto.slice(start, end);
   });
 
   get filas(): FormArray<PresupuestoRowForm> {
@@ -87,6 +103,7 @@ export class PresupuestoTable {
       TipoCustomer: row.Customer_TipoCustomer_c,
       partNum: row.InvcDtl_PartNum,
       partDescription: row.Part_PartDescription,
+      InvcDtl_SalesUM: row.InvcDtl_SalesUM,
       precioU: row.Calculated_PrecioU,
 
       eneroBase: row.Calculated_Enero,
@@ -183,6 +200,7 @@ export class PresupuestoTable {
     TipoCustomer: f.TipoCustomer,
     PartNum: f.partNum,
     PartDescription: f.partDescription,
+    InvcDtl_SalesUM: f.InvcDtl_SalesUM,
     PrecioU: f.precioU,
 
     EneroBase: f.eneroBase,
@@ -214,19 +232,58 @@ export class PresupuestoTable {
     DiciembreP: f.diciembreP
   }));
 
-  const worksheet = XLSX.utils.json_to_sheet(data);
+  this.fileService.descargarXLSX(data, 'Presupuesto');
+}
 
-  const workbook = XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(
-    workbook,
-    worksheet,
-    'Presupuesto'
-  );
+showModalAdd(){
+  this.ModalAdd.showModalG("Agregar línea de presupuesto", "Complete los campos para agregar una nueva línea al presupuesto.");
+}
+addLineaPresupuesto(nuevaLinea: PresupuestoRowForm) {
+  this.filas.push(nuevaLinea);
+}
 
-  XLSX.writeFile(
-    workbook,
-    'Presupuesto.xlsx'
-  );
+convertirVolumenAFacturacion() {
+  this.filas.controls.forEach(fila => {
+    const precioU = Number(fila.controls.precioU.value || 0);
+
+    if (precioU <= 0) return;
+
+    this.mesesBase.forEach(mes => {
+      fila.controls[mes].setValue(
+        Number(fila.controls[mes].value || 0) * precioU,
+        { emitEvent: false }
+      );
+    });
+
+    this.mesesP.forEach(mes => {
+      fila.controls[mes].setValue(
+        Number(fila.controls[mes].value || 0) * precioU,
+        { emitEvent: false }
+      );
+    });
+  });
+}
+
+convertirFacturacionAVolumen() {
+  this.filas.controls.forEach(fila => {
+    const precioU = Number(fila.controls.precioU.value || 0);
+
+    if (precioU <= 0) return;
+
+    this.mesesBase.forEach(mes => {
+      fila.controls[mes].setValue(
+        Number(fila.controls[mes].value || 0) / precioU,
+        { emitEvent: false }
+      );
+    });
+
+    this.mesesP.forEach(mes => {
+      fila.controls[mes].setValue(
+        Number(fila.controls[mes].value || 0) / precioU,
+        { emitEvent: false }
+      );
+    });
+  });
 }
 
 }

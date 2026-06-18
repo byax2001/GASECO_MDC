@@ -11,7 +11,7 @@ export const ventasRoutes: Routes = [
        loadComponent: () => import('./pages/lista-clientes/lista-clientes')
       },
       {
-        path: 'cilcli',
+        path: 'cilcli/:custid',
         loadComponent: () => import('./pages/cilindros-cliente/cilindros-cliente')
       },
       {
