@@ -14,15 +14,26 @@ import { CrearOvRequest } from './components/interface/CrearOvRequest.interface'
 import { Modalg } from '../../../shared/components/modalg/modalg';
 import OrdenHeader from './orden-header/orden-header';
 import { SpinnerLoad } from '../../../shared/components/spinner-load/spinner-load';
+import { ButtonIcon } from "../../../shared/components/button-icon/button-icon";
+import { Correo } from '../../../interfaces/Correo.interface';
+import { EmailAdminService } from '../../../services/email-admin.service';
+import { CorreoResponse } from '../../../interfaces/CorreoResponse.interface';
 
 @Component({
   selector: 'app-orden-venta',
-  imports: [HeaderPage, FormsModule, OrdenLines, ReactiveFormsModule, Modalg,OrdenHeader, SpinnerLoad],
+  imports: [HeaderPage, FormsModule, OrdenLines, ReactiveFormsModule, Modalg, OrdenHeader, SpinnerLoad, ButtonIcon],
   templateUrl: './orden-venta.html',
   styleUrl: './orden-venta.css',
 })
 export default class OrdenVenta {
   private fb = inject(FormBuilder);
+  private route = inject(ActivatedRoute);
+  private ventasQueryService = inject(VentasQueryService);
+  private emailAdminService = inject(EmailAdminService);
+
+  @ViewChild('modalG') modalG!: Modalg;
+  @ViewChild('ordenLines') ordenLines!: OrdenLines;
+  loading = signal (false);
 
   formHeader = this.fb.nonNullable.group({
     orderNum: [0],
@@ -42,6 +53,7 @@ export default class OrdenVenta {
     Customer_TerritoryID: '',
     Customer_SalesRepCode: '',
     SalesRep_Name: '',
+    SalesRep_EMailAddress: '',
     Customer_TermsCode: '',
     Terms_Description: '',
     Customer_CurrencyCode: '',
@@ -51,11 +63,7 @@ export default class OrdenVenta {
   LMonedas = signal<Moneda[]>([]);
   creandoOV = signal(false);
 
-  private route = inject(ActivatedRoute);
-  private ventasQueryService = inject(VentasQueryService);
-  @ViewChild('modalG') modalG!: Modalg;
-  @ViewChild('ordenLines') ordenLines!: OrdenLines;
-  loading = signal (false);
+ 
 
 
   ngOnInit(): void {
@@ -133,6 +141,7 @@ export default class OrdenVenta {
       CustID: this.formHeader.value.custID!,
       CustNum: this.CustInfoOv()?.Customer_CustNum || 0,
       CurrencyCod: this.formHeader.value.currencyCode!,
+      Proyecto: this.formHeader.value.proyecto!,
       FechaR: new Date(this.formHeader.value.fechaRequerida!)
     }; 
 
@@ -151,6 +160,7 @@ export default class OrdenVenta {
           orderNum: response.OrderNum
         });
 
+        // SE EJECUTA EL METODO DEL HIJO PARA AGREGAR LAS LINEAS A LA ORDEN DE VENTA RECIEN CREADA, SE LE PASA EL NUMERO DE ORDEN DE VENTA OBTENIDO EN LA RESPUESTA DE LA API
         this.ordenLines.AgregarLineasOv(response.OrderNum).subscribe({
           next: (addLineResponse) => {
               //Finalizo el Proceso de creación de Orden de Venta
@@ -184,6 +194,35 @@ export default class OrdenVenta {
 
   }
 
+  EnviarCorreo() {
+    if(this.formHeader.value.orderNum === 0) {
+      this.modalG.showModalG('Error', 'No se ha creado una orden de venta para enviar el correo. Por favor, crea una orden de venta primero.');
+      return;
+    }
+    const correo:Correo = this.ordenLines.getCorreo();
+    correo.para = this.CustInfoOv()?.SalesRep_EMailAddress || '';
+    correo.mensaje = `Se ha creado la orden de venta número ${this.formHeader.value.orderNum} para el cliente ${this.CustInfoOv()?.Customer_Name}.\n` + correo.mensaje;
+
+    correo.mensaje += `\nDirección: ${this.formHeader.value.ubicacion}\n\n Proyecto: ${this.formHeader.value.proyecto}\n\nFecha Requerida: ${this.formHeader.value.fechaRequerida}\n\nMoneda: ${this.formHeader.value.currencyCode}\n\n`;
+    this.loading.set(true);
+    this.emailAdminService.sendEmail(correo).subscribe({
+        next: (response: CorreoResponse) => {
+          if(response.status.toLowerCase() === 'ok') {
+            this.modalG.showModalG('Correo Enviado', 'El correo ha sido enviado exitosamente al representante de ventas.');
+          }else
+          {
+            this.modalG.showModalG('Error', `Ocurrió un error al enviar el correo: ${response.mensaje}`);
+          }
+          this.loading.set(false);
+        },
+        error: (error) => {
+          this.modalG.showModalG('Error', `Ocurrió un error al enviar el correo: ${error.message}`);
+          this.loading.set(false);
+        }
+    });
+
+
+  }
   
 
 

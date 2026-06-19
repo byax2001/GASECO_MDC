@@ -5,6 +5,7 @@ export interface ClienteInfoOv {
     Customer_TerritoryID:  string;
     Customer_SalesRepCode: string;
     SalesRep_Name:         string;
+    SalesRep_EMailAddress: string;
     Customer_TermsCode:    string;
     Terms_Description:     string;
     Customer_CurrencyCode: string;

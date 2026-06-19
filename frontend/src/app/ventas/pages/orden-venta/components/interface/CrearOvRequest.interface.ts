@@ -3,4 +3,5 @@ export interface CrearOvRequest {
     CustNum:     number;
     CurrencyCod: string;
     FechaR:      Date;
+    Proyecto:    string;
 }

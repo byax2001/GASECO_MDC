@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import gaseco.backend.Helpers.Email.DTO.Request.CorreoRequest;
+import gaseco.backend.Helpers.Email.DTO.Response.CorreoResponse;
 import gaseco.backend.Helpers.Email.Service.EmailService;
 import lombok.RequiredArgsConstructor;
 
@@ -17,18 +18,18 @@ public class EmailController {
     private final EmailService emailService;
     
     @PostMapping("/enviar")
-    public ResponseEntity<String> enviar(@RequestBody CorreoRequest request) {
+    public ResponseEntity<CorreoResponse> enviar(@RequestBody CorreoRequest request) {
 
         System.out.println("Correo recibido: " + request);
 
-        emailService.enviarCorreo(
+        CorreoResponse response = emailService.enviarCorreo(
             request.getPara(),
             request.getCopia(),
             request.getAsunto(),
             request.getMensaje()
         );
 
-        return ResponseEntity.ok("Correo enviado correctamente");
+        return ResponseEntity.ok(response);
     }
 
 }

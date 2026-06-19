@@ -42,18 +42,20 @@
       </div>
 
       <div class="p-3 rounded-xl bg-gray-50">
+        <label class="text-xs text-gray-500">Correo</label>
+        <p class="font-semibold text-gray-800">
+          {{ CustInfoOv().SalesRep_EMailAddress }}
+        </p>
+      </div>
+
+      <div class="p-3 rounded-xl bg-gray-50">
         <label class="text-xs text-gray-500">Condición de Pago</label>
         <p class="font-semibold text-gray-800">
           {{ CustInfoOv().Terms_Description }}
         </p>
       </div>
 
-      <div class="p-3 rounded-xl bg-gray-50">
-        <label class="text-xs text-gray-500">Código Término</label>
-        <p class="font-semibold text-gray-800">
-          {{ CustInfoOv().Customer_TermsCode }}
-        </p>
-      </div>
+      
 
       <div class="p-3 rounded-xl bg-gray-50">
         <label class="text-xs text-gray-500">Descripción Moneda</label>

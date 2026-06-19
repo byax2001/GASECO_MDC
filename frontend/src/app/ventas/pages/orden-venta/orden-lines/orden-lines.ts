@@ -9,6 +9,7 @@ import { PartUOM } from '../../../interfaces/PartUOM.interface';
 import { AddLineOvRequest } from '../components/interface/AddLineOvRequest.interface';
 import { AddLineOvResponse } from '../components/interface/AddLineOvResponse.interface';
 import { Observable } from 'rxjs';
+import { Correo } from '../../../../interfaces/Correo.interface';
 
 type LineaOvForm = FormGroup<{
   noLinea: FormControl<number>;
@@ -263,6 +264,41 @@ export class OrdenLines {
     return this.Presentaciones()
     .find(p => p.UDCodes_CodeID === presentacion)
     ?.UDCodes_NUMERO01_c ?? 0;
+  }
+
+  // Método para enviar la estructura del correo
+  getCorreo():Correo {
+      const correoData:Correo= {
+        para: '',
+        copia: 'facturacion@gasecosa.com;aux.logistica@gasecosa.com',
+        asunto: `Orden de Venta ${this.OrderNum()} Creada`,
+        mensaje: ``
+      }
+      //Si alguna linea esta con certificado se debe de copiar a rgc@gasecosa.com;
+      let ncertificado = 0;
+      this.form.getRawValue().lineas.forEach(linea => {
+        if(linea.ncertificado){
+          correoData.copia += ';rgc@gasecosa.com';
+          if(ncertificado === 0){
+            correoData.mensaje += '\n\nNota: Esta orden de venta contiene líneas que requieren certificado de calidad.';
+            ncertificado++;
+          }
+        }
+      });
+
+      //Desglose de las lineas del pedido para incluir en el cuerpo del correo
+      const lineasPedido = this.form.getRawValue().lineas.map(linea => `
+        Parte: ${linea.parte}, 
+        Cilindros: ${linea.cilindros}, 
+        Presentación: ${linea.presentacion}, 
+        UOM: ${linea.uom}, 
+        Precio Unitario: ${linea.precio}, 
+        Cantidad Total: ${linea.Qty}, 
+        Certificado: ${linea.ncertificado ? 'Sí' : 'No'},
+        Total Línea: ${linea.total}
+      `).join('\n');  
+      correoData.mensaje += '\n\nDetalles de la Orden de Venta:\n' + lineasPedido;
+      return correoData;
   }
 
 }

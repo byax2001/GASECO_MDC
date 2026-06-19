@@ -14,17 +14,24 @@
       [creandoOV]="creandoOV()"
       [orderNumView]="orderNumView()"
     />
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-5">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-0 md:mt-5">
     </div>
     <!-- BOTON CREAR ORDEN DE VENTA -->
-    <div class="flex justify-center md:justify-end">
-      <button class="btn bg-[#A6C441] text-white hover:bg-[#8aa83a] mb-3" (click)="CrearOrdenVenta()"
+    <div class="flex justify-center md:justify-end gap-2">
+      <button class="btn bg-[#A6C441] text-white hover:bg-[#8aa83a] mb-0 md:mb-3" (click)="CrearOrdenVenta()"
         [disabled]="!formHeader.valid || formHeader.controls.orderNum.value>0">
         @if(formHeader.controls.orderNum.value > 0) {
         OV Creada
         } @else {
         Crear Orden de Venta
-        }</button>
+        }</button>      
+
+        <button-icon
+          icon="fa-solid fa-envelope"
+          color="blue"
+          tooltip="Enviar Correo"
+          [funcion]="() => EnviarCorreo()"
+        ></button-icon>  
     </div>
 
 <!-- LINEAS DE ORDEN  -->
