@@ -6,7 +6,7 @@ export type PresupuestoRowForm = FormGroup<{
   TipoCustomer: FormControl<string>;
   partNum: FormControl<string>;
   partDescription: FormControl<string>;
-  InvcDtl_SalesUM: FormControl<string>;
+  Calculated_UOM: FormControl<string>;
   precioU: FormControl<number>;
 
   eneroBase: FormControl<number>;

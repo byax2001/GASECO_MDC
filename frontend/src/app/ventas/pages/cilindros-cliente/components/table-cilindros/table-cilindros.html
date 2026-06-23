@@ -3,21 +3,23 @@
     <!-- head -->
     <thead>
       <tr>
-        <th></th>
-        <th>ID</th>
-        <th>Serie</th>
-        <th>Tipo</th>
-        <th>Cve Producto</th>
+        <th>NO.</th>
+        <th>IDCILINDRO</th>
+        <th>SERIE</th>
+        <th>TIPO ENVASE</th>
+        <th>PRODUCTO</th>
+        <th>FECHA ENTREGA</th>
       </tr>
     </thead>
     <tbody>
-      @for( cilindro of cilindros(); track cilindro.id; let index = $index) {
+      @for( cilindro of cilindros(); track cilindro.IDCILINDRO; let index = $index) {
         <tr>
           <th>{{ index + 1 }}</th>
-          <td>{{ cilindro.id }}</td>
-          <td>{{ cilindro.serie }}</td>
-          <td>{{ cilindro.tipo }}</td>
-          <td>{{ cilindro.cveproducto }}</td>
+          <td>{{ cilindro.IDCILINDRO }}</td>
+          <td>{{ cilindro.SERIE }}</td>
+          <td>{{ cilindro.DESCENVASE }}</td>
+          <td>{{ cilindro.DESCCORTA_CP}}</td>
+          <td>{{ cilindro.FHEMISION | date:'dd/MM/yyyy HH:mm:ss' }}</td>
         </tr>
       }
     </tbody>

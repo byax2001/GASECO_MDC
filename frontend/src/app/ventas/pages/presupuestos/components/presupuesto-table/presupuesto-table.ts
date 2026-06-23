@@ -38,20 +38,6 @@ export class PresupuestoTable {
 
   @ViewChild('ModalAdd') ModalAdd!: ModalAddLP;
 
-  private mesesBase = [
-  'eneroBase',
-  'febreroBase',
-  'marzoBase',
-  'abrilBase',
-  'mayoBase',
-  'junioBase',
-  'julioBase',
-  'agostoBase',
-  'septiembreBase',
-  'octubreBase',
-  'noviembreBase',
-  'diciembreBase'
-] as const;
 
 private mesesP = [
   'eneroP',
@@ -76,13 +62,12 @@ private mesesP = [
   // la pagina actual segun el pageSize
   // Por tanto un cambio realizado en cualquier fila tambien afectara las filas de 
   // la data original, ya que ambas referencias apuntan a los mismos objetos FormGroup
-  paginatedPresupuesto = computed(() => {
-    const presupuesto = this.filas.controls; // Utiliza el Get para obtener el FormArray de filas
-    const start = (this.currentPage() - 1) * this.pageSize;
-    const end = start + this.pageSize;
-    return presupuesto.slice(start, end);
-  });
-
+  paginatedPresupuesto() {
+  const presupuesto = this.filas.controls;
+  const start = (this.currentPage() - 1) * this.pageSize;
+  const end = start + this.pageSize;
+  return presupuesto.slice(start, end);
+}
   get filas(): FormArray<PresupuestoRowForm> {
     return this.form.controls.filas;
   }
@@ -103,7 +88,7 @@ private mesesP = [
       TipoCustomer: row.Customer_TipoCustomer_c,
       partNum: row.InvcDtl_PartNum,
       partDescription: row.Part_PartDescription,
-      InvcDtl_SalesUM: row.InvcDtl_SalesUM,
+      Calculated_UOM: row.Calculated_UOM,
       precioU: row.Calculated_PrecioU,
 
       eneroBase: row.Calculated_Enero,
@@ -200,7 +185,7 @@ private mesesP = [
     TipoCustomer: f.TipoCustomer,
     PartNum: f.partNum,
     PartDescription: f.partDescription,
-    InvcDtl_SalesUM: f.InvcDtl_SalesUM,
+    Calculated_UOM: f.Calculated_UOM,
     PrecioU: f.precioU,
 
     EneroBase: f.eneroBase,
@@ -248,20 +233,22 @@ convertirVolumenAFacturacion() {
 
     if (precioU <= 0) return;
 
-    this.mesesBase.forEach(mes => {
-      fila.controls[mes].setValue(
-        Number(fila.controls[mes].value || 0) * precioU,
-        { emitEvent: false }
-      );
-    });
-
-    this.mesesP.forEach(mes => {
-      fila.controls[mes].setValue(
-        Number(fila.controls[mes].value || 0) * precioU,
-        { emitEvent: false }
-      );
-    });
+    fila.patchValue({
+      eneroP: Number(fila.controls.eneroP.value || 0) * precioU ,
+      febreroP: Number(fila.controls.febreroP.value || 0) * precioU,
+      marzoP: Number(fila.controls.marzoP.value || 0) * precioU,
+      abrilP: Number(fila.controls.abrilP.value || 0) * precioU,
+      mayoP: Number(fila.controls.mayoP.value || 0) * precioU,
+      junioP: Number(fila.controls.junioP.value || 0) * precioU,
+      julioP: Number(fila.controls.julioP.value || 0) * precioU,
+      agostoP: Number(fila.controls.agostoP.value || 0) * precioU,
+      septiembreP: Number(fila.controls.septiembreP.value || 0) * precioU,
+      octubreP: Number(fila.controls.octubreP.value || 0) * precioU,
+      noviembreP: Number(fila.controls.noviembreP.value || 0) * precioU,
+      diciembreP: Number(fila.controls.diciembreP.value || 0) * precioU,
+    }, { emitEvent: false });
   });
+
 }
 
 convertirFacturacionAVolumen() {
@@ -270,19 +257,50 @@ convertirFacturacionAVolumen() {
 
     if (precioU <= 0) return;
 
-    this.mesesBase.forEach(mes => {
-      fila.controls[mes].setValue(
-        Number(fila.controls[mes].value || 0) / precioU,
-        { emitEvent: false }
-      );
-    });
+    fila.patchValue({
+      eneroP: Number(fila.controls.eneroP.value || 0) / precioU,
+      febreroP: Number(fila.controls.febreroP.value || 0) / precioU,
+      marzoP: Number(fila.controls.marzoP.value || 0) / precioU,
+      abrilP: Number(fila.controls.abrilP.value || 0) / precioU,
+      mayoP: Number(fila.controls.mayoP.value || 0) / precioU,
+      junioP: Number(fila.controls.junioP.value || 0) / precioU,
+      julioP: Number(fila.controls.julioP.value || 0) / precioU,
 
-    this.mesesP.forEach(mes => {
-      fila.controls[mes].setValue(
-        Number(fila.controls[mes].value || 0) / precioU,
-        { emitEvent: false }
-      );
-    });
+      agostoP: Number(fila.controls.agostoP.value || 0) / precioU,
+      septiembreP: Number(fila.controls.septiembreP.value || 0) / precioU,
+      octubreP: Number(fila.controls.octubreP.value || 0) / precioU,
+      noviembreP: Number(fila.controls.noviembreP.value || 0) / precioU,
+      diciembreP: Number(fila.controls.diciembreP.value || 0) / precioU,
+    }, { emitEvent: false });
+  });
+}
+
+actualizarBasesSinReset(data: VentasPresupuestoResponse[]) {
+  const map = new Map(
+    data.map(row => [row.RowIdent, row])
+  );
+
+  this.filas.controls.forEach(fila => {
+    const row = map.get(fila.controls.rowIdent.value);
+
+    if (!row) return;
+
+    fila.patchValue({
+      precioU: row.Calculated_PrecioU,
+
+      eneroBase: row.Calculated_Enero,
+      febreroBase: row.Calculated_Febrero,
+      marzoBase: row.Calculated_Marzo,
+      abrilBase: row.Calculated_Abril,
+      mayoBase: row.Calculated_Mayo,
+      junioBase: row.Calculated_Junio,
+      julioBase: row.Calculated_Julio,
+      agostoBase: row.Calculated_Agosto,
+      septiembreBase: row.Calculated_Septiembre,
+      octubreBase: row.Calculated_Octubre,
+      noviembreBase: row.Calculated_Noviembre,
+      diciembreBase: row.Calculated_Diciembre,
+    }, { emitEvent: false });
   });
 }
 

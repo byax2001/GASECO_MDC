@@ -60,7 +60,7 @@
                 <tr class="text-xs">
                     <th>No.</th>
                     <th>Cliente</th>
-                    <th>Tipo Cliente</th>
+                    <th class="w-10">Tipo Cliente</th>
                     <th>PartNum</th>
                     <th>Parte</th>
                     <th>UOM</th>
@@ -95,25 +95,25 @@
 
             <tbody formArrayName="filas">
                 @for(fila of paginatedPresupuesto(); track fila.controls.rowIdent.value; let i = $index) {
-                <tr class="text-xs" [formGroupName]="((currentPage() - 1) * pageSize) + i">
+                <tr class="text-xs" [formGroup]="fila">
 <!-- DATOS BASE -->
                     <td>
                         {{ ((currentPage() - 1) * pageSize) + i + 1 }}
                     </td>
-                    <td>
+                    <td class="w-40">
                         {{ fila.controls.customerName.value }}
                     </td>
-                    <td>
+                    <td class="w-10">
                         {{ fila.controls.TipoCustomer.value }}
                     </td>
                     <td>
                         {{ fila.controls.partNum.value }}
                     </td>
-                    <td >
+                    <td class="w-35"> 
                         {{ fila.controls.partDescription.value }}
                     </td>
                     <td>
-                        {{ fila.controls.InvcDtl_SalesUM.value }}
+                        {{ fila.controls.Calculated_UOM.value }}
                     </td>
                     <td>
                         {{ fila.controls.precioU.value | number:'1.2-2' }}
@@ -157,56 +157,57 @@
 
 <!-- PORCENTAJE -->
                     <td>
-                        <input type="number" formControlName="porcentaje" class="input input-bordered w-28" />
+                        <input type="number" formControlName="porcentaje" class="input input-bordered w-15 bg-[#A6C441] text-white" />
                     </td>
 <!-- PRESUPUESTO -->
                     <td>
-                        <input type="number" formControlName="eneroP" class="input input-bordered w-28" />
+                        <input type="number" formControlName="eneroP" class="input input-bordered w-20" />
                     </td> 
 
                     <td>
-                        <input type="number" formControlName="febreroP" class="input input-bordered w-28" />
+                        <input type="number" formControlName="febreroP" class="input input-bordered w-20" />
                     </td>
 
                     <td>
-                        <input type="number" formControlName="marzoP" class="input input-bordered w-28" />
+                        <input type="number" formControlName="marzoP" class="input input-bordered w-20" />
                     </td>
                    
                     <td>
-                        <input type="number" formControlName="abrilP" class="input input-bordered w-28" />
+                        <input type="number" formControlName="abrilP" class="input input-bordered w-20" />
                     </td>
                   
                     <td>
-                        <input type="number" formControlName="mayoP" class="input input-bordered w-28" />
+                        <input type="number" formControlName="mayoP" class="input input-bordered w-20" />
                     </td>
                     
                     <td>
-                        <input type="number" formControlName="junioP" class="input input-bordered w-28" />
+                        <input type="number" formControlName="junioP" class="input input-bordered w-20" />
                     </td>
                    
                     <td>
-                        <input type="number" formControlName="julioP" class="input input-bordered w-28" />
+                        <input type="number" formControlName="julioP" class="input input-bordered w-20" />
                     </td>
                   
                     <td>
-                        <input type="number" formControlName="agostoP" class="input input-bordered w-28" />
+                        <input type="number" formControlName="agostoP" class="input input-bordered w-20" />
                     </td>
                     
                     <td>
-                        <input type="number" formControlName="septiembreP" class="input input-bordered w-28" /> 
+                        <input type="number" formControlName="septiembreP" class="input input-bordered w-20" /> 
                     </td>
                    
                     <td>
-                        <input type="number" formControlName="octubreP" class="input input-bordered w-28" />
+                        <input type="number" formControlName="octubreP" class="input input-bordered w-20" />
                     </td>
                   
                     <td>
-                        <input type="number" formControlName="noviembreP" class="input input-bordered w-28" />
+                        <input type="number" formControlName="noviembreP" class="input input-bordered w-20" />
                     </td>
 
                     <td>
-                        <input type="number" formControlName="diciembreP" class="input input-bordered w-28" />
+                        <input type="number" formControlName="diciembreP" class="input input-bordered w-20" />
                     </td>
+                    <td></td>
                 </tr>
                 }
             </tbody>

@@ -19,7 +19,7 @@ export class ModalAddLP  {
     TipoCustomer: ['', Validators.required],
     partNum: ['', Validators.required],
     partDescription: ['', Validators.required],
-    InvcDtl_SalesUM: ['', Validators.required],
+    Calculated_UOM: ['', Validators.required],
     precioU: [0, [Validators.required, Validators.min(0)]],
     eneroBase: 0,
     febreroBase: 0,

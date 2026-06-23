@@ -49,16 +49,17 @@
   </div>
 </form>
 
-@if(loading()){
-  <SpinnerLoad/>
-}
-@else{
+
 <div class="overflow-x-auto">
   <presupuesto-table 
   #presupuestoTable
   [presupuestoData]="presupuestoData()" /> 
 </div>
-}
+
+  @if(loading()){
+      <SpinnerLoad/>
+  }
+
 
 <modalg
 #modalG/>

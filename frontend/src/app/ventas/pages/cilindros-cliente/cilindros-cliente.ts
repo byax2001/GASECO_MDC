@@ -1,26 +1,41 @@
-import { Component, signal } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { TableCilindros } from './components/table-cilindros/table-cilindros';
 import { HeaderPage } from "../../../shared/components/header-page/header-page";
 import { SearchDebounce } from "../../components/search-debounce/search-debounce";
 import Cilindro from '../../interfaces/cilindro.interface';
+import { CilindroCliente } from './components/Interface/CilindroCliente.interface';
+import { CilcliService } from '../../services/cilcli.service';
+import { ActivatedRoute, Router } from '@angular/router';
+import { SpinnerLoad } from "../../../shared/components/spinner-load/spinner-load";
 
 @Component({
   selector: 'app-cilindros-cliente',
-  imports: [TableCilindros, HeaderPage, SearchDebounce],
+  imports: [TableCilindros, HeaderPage, SearchDebounce, SpinnerLoad],
   templateUrl: './cilindros-cliente.html',
   styleUrl: './cilindros-cliente.css',
 })
 export default class CilindrosCliente {
-  lcilindros = signal<Cilindro[]>([
-    { id:1, serie:'123456', tipo:'Tipo A', cveproducto:'ACE-15-CI' },
-    { id:2, serie:'789012', tipo:'Tipo B', cveproducto:'NIT-48-CRI' },
-    { id:3, serie:'345678', tipo:'Tipo C', cveproducto:'ARG-47-CRI' },
-    { id:4, serie:'901234', tipo:'Tipo D', cveproducto:'ACE-15-CI' },
-    { id:5, serie:'567890', tipo:'Tipo E', cveproducto:'10008' },
-
+  lcilindros = signal<CilindroCliente[]>([
   ]);
+  loading = signal<boolean>(false);
+  private route = inject(ActivatedRoute);
+  cilindroClienteService = inject(CilcliService);
 
-  onSearch(query: string){
+  onSearchChange(searchValue: string) {
+    const filteredCilindros = this.lcilindros().filter((cilindro) =>
+      cilindro.SERIE.toLowerCase().includes(searchValue.toLowerCase())
+    );
+    this.lcilindros.set(filteredCilindros);
+  }
 
+  ngOnInit() {
+    this.loading.set(true);
+    this.route.params.subscribe((params) => {
+      const CustID = params['custid'];
+      this.cilindroClienteService.getCilCliByCustID(CustID).subscribe((data) => {
+        this.lcilindros.set(data);
+        this.loading.set(false);
+      });
+    })
   }
 }

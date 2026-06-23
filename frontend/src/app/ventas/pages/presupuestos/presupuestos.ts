@@ -74,20 +74,41 @@ export default class Presupuestos {
   
 
   ngOnInit(): void {
-    //Carga Información del usuario y vendedores al iniciar la página
+    //Se configura un Listener/Escuchador para el formulario, cuando se realice un cambio en el tipo de 
+    // presupuesto, se debe convertir los valores de las filas del presupuesto. Si es Facturación por 
+    // dinero y si es por Volumen por unidades de venta.
+     
       this.formHeader.controls.CodPresupuestoPor.valueChanges.subscribe(value => {
         if (!this.presupuestoTable) return;
-
         if (this.presupuestoTable.filas.length === 0) return;
 
-        if (value === 'F') {
-          this.presupuestoTable.convertirVolumenAFacturacion();
-        }
+        const { anio, CodVendedor } = this.formHeader.getRawValue();
 
-        if (value === 'V') {
-          this.presupuestoTable.convertirFacturacionAVolumen();
-        }
-      });
+        this.loading.set(true);
+
+        this.presupuestoService.getVentasPresupuesto(anio, value, CodVendedor)
+        .subscribe({
+          next: (data) => {
+            this.presupuestoTable.actualizarBasesSinReset(data);
+
+            if (value === 'F') {
+              this.presupuestoTable.convertirVolumenAFacturacion();
+            }
+
+            if (value === 'V') {
+              this.presupuestoTable.convertirFacturacionAVolumen();
+            }
+
+            this.loading.set(false);
+          },
+          error: (error) => {
+            this.loading.set(false);
+            this.modalG.showModalG("Error", "No se pudo actualizar el tipo de presupuesto.");
+            console.error(error);
+          }
+        });
+      })
+      ;
   }
 
   getVendedores(){

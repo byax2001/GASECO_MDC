@@ -4,7 +4,7 @@ export interface VentasPresupuestoResponse {
     Customer_TipoCustomer_c: string;
     InvcDtl_PartNum:       string;
     Part_PartDescription:  string;
-    InvcDtl_SalesUM:       string;
+    Calculated_UOM:       string;
     Calculated_PrecioU:    number;
     Calculated_Enero:      number;
     Calculated_Febrero:    number;
