@@ -7,13 +7,11 @@ import { rxResource } from '@angular/core/rxjs-interop';
 import { FormBuilder, FormControl, FormGroup, Validators, ReactiveFormsModule, FormsModule  } from '@angular/forms';
 import { Modalg } from "../../../shared/components/modalg/modalg";
 import { SpinnerLoad } from "../../../shared/components/spinner-load/spinner-load";
-import { Vendedores } from '../../interfaces/Vendedores.interface';
 import { ComboDefault } from '../../../interfaces/ComboDefault.interface';
 import { ButtonIcon } from "../../../shared/components/button-icon/button-icon";
-import { ModalAddLP } from "./components/modal-add-lp/modal-add-lp";
-import { PresupuestoRowForm } from './components/Interface/PresupuestoRowForm.type';
 import { UserInfoService } from '../../../services/userInfo.service';
 import { finalize, of } from 'rxjs';
+
 
 type PresupuestoHeaderForm = {
   anio: FormControl<number>;
@@ -23,7 +21,7 @@ type PresupuestoHeaderForm = {
 
 @Component({
   selector: 'app-presupuestos',
-  imports: [HeaderPage, PresupuestoTable, ReactiveFormsModule, FormsModule, ReactiveFormsModule, Modalg, SpinnerLoad, ButtonIcon],
+  imports: [HeaderPage, PresupuestoTable, ReactiveFormsModule, FormsModule, Modalg, SpinnerLoad, ButtonIcon],
   templateUrl: './presupuestos.html',
   styleUrl: './presupuestos.css',
 })

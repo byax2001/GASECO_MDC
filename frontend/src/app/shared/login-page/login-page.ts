@@ -37,46 +37,33 @@ export default class LoginPage {
   });
 
   onSubmit(event?: Event) {
-   if (this.loginForm.invalid) {
-    console.log('Form is invalid');
-    return;
-  }
+    //Se verifica si el formulario es válido, este cambia de automático al escribir en los campos
+    //gracias a ser un formulario reactivo, si no es válido se muestra un mensaje de error en la consola y no se realiza la petición de login.
+    if (this.loginForm.invalid) {
+      this.modalG.showModalG('Error', 'Por favor, complete todos los campos requeridos.');
+      return;
+    }
 
-  const { username, password } = this.loginForm.getRawValue();
+    const { username, password } = this.loginForm.getRawValue();
 
-  this.authService.login(username, password).subscribe({
-    next: (response) => {
-      console.log('Login successful', response);
-      // Aquí puedes guardar el token en localStorage o en un servicio de autenticación
-      
-      
+    this.authService.login(username, password).subscribe({
+      next: (response) => {
+        console.log('Login successful', response);
+        // Aquí puedes guardar el token en localStorage o en un servicio de autenticación
+        this.cookieService.set('token', response.token, { path: '/' });
+        //Para mostrar el modal de bienvenida solo la primera vez que se inicia sesión, se utiliza sessionStorage para almacenar un indicador. Si el indicador ya existe, no se muestra el modal. Si no existe, se muestra el modal y luego se establece el indicador para futuras visitas. Al cerrar sesión, se elimina el indicador para que el modal vuelva a mostrarse en el próximo inicio de sesión.
+        sessionStorage.removeItem('welcomeShown');
 
-    
-      this.cookieService.set('token', response.token, { path: '/' });
-      //Para mostrar el modal de bienvenida solo la primera vez que se inicia sesión, se utiliza sessionStorage para almacenar un indicador. Si el indicador ya existe, no se muestra el modal. Si no existe, se muestra el modal y luego se establece el indicador para futuras visitas. Al cerrar sesión, se elimina el indicador para que el modal vuelva a mostrarse en el próximo inicio de sesión.
-      sessionStorage.removeItem('welcomeShown');
-
-      //this.infoUserService.loadUserInfo();
-      this.router.navigate(['/home']);
-    },
+        //this.infoUserService.loadUserInfo();
+        this.router.navigate(['/home']);
+      },
     error: (error) => {
-      console.error('Login failed', error);
-      this.TitleModal.update(() => 'Error');
 
       if (error.status === 401) {
-
-        this.msgModal.set('Usuario o contraseña incorrectos');
-
+        this.modalG.showModalG('Error', 'Usuario o contraseña incorrectos. Por favor, inténtelo de nuevo.');
       } else {
-
-        this.msgModal.set(
-          'Login failed: ' +
-          (error.error?.message || 'Unknown error')
-        );
-
+        this.modalG.showModalG('Error', 'Login failed: ' + (error.error?.message || 'Unknown error'));
       }
-
-      this.modalG.openModal();
     }
   });
 

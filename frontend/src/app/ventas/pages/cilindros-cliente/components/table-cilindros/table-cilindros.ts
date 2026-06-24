@@ -6,7 +6,7 @@ import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-table-cilindros',
-  imports: [TopMenuVentas, DatePipe],
+  imports: [DatePipe],
   templateUrl: './table-cilindros.html',
   styleUrl: './table-cilindros.css',
 })

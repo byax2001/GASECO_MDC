@@ -230,9 +230,15 @@ addLineaPresupuesto(nuevaLinea: PresupuestoRowForm) {
 convertirVolumenAFacturacion() {
   this.filas.controls.forEach(fila => {
     const precioU = Number(fila.controls.precioU.value || 0);
+    const porcentaje = Number(fila.controls.porcentaje.value || 0) / 100;
 
     if (precioU <= 0) return;
-
+    console.log({
+      porcentaje: fila.controls.porcentaje.value,
+      eneroBase: fila.controls.eneroBase.value,
+      eneroP: fila.controls.eneroP.value,
+      precioU: fila.controls.precioU.value
+    });
     fila.patchValue({
       eneroP: Number(fila.controls.eneroP.value || 0) * precioU ,
       febreroP: Number(fila.controls.febreroP.value || 0) * precioU,

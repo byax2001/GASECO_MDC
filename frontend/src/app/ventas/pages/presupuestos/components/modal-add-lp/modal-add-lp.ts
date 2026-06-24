@@ -1,7 +1,11 @@
 import { Component, inject, input, output, signal } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { PresupuestoRowForm } from '../Interface/PresupuestoRowForm.type';
-
+import { PartOV } from '../../../orden-venta/components/interface/PartOV.interface';
+import { VentasQueryService } from '../../../../services/ventasquery.service';
+import { rxResource } from '@angular/core/rxjs-interop';
+import { UserInfoService } from '../../../../../services/userInfo.service';
+import { of } from 'rxjs';
 
 @Component({
   selector: 'modal-add-lp',
@@ -11,7 +15,21 @@ import { PresupuestoRowForm } from '../Interface/PresupuestoRowForm.type';
 })
 export class ModalAddLP  {
   private fb = inject(FormBuilder);
+  ventasQueryService = inject(VentasQueryService);
+  userInfoService = inject(UserInfoService);
+  TipoCustomer = signal<string[]>(['A', 'B', 'C', 'N']);
+
   Emisor = output<PresupuestoRowForm>();
+  Parts = rxResource<PartOV[], { company: string | null }>({ 
+      params: () => ({
+        //CUANDO CAMBIE ESTO SE EJECUTARA EL STREAM
+        company: this.userInfoService.company()
+      }),
+      stream: ({ params }) => {
+      if (!params.company) { return of([]);}
+      return this.ventasQueryService.getPartOv();
+      }
+  })
 
   LineaPresupuesto:PresupuestoRowForm = this.fb.nonNullable.group({
     CustID: '',
@@ -20,7 +38,7 @@ export class ModalAddLP  {
     partNum: ['', Validators.required],
     partDescription: ['', Validators.required],
     Calculated_UOM: ['', Validators.required],
-    precioU: [0, [Validators.required, Validators.min(0)]],
+    precioU: [0, [Validators.required, Validators.min(0.01)]],
     eneroBase: 0,
     febreroBase: 0,
     marzoBase: 0,
@@ -53,6 +71,21 @@ export class ModalAddLP  {
   msgModal = signal<string>("");
   TitleModal = signal<string>("");
 
+  ngOnInit() {
+
+    this.LineaPresupuesto.controls.partNum.valueChanges.subscribe(partNum => {
+      const part = this.Parts.value()?.find(p => p.Part_PartNum === partNum);
+
+      if (!part) return;
+
+      this.LineaPresupuesto.patchValue({
+        partDescription: part.Part_PartDescription,
+        Calculated_UOM: part.Part_IUM,
+        rowIdent: part.RowIdent
+      });
+    });
+
+  }
 
   showModalG(title: string, msg: string) {
     this.TitleModal.set(title);
@@ -86,6 +119,7 @@ export class ModalAddLP  {
     this.showModal.set(false);
   }
 
+  // PARA REINICIAR EL FORMULARIO CON VALORES POR DEFECTO
   getDefaultLinea() {
   return {
     CustID: '',
@@ -121,5 +155,14 @@ export class ModalAddLP  {
     diciembreP: 0,
     rowIdent: crypto.randomUUID()
   };
+}
+
+selectedPart(part: PartOV) {
+  this.LineaPresupuesto.patchValue({
+    partNum: part.Part_PartNum,
+    partDescription: part.Part_PartDescription,
+    Calculated_UOM: part.Part_IUM,
+    rowIdent: part.RowIdent
+  });
 }
 }

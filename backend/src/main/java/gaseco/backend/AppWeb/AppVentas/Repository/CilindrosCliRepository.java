@@ -18,7 +18,7 @@ public class CilindrosCliRepository {
     }
 
     public List<Map<String, Object>>  GetCilCli(String CustID){
-        return jdbc.queryForList(QueryCilindrosCli.GET_CILINDROS_EN_CLIENTE, CustID);
+        return jdbc.queryForList(QueryCilindrosCli.GET_CILINDROS_EN_CLIENTE, CustID, CustID, CustID, CustID);
     }
 
 
