@@ -1,0 +1,229 @@
+
+<modal-add-lp #ModalAdd (Emisor)="addLineaPresupuesto($event)"/>
+<form [formGroup]="form">
+
+    <div class="grid grid-cols-2 md:grid-cols-8 gap-3 mb-2">
+        <div class="p-1 rounded-xl bg-gray-50">
+            <label class="text-xs text-gray-500">Porcentaje Global</label>
+            <input type="number" formControlName="porcentaje" class="input input-bordered" placeholder="Porcentaje" />
+        </div>
+        <div class="p-1 rounded-xl bg-gray-50 flex items-end">
+            <button-icon
+                class="w-full md:w-auto"
+                [funcion]="() => aplicarPorcentaje()"
+                tooltip="Aplicar porcentaje global"
+                icon="fa-solid fa-percent"
+            />
+        </div>
+        <div class="p-1 rounded-xl bg-gray-50 flex items-end">
+            <button-icon
+                class="w-full md:w-auto"
+                [funcion]="() => descargarExcel()"
+                tooltip="Descargar presupuesto"
+                icon="fa-solid fa-download"
+            />
+        </div>
+
+        <div class="p-1 rounded-xl bg-gray-50 flex items-end">
+            <button-icon
+                class="w-full md:w-auto"
+                [funcion]="() => showModalAdd()"
+                tooltip="Agregar línea de presupuesto"
+                icon="fa-solid fa-plus"
+            />
+        </div>
+         <div class="p-1 rounded-xl bg-gray-50 flex items-end">
+            
+        </div>
+    </div>
+
+
+ <div
+  #fixedScroll
+  class="fixed bottom-0 left-0 right-0 z-50 overflow-x-auto bg-white border-t shadow-md"
+  [class.hidden]="filas.length === 0"
+  (scroll)="bottomScroll.scrollLeft = fixedScroll.scrollLeft"
+>
+  <div class="min-w-[3200px] h-4"></div>
+</div>
+
+<div
+  #bottomScroll
+  class="overflow-x-auto pb-6"
+  (scroll)="fixedScroll.scrollLeft = bottomScroll.scrollLeft"
+>
+ 
+
+    <div class="w-full">
+        <table class="table table-zebra  min-w-[3200px]">
+            <thead>
+                <tr class="text-xs">
+                    <th>No.</th>
+                    <th>Cliente</th>
+                    <th class="w-10">Tipo Cliente</th>
+                    <th>PartNum</th>
+                    <th>Parte</th>
+                    <th>UOM</th>
+                    <th>Precio U</th>
+                    <th>Ene</th>
+                    <th>Feb</th>
+                    <th>Mar</th>
+                    <th>Abr</th>
+                    <th>May</th>
+                    <th>Jun</th>
+                    <th>Jul</th>
+                    <th>Ago</th>
+                    <th>Sep</th>
+                    <th>Oct</th>
+                    <th>Nov</th>
+                    <th>Dic</th>
+                    <th>%</th>
+                    <th>Ene P</th>
+                    <th>Feb P</th>
+                    <th>Mar P</th>
+                    <th>Abr P</th>
+                    <th>May P</th>
+                    <th>Jun P</th>
+                    <th>Jul P</th>
+                    <th>Ago P</th>
+                    <th>Sep P</th>
+                    <th>Oct P</th>
+                    <th>Nov P</th>
+                    <th>Dic P</th>
+                </tr>
+            </thead>
+
+            <tbody formArrayName="filas">
+                @for(fila of paginatedPresupuesto(); track fila.controls.rowIdent.value; let i = $index) {
+                <tr class="text-xs" [formGroup]="fila">
+<!-- DATOS BASE -->
+                    <td>
+                        {{ ((currentPage() - 1) * pageSize) + i + 1 }}
+                    </td>
+                    <td class="w-40">
+                        {{ fila.controls.customerName.value }}
+                    </td>
+                    <td class="w-10">
+                        {{ fila.controls.TipoCustomer.value }}
+                    </td>
+                    <td>
+                        {{ fila.controls.partNum.value }}
+                    </td>
+                    <td class="w-35"> 
+                        {{ fila.controls.partDescription.value }}
+                    </td>
+                    <td>
+                        {{ fila.controls.Calculated_UOM.value }}
+                    </td>
+                    <td>
+                        {{ fila.controls.precioU.value | number:'1.2-3' }}
+                    </td>
+                    <td>
+                        {{ fila.controls.eneroBase.value | number:'1.2-2'  }}
+                    </td>
+                    <td>
+                        {{ fila.controls.febreroBase.value | number:'1.2-2' }}
+                    </td>
+                    <td>
+                        {{ fila.controls.marzoBase.value | number:'1.2-2' }}
+                    </td>
+                     <td>
+                        {{ fila.controls.abrilBase.value | number:'1.2-2' }}
+                    </td>
+                    <td>
+                        {{ fila.controls.mayoBase.value | number:'1.2-2' }}
+                    </td>
+                    <td>
+                        {{ fila.controls.junioBase.value | number:'1.2-2' }}
+                    </td>
+                    <td>
+                        {{ fila.controls.julioBase.value | number:'1.2-2' }}
+                    </td>
+                    <td>
+                        {{ fila.controls.agostoBase.value | number:'1.2-2' }}
+                    </td>
+                    <td>
+                        {{ fila.controls.septiembreBase.value | number:'1.2-2' }}
+                    </td>
+                    <td>
+                        {{ fila.controls.octubreBase.value | number:'1.2-2' }}
+                    </td>
+                    <td>
+                        {{ fila.controls.noviembreBase.value | number:'1.2-2' }}
+                    </td>
+                    <td>
+                        {{ fila.controls.diciembreBase.value | number:'1.2-2' }}
+                    </td>
+
+<!-- PORCENTAJE -->
+                    <td>
+                        <input type="number" formControlName="porcentaje" class="input input-bordered w-15 bg-[#A6C441] text-white" />
+                    </td>
+<!-- PRESUPUESTO -->
+                    <td>
+                        <input type="number" formControlName="eneroP" class="input input-bordered w-20" />
+                    </td> 
+
+                    <td>
+                        <input type="number" formControlName="febreroP" class="input input-bordered w-20" />
+                    </td>
+
+                    <td>
+                        <input type="number" formControlName="marzoP" class="input input-bordered w-20" />
+                    </td>
+                   
+                    <td>
+                        <input type="number" formControlName="abrilP" class="input input-bordered w-20" />
+                    </td>
+                  
+                    <td>
+                        <input type="number" formControlName="mayoP" class="input input-bordered w-20" />
+                    </td>
+                    
+                    <td>
+                        <input type="number" formControlName="junioP" class="input input-bordered w-20" />
+                    </td>
+                   
+                    <td>
+                        <input type="number" formControlName="julioP" class="input input-bordered w-20" />
+                    </td>
+                  
+                    <td>
+                        <input type="number" formControlName="agostoP" class="input input-bordered w-20" />
+                    </td>
+                    
+                    <td>
+                        <input type="number" formControlName="septiembreP" class="input input-bordered w-20" /> 
+                    </td>
+                   
+                    <td>
+                        <input type="number" formControlName="octubreP" class="input input-bordered w-20" />
+                    </td>
+                  
+                    <td>
+                        <input type="number" formControlName="noviembreP" class="input input-bordered w-20" />
+                    </td>
+
+                    <td>
+                        <input type="number" formControlName="diciembreP" class="input input-bordered w-20" />
+                    </td>
+                    <td></td>
+                </tr>
+                }
+            </tbody>
+            <tfoot>
+            <tr>
+                <!--colspan: Cantidad de Columnas de la tabla -->
+                <td colspan="25">
+                    <PaginationTable
+                        [rowTableSize]="filas.length"
+                        [pageSize]="pageSize"
+                        (pageChange)="currentPage.set($event)"
+                    />
+                </td>
+            </tr>
+            </tfoot>
+        </table>
+    </div>
+</div>
+</form>

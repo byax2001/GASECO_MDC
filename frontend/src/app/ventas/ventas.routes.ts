@@ -11,12 +11,16 @@ export const ventasRoutes: Routes = [
        loadComponent: () => import('./pages/lista-clientes/lista-clientes')
       },
       {
-        path: 'cilcli',
+        path: 'cilcli/:custid',
         loadComponent: () => import('./pages/cilindros-cliente/cilindros-cliente')
       },
       {
         path: 'ov/:custid',
         loadComponent: () => import('./pages/orden-venta/orden-venta')
+      },
+      {
+        path: 'presupuestos',
+        loadComponent: () => import('./pages/presupuestos/presupuestos')
       }
 
 

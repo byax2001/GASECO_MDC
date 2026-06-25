@@ -13,5 +13,7 @@ public class AppConstants {
     
     public static final String EPICOR_PASS = dotenv.get("EPICOR_PASS");
 
+    public static final String EMAIL_EMISOR = dotenv.get("EMAIL_EMISOR");
+
 
 }

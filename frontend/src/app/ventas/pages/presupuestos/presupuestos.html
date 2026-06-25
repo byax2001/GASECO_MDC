@@ -1,0 +1,65 @@
+
+<app-header-page PageName="Presupuestos" />
+
+
+<form [formGroup]="formHeader">
+  <div class="grid grid-cols-1 md:grid-cols-8 gap-3 mb-2">
+    
+    <div class="p-1 rounded-xl bg-gray-50">
+      <label class="text-xs text-gray-500">Año</label>
+      <input
+        type="number"
+        class="input input-bordered w-full"
+        placeholder="Año"
+        formControlName="anio"
+      />
+    </div>
+
+     <div class="p-1 rounded-xl bg-gray-50">
+        <label class="text-xs text-gray-500">Vendedor</label>
+        <select formControlName="CodVendedor" class="select select-bordered w-full">
+          @for(vendedor of Lvendedores.value(); track vendedor.RowIdent) {
+          <option [value]="vendedor.SalesRep_SalesRepCode">
+            {{ vendedor.SalesRep_Name }}
+          </option>
+          }
+        </select>
+      </div>
+      
+      <div class="p-1 rounded-xl bg-gray-50">
+        <label class="text-xs text-gray-500">Presupuesto Por</label>
+        <select formControlName="CodPresupuestoPor" class="select select-bordered w-full">
+          @for(ppor of LTipoDato(); track ppor.code) {
+          <option [value]="ppor.code">
+            {{ ppor.description }}
+          </option>
+          }
+        </select>
+      </div>
+
+    <div class="p-1 rounded-xl bg-gray-50 flex items-end">
+<!-- Forma para mandar funciones entre padres a hijos y que estas funcionen con el contexto del padre -->
+      <button-icon
+        class="w-full md:w-auto"
+        [funcion]="() => buscarVentas()"
+        tooltip="Buscar presupuesto"
+        icon="fa-brands fa-sistrix"
+      />
+    </div>
+  </div>
+</form>
+
+
+<div class="overflow-x-auto">
+  <presupuesto-table 
+  #presupuestoTable
+  [presupuestoData]="presupuestoData()" /> 
+</div>
+
+  @if(loading()){
+      <SpinnerLoad/>
+  }
+
+
+<modalg
+#modalG/>

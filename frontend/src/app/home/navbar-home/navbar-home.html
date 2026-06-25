@@ -15,7 +15,9 @@
   <!-- MENU -->
   <div class="col-span-6 md:col-span-1 flex justify-center md:justify-end">
     <ul class="menu menu-horizontal px-1">
-           <select class="select bg-neutral/10 w-48 mr-4" (change)="onSelectCompany($event)">
+           <select class="select bg-neutral/10 w-48 mr-4" 
+           [ngModel]="userInfoService.company()"
+           (change)="onSelectCompany($event)">
             @for(company of companies(); track company.code){
                <option class="bg-neutral/30" [value]="company.code">{{company.name}}</option>
             }

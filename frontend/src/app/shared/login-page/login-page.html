@@ -1,47 +1,35 @@
-
-<modalg
-  #modalG
-  [msgModal]="msgModal()"
-  [TitleModal]="TitleModal()"
-  />
+<modalg #modalG />
 
 
 <div id="login" class="hero bg-base-200 min-h-screen">
-  
+
   <div class="hero-overlay"></div>
   <div class="hero-content flex-col lg:flex-row-reverse">
-    
+
     <div class="text-center lg:text-left">
       <img src="gaseco1.png" alt="Logo" class="w-80 lg:w-[38rem] h-32 mx-auto object-contain">
       <p class="py-6 text-white">
-        Potenciamos la productividad de nuestros socios comerciales con propuestas comerciales flexibles, soluciones a la medida y entregas en tiempo.
+        Potenciamos la productividad de nuestros socios comerciales con propuestas comerciales flexibles, soluciones a
+        la medida y entregas en tiempo.
       </p>
     </div>
 
     <div class="card bg-base-100 w-full max-w-sm shrink-0 shadow-2xl">
-        <form class="form-control card-body" [formGroup]="loginForm" (ngSubmit)="onSubmit()">
-  <fieldset class="fieldset">
+      <form class="form-control card-body" [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+        <fieldset class="fieldset">
 
-    <Inputg
-      placeholder="Usuario"
-      type="text"
-      idinput="username"
-      formControlName="username">
-    </Inputg>
+          <Inputg placeholder="Usuario" type="text" idinput="username" formControlName="username">
+          </Inputg>
 
-    <Inputg
-      placeholder="Contraseña"
-      type="password"
-      idinput="password"
-      formControlName="password">
-    </Inputg>
+          <Inputg placeholder="Contraseña" type="password" idinput="password" formControlName="password">
+          </Inputg>
 
-    <button type="submit" class="btn bg-[#A6C441] text-white mt-4">
-      Ingresar
-    </button>
+          <button type="submit" class="btn bg-[#A6C441] text-white mt-4">
+            Ingresar
+          </button>
 
-  </fieldset>
-</form>
-      </div>
+        </fieldset>
+      </form>
+    </div>
   </div>
 </div>

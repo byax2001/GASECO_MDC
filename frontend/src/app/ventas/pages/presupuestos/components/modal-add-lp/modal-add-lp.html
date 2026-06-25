@@ -1,0 +1,60 @@
+
+@if(showModal()) {
+
+<div class="modal modal-open" role="dialog">
+  <div class="modal-box">
+
+    <h3 
+      class="text-lg font-bold"
+    >
+      {{ TitleModal() }}
+    </h3>
+
+    <p class="py-4">
+     {{ msgModal() }}
+    </p>
+    <form [formGroup]="LineaPresupuesto">
+      <div class="join join-vertical w-full">
+      <input formControlName="customerName" type="text" placeholder="Nombre de cliente" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 mb-2" required>
+      <select
+            formControlName="TipoCustomer"
+            class="w-full p-2 rounded border bg-white mb-2"
+            placeholder="Tipo de Cliente"
+            >
+            <option value="" disabled>Tipo de cliente</option>
+            @for (tipo of TipoCustomer(); track tipo) {
+              <option [value]="tipo">
+                {{ tipo }}
+              </option>
+            }
+          </select>
+      <select
+            formControlName="partNum" 
+            class="w-full p-2 rounded border bg-white mb-2"
+            placeholder="Parte"
+            >
+              <option value="" disabled>Producto</option>
+              @for (parte of Parts.value(); track parte.Part_PartNum) {
+                <option [value]="parte.Part_PartNum">
+                  {{ parte.Part_PartDescription }}
+                </option>
+              }
+            </select>
+      <input formControlName="Calculated_UOM" type="text" placeholder="UOM" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 mb-2" readonly>
+      <input formControlName="precioU" type="number" placeholder="Precio Unitario" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 mb-2" required>
+      </div>
+    </form>
+
+    <div class="modal-action">
+      <button class="btn" (click)="guardarLinea()">
+        Confirmar
+      </button>
+      <button class="btn" (click)="closeModal()">
+        Cancelar
+      </button>
+    </div>
+
+  </div>
+</div>
+
+}

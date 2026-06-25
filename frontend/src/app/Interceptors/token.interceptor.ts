@@ -38,7 +38,7 @@ export function TokenInterceptor(
         cookieService.delete('token', '/');
         sessionStorage.clear();
         
-        window.location.href = '/login';
+        //window.location.href = '/login';
       }
 
       return throwError(() => error);

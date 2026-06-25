@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { inject, Injectable, signal } from '@angular/core';
 import { InfoUser } from '../interfaces/InfoUser.interface';
 import { InfoAppResponse } from '../interfaces/InfoAppResponse.interface';
-import { Observable } from 'rxjs';
+import { Observable, switchMap, tap } from 'rxjs';
 import { environment } from '../../environments/environment';
 import mapToInfoUser from '../Mapper/InfoUser.mapper';
 import { CookieService } from 'ngx-cookie-service';
@@ -27,6 +27,19 @@ export class UserInfoService {
   //Modulos:
   // VENTAS: Modulo de ventas.
   // MDC: Modulo de Cilindros.
+  // Ejemplo de estructura de userInfo:
+  /*
+  {
+    "165943": {
+      "VENTAS": "codigo_usuario_ventas",
+      "MDC": "codigo_usuario_mdc"
+    },
+    "165943B": {
+      "VENTAS": "codigo_usuario_ventas_hn",
+      "MDC": "codigo_usuario_mdc_hn"
+    }
+  }
+  */
 
   getUserInfo(username: string): Observable<InfoAppResponse[]> {
     //Ya no es necesario el token porque el interceptor se encarga de agregarlo a cada petición
@@ -47,6 +60,7 @@ export class UserInfoService {
             this.userInfo.set(mapToInfoUser(response));
             this.company.set(this.getCompaniesCmb()[0]?.code ?? '');
             this.rol.set(resp_user.rol);
+            console.log('User info cargada:', this.userInfo())
           },
           error: (error) => {
             console.error('Error cargando user info', error);
@@ -61,6 +75,20 @@ export class UserInfoService {
 
   }
 
+  awaitloadUserInfo() {
+    return this.getUserName().pipe(
+        switchMap(resp_user =>
+          this.getUserInfo(resp_user.username).pipe(
+            tap(response => {
+              this.userInfo.set(mapToInfoUser(response));
+              this.company.set(this.getCompaniesCmb()[0]?.code ?? '');
+              this.rol.set(resp_user.rol);
+            })
+          )
+        )
+      );
+  }
+
   getCompaniesCmb():Company[]{
      return Object.keys(this.userInfo()).map(company => ({
       code: company,
@@ -72,4 +100,11 @@ export class UserInfoService {
     const codUser = this.userInfo()[this.company()]?.[modulo];
     return codUser || '';
   }
+
+  verifyAccess(modulo: string): boolean {
+    // El !! simplemente convierte el resultado a un booleano, devolviendo true si el código de usuario 
+    // existe para el módulo dado, o false si no existe.
+    return !!this.getCodeUser(modulo);
+  }
+
 }
