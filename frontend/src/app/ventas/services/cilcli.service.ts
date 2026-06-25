@@ -1,7 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import { UserInfoService } from '../../services/userInfo.service';
 import { HttpClient } from '@angular/common/http';
-import { environment } from '../../../environments/environment.development';
+import { environment } from '../../../environments/environment';
 import { Observable } from 'rxjs';
 import { CilindroCliente } from '../pages/cilindros-cliente/components/Interface/CilindroCliente.interface';
 

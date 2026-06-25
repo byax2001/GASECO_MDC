@@ -25,6 +25,7 @@ public class DataBaseConfig {
 
     @Bean(name = "modulocilindroDataSource")
     @Primary
+    @ConfigurationProperties("spring.datasource.modulocilindro.hikari")
     public DataSource modulocilindroDataSource() {
         return modulocilindroProperties()
                 .initializeDataSourceBuilder()
@@ -46,6 +47,7 @@ public class DataBaseConfig {
     }
 
     @Bean(name = "seguridadDataSource")
+    @ConfigurationProperties("spring.datasource.seguridad.hikari")
     public DataSource seguridadDataSource() {
         return seguridadProperties()
                 .initializeDataSourceBuilder()
