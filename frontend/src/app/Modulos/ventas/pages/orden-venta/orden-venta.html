@@ -9,8 +9,8 @@
   <!-- HEADER FORM -->
     <orden-venta-header
       [formHeader]="formHeader"
-      [CustInfoOv]="CustInfoOv()"
-      [LMonedas]="LMonedas()"
+      [CustInfoOv]="CustInfoOv.value()"
+      [LMonedas]="LMonedas.value()"
       [creandoOV]="creandoOV()"
       [orderNumView]="orderNumView()"
     />
@@ -18,7 +18,7 @@
     </div>
     <!-- BOTON CREAR ORDEN DE VENTA -->
     <div class="flex justify-center md:justify-end gap-2">
-      <button class="btn bg-[#A6C441] text-white hover:bg-[#8aa83a] mb-0 md:mb-3" (click)="CrearOrdenVenta()"
+      <button class="btn bg-[#A6C441] text-white  disabled:bg-green-900 hover:bg-[#8aa83a]  mb-0 md:mb-3" (click)="CrearOrdenVenta()"
         [disabled]="!formHeader.valid || formHeader.controls.orderNum.value>0">
         @if(formHeader.controls.orderNum.value > 0) {
         OV Creada
@@ -40,7 +40,7 @@
       <Orden-lines 
         #ordenLines
         [custID]="formHeader.controls.custID.value"
-        [CustNum]="CustInfoOv().Customer_CustNum"
+        [CustNum]="CustInfoOv.value().Customer_CustNum"
         [currencyCode]="formHeader.controls.currencyCode.value"
         [OrderNum]="formHeader.controls.orderNum.value"
         [TipoCilindros]="formHeader.controls.TipoCilindros.value"

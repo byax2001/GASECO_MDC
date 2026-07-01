@@ -18,6 +18,9 @@ import { ButtonIcon } from "../../../../shared/components/button-icon/button-ico
 import { Correo } from '../../../../interfaces/Correo.interface';
 import { EmailAdminService } from '../../../../services/email-admin.service';
 import { CorreoResponse } from '../../../../interfaces/CorreoResponse.interface';
+import { rxResource } from '@angular/core/rxjs-interop';
+import { UserInfoService } from '../../../../services/userInfo.service';
+import { map, of } from 'rxjs';
 
 @Component({
   selector: 'app-orden-venta',
@@ -31,7 +34,7 @@ export default class OrdenVenta {
   private route = inject(ActivatedRoute);
   private ventasQueryService = inject(VentasQueryService);
   private emailAdminService = inject(EmailAdminService);
-
+  private userInfoService = inject(UserInfoService);
 
   @ViewChild('modalG') modalG!: Modalg;
   @ViewChild('ordenLines') ordenLines!: OrdenLines;
@@ -52,23 +55,53 @@ export default class OrdenVenta {
 
   orderNumView = signal<number>(0);
 
-  CustInfoOv = signal<ClienteInfoOv>({
-    Customer_CustID: '',
-    Customer_CustNum: 0,
-    Customer_Name: '',
-    Customer_TerritoryID: '',
-    Customer_SalesRepCode: '',
-    SalesRep_Name: '',
-    SalesRep_EMailAddress: '',
-    Customer_TermsCode: '',
-    Terms_Description: '',
-    Customer_CurrencyCode: '',
-    Currency_CurrDesc: '',
-    RowIdent: ''
-  });
-  LMonedas = signal<Moneda[]>([]);
+  defaultCliente: ClienteInfoOv = {
+  Customer_CustID: '',
+  Customer_CustNum: 0,
+  Customer_Name: '',
+  Customer_TerritoryID: '',
+  Customer_SalesRepCode: '',
+  SalesRep_Name: '',
+  SalesRep_EMailAddress: '',
+  Customer_TermsCode: '',
+  Terms_Description: '',
+  Customer_CurrencyCode: '',
+  Currency_CurrDesc: '',
+  RowIdent: ''
+};
+//Se utiliza rxResource para obtener la información del cliente en base a su ID
+CustInfoOv = rxResource<ClienteInfoOv, { company: string | null; custID: string | null | undefined }>({
+  defaultValue: this.defaultCliente,
+  params: () => ({
+    company: this.userInfoService.company(),
+    custID: this.formHeader.value.custID
+  }),
+  stream: ({ params }) => {
+    if (!params.company || !params.custID) {
+      return of(this.defaultCliente);
+    }
+
+    return this.ventasQueryService.getClienteInfoOv(params.custID).pipe(
+      map(data => data[0] ?? this.defaultCliente)
+    );
+  }
+});
+
   creandoOV = signal(false);
-  
+  //Se utiliza rxResource para obtener la lista de monedas disponibles para la compañia
+  LMonedas = rxResource<Moneda[], { company: string | null; custID: string | null | undefined }>({
+      defaultValue: [],
+      params: () => ({  
+        company: this.userInfoService.company(),
+        custID: this.formHeader.value.custID
+      }),
+      stream: ({ params }) => {
+        if (!params.company || !params.custID) {
+              return of([]); // Retorna un observable con un array vacío si no hay empresa seleccionada
+        }       
+      return this.ventasQueryService.getMonedas(params.custID);
+    }
+  })
 
  
 
@@ -90,46 +123,6 @@ export default class OrdenVenta {
         console.log('No se proporcionó un ID de cliente en la URL');
         return;
       }
-
-      //Obtener información del cliente para la orden de venta en base al ID del cliente obtenido de la URL
-      this.ventasQueryService.getClienteInfoOv(custID).subscribe({
-
-        //Si la llamada a la API es exitosa, actualizar la señal CustInfoOv con la información del cliente obtenida y actualizar el campo de moneda en el formulario con la moneda del cliente
-        next: (data) => {
-          //Obtener el primer cliente del array de datos (en caso de que la API devuelva un array) o establecerlo como null si no hay datos
-          const cliente = data[0] || null;
-          //Se actualiza la señal CustInfoOv con la información del cliente obtenida de la API
-          this.CustInfoOv.set(cliente);
-
-          //Si el cliente no es null, se actualiza el campo de moneda en el formulario con la moneda del cliente obtenida de la API. Si el cliente es null, se establece la moneda como 'GTQ' por defecto
-          if (cliente) {
-            this.formHeader.patchValue({
-              currencyCode: cliente.Customer_CurrencyCode ?? 'GTQ'
-            });
-
-          }
-
-        },
-
-        error: (error) => {
-          console.error('Error obteniendo información del cliente', error);
-        }
-
-      });
-
-      //Obtener la lista de monedas disponibles para la compañia
-      this.ventasQueryService.getMonedas(custID).subscribe({
-
-        next: (monedas) => {
-          this.LMonedas.set(monedas);
-        },
-
-        error: (error) => {
-          console.error('Error obteniendo monedas', error);
-        }
-
-      });
-
     });
   }
 
@@ -156,7 +149,7 @@ export default class OrdenVenta {
 
     const ordenRequest: CrearOvRequest = {
       CustID: this.formHeader.value.custID!,
-      CustNum: this.CustInfoOv()?.Customer_CustNum || 0,
+      CustNum: this.CustInfoOv.value().Customer_CustNum || 0,
       CurrencyCod: this.formHeader.value.currencyCode!,
       Proyecto: this.formHeader.value.proyecto!,
       FechaR: new Date(this.formHeader.value.fechaRequerida!),
@@ -187,7 +180,7 @@ export default class OrdenVenta {
               this.orderNumView.set(response.OrderNum);
               //ENVIAR CORREO AL REPRESENTANTE DE VENTAS DEL CLIENTE CON EL NUMERO DE ORDEN DE VENTA CREADA
               this.EnviarCorreo(response.OrderNum);
-              
+
               this.creandoOV.set(false);
             console.log('Lineas agregadas exitosamente:', addLineResponse);
           }
@@ -217,8 +210,8 @@ export default class OrdenVenta {
       return;
     }
     const correo:Correo = this.ordenLines.getCorreo();
-    correo.para = this.CustInfoOv()?.SalesRep_EMailAddress || '';
-    correo.mensaje = `Se ha creado la orden de venta número ${this.formHeader.value.orderNum} para el cliente ${this.CustInfoOv()?.Customer_Name}.\n` + correo.mensaje;
+    correo.para = this.CustInfoOv.value().SalesRep_EMailAddress || '';
+    correo.mensaje = `Se ha creado la orden de venta número ${this.formHeader.value.orderNum} para el cliente ${this.CustInfoOv.value().Customer_Name}.\n` + correo.mensaje;
 
     correo.mensaje += `\nDirección: ${this.formHeader.value.ubicacion}\n\n Proyecto: ${this.formHeader.value.proyecto}\n\nFecha Requerida: ${this.formHeader.value.fechaRequerida}\n\nMoneda: ${this.formHeader.value.currencyCode}\n\n`;
     this.loading.set(true);

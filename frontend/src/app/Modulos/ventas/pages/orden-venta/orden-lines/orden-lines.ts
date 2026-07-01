@@ -157,15 +157,6 @@ export class OrdenLines {
 
   //AL INICIAR EL COMPONENTE:
   ngOnInit() {
-    //OBTENER PARTES PARA ORDEN DE VENTA
-    this.ventasQueryService.getPartOv().subscribe({
-      next: (partes) => {
-        this.Parts.set(partes);
-      },
-      error: (err) => {
-        console.error('Error al obtener partes para orden de venta:', err);
-      }
-    });
   }
 
   //Metodo para agregar una linea de pedido en blanco, se pueden agregar tantas como se necesiten

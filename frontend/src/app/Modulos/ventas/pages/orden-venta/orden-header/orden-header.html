@@ -68,7 +68,7 @@
       </div>
       <div class="p-3 rounded-xl bg-gray-50">
         <label class="text-xs text-gray-500">Tipo de Operación</label>
-        <select  formControlName="TipoOperacio" class="select select-bordered w-full text-xs">
+        <select  formControlName="TipoOperacion" class="select select-bordered w-full text-xs">
           @for(tipo of TipoOperacion(); track tipo) {
           <option [value]="tipo.code">
             {{ tipo.description }}
