@@ -1,10 +1,11 @@
-import { Component, input, output } from '@angular/core';
+import { Component, input, output, ChangeDetectionStrategy } from '@angular/core';
 import Modulo from '../../../home/components/interface/Modulo.interface';
 
 @Component({
   selector: 'Cardg',
   imports: [],
   templateUrl: './cardm.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './cardm.css',
 })
 export class Cardg {

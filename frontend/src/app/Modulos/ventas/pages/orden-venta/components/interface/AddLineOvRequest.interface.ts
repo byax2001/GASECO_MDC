@@ -8,4 +8,5 @@ export interface AddLineOvRequest {
     PrecioUnit:   number;
     UOM:          string;
     OrderNum:     number;
+    Descripcion:  string;
 }

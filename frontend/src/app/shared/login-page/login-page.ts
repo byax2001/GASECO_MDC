@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { Inputg } from "../components/inputg/inputg";
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CookieService } from 'ngx-cookie-service';
@@ -15,6 +15,7 @@ import { InfoAppResponse } from '../../interfaces/InfoAppResponse.interface';
   selector: 'app-login-page',
   imports: [Inputg, ReactiveFormsModule, Modalg],
   templateUrl: './login-page.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './login-page.css',
 })
 

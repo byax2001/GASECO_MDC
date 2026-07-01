@@ -4,4 +4,5 @@ export interface CrearOvRequest {
     CurrencyCod: string;
     FechaR:      Date;
     Proyecto:    string;
+    TOperacion:  string;
 }

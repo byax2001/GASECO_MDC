@@ -17,5 +17,6 @@ public class OrdenVentaRequest {
      private String CurrencyCod;
      private String FechaR;
      private String Proyecto;
+     private String TOperacion;
 }
 

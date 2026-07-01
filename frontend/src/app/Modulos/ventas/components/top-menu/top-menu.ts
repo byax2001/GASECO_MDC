@@ -1,4 +1,4 @@
-import { Component, computed, effect, inject, signal, ViewChild } from '@angular/core';
+import { Component, computed, effect, inject, signal, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { CookieService } from 'ngx-cookie-service';
 import { UserInfoService } from '../../../../services/userInfo.service';
@@ -10,6 +10,7 @@ import { Modalact } from '../../../../shared/components/modalact/modalact';
   selector: 'TopMenuVentas',
   imports: [RouterLink, FormsModule, Modalact],
   templateUrl: './top-menu.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './top-menu.css',
 })
 export class TopMenuVentas {

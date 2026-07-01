@@ -1,9 +1,10 @@
-import { Component, input } from '@angular/core';
+import { Component, input, ChangeDetectionStrategy } from '@angular/core';
 
 @Component({
   selector: 'button-icon',
   imports: [],
   templateUrl: './button-icon.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './button-icon.css',
 })
 export class ButtonIcon {

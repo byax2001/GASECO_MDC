@@ -30,7 +30,7 @@
           icon="fa-solid fa-envelope"
           color="blue"
           tooltip="Enviar Correo"
-          [funcion]="() => EnviarCorreo()"
+          [funcion]="() => EnviarCorreo(formHeader.controls.orderNum.value)"
         ></button-icon>  
     </div>
 
@@ -42,7 +42,10 @@
         [custID]="formHeader.controls.custID.value"
         [CustNum]="CustInfoOv().Customer_CustNum"
         [currencyCode]="formHeader.controls.currencyCode.value"
-        [OrderNum]="formHeader.controls.orderNum.value" />
+        [OrderNum]="formHeader.controls.orderNum.value"
+        [TipoCilindros]="formHeader.controls.TipoCilindros.value"
+        (AddDelLine)="validarCambioTipoCilindro()"
+        />
 
     </div>
   </div>

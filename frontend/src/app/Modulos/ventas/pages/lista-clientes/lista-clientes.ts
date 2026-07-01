@@ -1,4 +1,4 @@
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { HeaderPage } from "../../../../shared/components/header-page/header-page";
 import { TableClientes } from "./table-clientes/table-clientes";
 import { rxResource } from '@angular/core/rxjs-interop';
@@ -17,6 +17,7 @@ import { ButtonIcon } from "../../../../shared/components/button-icon/button-ico
   selector: 'app-lista-clientes',
   imports: [HeaderPage, TableClientes, SearchDebounce, SpinnerLoad, ButtonIcon],
   templateUrl: './lista-clientes.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './lista-clientes.css',
 })
 export default class ListaClientes {

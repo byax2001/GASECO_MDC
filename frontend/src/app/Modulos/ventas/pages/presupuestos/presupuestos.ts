@@ -1,4 +1,4 @@
-import { Component, inject, signal, ViewChild } from '@angular/core';
+import { Component, inject, signal, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 import { HeaderPage } from "../../../../shared/components/header-page/header-page";
 import { PresupuestoTable } from "./components/presupuesto-table/presupuesto-table";
 import { VentasPresupuestoResponse } from './interface/VentasPresupuestoResponse.interface';
@@ -23,6 +23,7 @@ type PresupuestoHeaderForm = {
   selector: 'app-presupuestos',
   imports: [HeaderPage, PresupuestoTable, ReactiveFormsModule, FormsModule, Modalg, SpinnerLoad, ButtonIcon],
   templateUrl: './presupuestos.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './presupuestos.css',
 })
 export default class Presupuestos {

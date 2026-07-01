@@ -1,10 +1,11 @@
-import { Component, input, signal } from '@angular/core';
+import { Component, input, signal, ChangeDetectionStrategy } from '@angular/core';
 import { NgClass } from '@angular/common';
 
 @Component({
   selector: 'modalg',
   imports: [NgClass],
   templateUrl: './modalg.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './modalg.css',
 })
 export class Modalg {

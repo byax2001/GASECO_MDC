@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { TableCilindros } from './components/table-cilindros/table-cilindros';
 import { HeaderPage } from "../../../../shared/components/header-page/header-page";
 import Cilindro from '../../interfaces/cilindro.interface';
@@ -13,6 +13,7 @@ import { ButtonIcon } from "../../../../shared/components/button-icon/button-ico
   selector: 'app-cilindros-cliente',
   imports: [TableCilindros, HeaderPage, SpinnerLoad, ButtonIcon],
   templateUrl: './cilindros-cliente.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './cilindros-cliente.css',
 })
 export default class CilindrosCliente {

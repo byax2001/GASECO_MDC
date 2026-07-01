@@ -1,5 +1,5 @@
 
-import { Component, inject, signal, ViewChild } from '@angular/core';
+import { Component, inject, signal, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 import { HeaderPage } from "../../../../shared/components/header-page/header-page";
 import { ActivatedRoute } from '@angular/router';
 
@@ -23,6 +23,7 @@ import { CorreoResponse } from '../../../../interfaces/CorreoResponse.interface'
   selector: 'app-orden-venta',
   imports: [HeaderPage, FormsModule, OrdenLines, ReactiveFormsModule, Modalg, OrdenHeader, SpinnerLoad, ButtonIcon],
   templateUrl: './orden-venta.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './orden-venta.css',
 })
 export default class OrdenVenta {
@@ -31,17 +32,22 @@ export default class OrdenVenta {
   private ventasQueryService = inject(VentasQueryService);
   private emailAdminService = inject(EmailAdminService);
 
+
   @ViewChild('modalG') modalG!: Modalg;
   @ViewChild('ordenLines') ordenLines!: OrdenLines;
+
+
   loading = signal (false);
 
   formHeader = this.fb.nonNullable.group({
     orderNum: [0],
     custID: ['', Validators.required],
     fechaRequerida: ['', Validators.required],
+    TipoCilindros: ['PROPIO', Validators.required],
     ubicacion: [''],
     proyecto: [''],
     currencyCode: ['GTQ', Validators.required],
+    TipoOperacion: ['', Validators.required]
   });
 
   orderNumView = signal<number>(0);
@@ -62,6 +68,7 @@ export default class OrdenVenta {
   });
   LMonedas = signal<Moneda[]>([]);
   creandoOV = signal(false);
+  
 
  
 
@@ -127,13 +134,23 @@ export default class OrdenVenta {
   }
 
   CrearOrdenVenta() {
-    if (this.formHeader.valid && this.creandoOV() === false) {
+
+    if(this.creandoOV()) return; // Evitar doble click mientras se procesa la solicitud
+
+    if (this.formHeader.valid) {
       const formData = this.formHeader.value;
       console.log('Datos del formulario:', formData);
       // Aquí puedes agregar la lógica para enviar los datos a tu servicio o API
     } else {
-      console.log('Formulario no válido');
+      this.modalG.showModalG('Error', 'Por favor, completa todos los campos requeridos antes de crear la orden de venta.');
+      return;
     }
+    if(this.ordenLines.lineas.length === 0) {
+      this.modalG.showModalG('Error', 'No se han agregado lineas a la orden de venta. Por favor, agrega al menos una linea antes de crear la orden de venta.');
+      return;
+    }
+  
+
     //Creando OV es para evitar el doble click en el boton de crear orden de venta mientras se procesa la solicitud
     this.creandoOV.set(true);
 
@@ -142,7 +159,8 @@ export default class OrdenVenta {
       CustNum: this.CustInfoOv()?.Customer_CustNum || 0,
       CurrencyCod: this.formHeader.value.currencyCode!,
       Proyecto: this.formHeader.value.proyecto!,
-      FechaR: new Date(this.formHeader.value.fechaRequerida!)
+      FechaR: new Date(this.formHeader.value.fechaRequerida!),
+      TOperacion: this.formHeader.value.TipoOperacion!
     }; 
 
     //Se muestra el spinner de carga mientras se procesa la solicitud de creación de orden de venta
@@ -167,15 +185,15 @@ export default class OrdenVenta {
               //Se oculta el Spinner de carga
               this.loading.set(false);
               this.orderNumView.set(response.OrderNum);
-              this.modalG.setModalTitle('Orden de Venta Creada');
-              this.modalG.setModalMessage(
-                `La orden de venta número ${response.OrderNum} ha sido creada exitosamente.`
-              );
-              this.modalG.openModal();
+              //ENVIAR CORREO AL REPRESENTANTE DE VENTAS DEL CLIENTE CON EL NUMERO DE ORDEN DE VENTA CREADA
+              this.EnviarCorreo(response.OrderNum);
+              
+              this.creandoOV.set(false);
             console.log('Lineas agregadas exitosamente:', addLineResponse);
           }
           ,error: (error) => {
             console.error('Error agregando lineas a la orden de venta:', error);
+            this.modalG.showModalG('Error', 'Ocurrió un error al agregar las líneas a la orden de venta. Por favor, inténtalo de nuevo.');
           }
         });
 
@@ -184,8 +202,7 @@ export default class OrdenVenta {
       },
       error: (error) => {
         console.error('Error creando la orden de venta:', error);
-        this.modalG.setModalTitle('Error al crear la orden de venta');
-        this.modalG.setModalMessage('Ocurrió un error al crear la orden de venta. Por favor, inténtalo de nuevo.');
+        this.modalG.showModalG('Error', 'Ocurrió un error al crear la orden de venta. Por favor, inténtalo de nuevo.');
         this.modalG.openModal();
       }
     });
@@ -194,7 +211,7 @@ export default class OrdenVenta {
 
   }
 
-  EnviarCorreo() {
+  EnviarCorreo(orderNum: number) {
     if(this.formHeader.value.orderNum === 0) {
       this.modalG.showModalG('Error', 'No se ha creado una orden de venta para enviar el correo. Por favor, crea una orden de venta primero.');
       return;
@@ -208,7 +225,7 @@ export default class OrdenVenta {
     this.emailAdminService.sendEmail(correo).subscribe({
         next: (response: CorreoResponse) => {
           if(response.status.toLowerCase() === 'ok') {
-            this.modalG.showModalG('Correo Enviado', 'El correo ha sido enviado exitosamente al representante de ventas.');
+              this.modalG.showModalG('Orden de Venta Creada', `La orden de venta número ${orderNum} ha sido creada exitosamente.`);
           }else
           {
             this.modalG.showModalG('Error', `Ocurrió un error al enviar el correo: ${response.mensaje}`);
@@ -224,6 +241,16 @@ export default class OrdenVenta {
 
   }
   
+//EVITAR QUE EL USUARIO CAMBIE EL TIPO DE CILINDRO SI YA HAY LINEAS AGREGADAS A LA ORDEN DE VENTA
+  validarCambioTipoCilindro() {
+    const totalLineas = this.ordenLines?.lineas?.length ?? 0;
+    console.log('Total de lineas en la orden de venta:', totalLineas);
+    if (totalLineas > 1) {
+      this.formHeader.controls.TipoCilindros.disable();
+    } else {
+      this.formHeader.controls.TipoCilindros.enable();
+    }
+}
 
 
 }

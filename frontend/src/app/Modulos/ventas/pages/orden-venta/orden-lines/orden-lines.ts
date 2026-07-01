@@ -1,19 +1,20 @@
-import { Component, computed, HostListener, inject, input, Input, signal } from '@angular/core';
+import { Component, computed, HostListener, inject, input, Input, signal, ChangeDetectionStrategy, output } from '@angular/core';
 import { FormArray, FormBuilder, ReactiveFormsModule, Validators, FormControl, FormGroup } from '@angular/forms';
-import UOM from '../../../interfaces/uom.interface';
-import { Parte } from '../../../interfaces/parte.interface';
 import { PartOV } from '../components/interface/PartOV.interface';
 import { VentasQueryService } from '../../../services/ventasquery.service';
 import { TCilindros } from '../../../interfaces/TCilindros.interface';
 import { PartUOM } from '../../../interfaces/PartUOM.interface';
 import { AddLineOvRequest } from '../components/interface/AddLineOvRequest.interface';
 import { AddLineOvResponse } from '../components/interface/AddLineOvResponse.interface';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { Correo } from '../../../../../interfaces/Correo.interface';
+import { rxResource } from '@angular/core/rxjs-interop';
+import { UserInfoService } from '../../../../../services/userInfo.service';
 
 type LineaOvForm = FormGroup<{
   noLinea: FormControl<number>;
   parte: FormControl<string>;
+  descripcion: FormControl<string>;
   cilindros: FormControl<number>;
   presentacion: FormControl<string>;
   uom: FormControl<string>;
@@ -29,14 +30,19 @@ type LineaOvForm = FormGroup<{
   selector: 'Orden-lines',
   imports: [ReactiveFormsModule],
   templateUrl: './orden-lines.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './orden-lines.css',
 })
 
 export class OrdenLines {
   //Codigo de Cliente
+  userInfoService = inject(UserInfoService);
   custID = input.required<string>();
   CustNum = input.required<number>();
   OrderNum = input.required<number>();
+  TipoCilindros = input.required<string>();
+  AddDelLine = output();
+
   //Moneda de la Orden de venta
   currencyCode = input.required<string>();
   //Representa una linea de pedido
@@ -48,13 +54,34 @@ export class OrdenLines {
   //Servicio para obtener datos relacionados con ventas, como partes, UOMs, precios, etc.
   private ventasQueryService = inject(VentasQueryService);
   
-  //Partes disponibles para la orden de venta, se cargan al iniciar el componente en el combobox
-  Parts = signal<PartOV[]>([]);
   //UOMs por línea, se actualizan dinámicamente al seleccionar una parte
   uomsPorLinea = signal<Record<number, PartUOM[]>>({});
   //Tipos de cilindros disponibles para la orden de venta, se cargan al iniciar el componente en el combobox
-  Presentaciones = signal<TCilindros[]>([]);
-  
+  Presentaciones = rxResource<TCilindros[], { company: string | null }>({
+      params: () => ({
+        company: this.userInfoService.company()
+      }),
+      stream: ({ params }) => {
+        if (!params.company) {
+          return of([]); // Retorna un observable con un array vacío si no hay empresa seleccionada
+        }
+        return this.ventasQueryService.getTipoCilindros();
+      }
+    }); 
+
+  //PARTES DISPONIBLES PARA LA ORDEN DE VENTA
+  Parts = rxResource<PartOV[], { company: string | null }>({
+    params: () => ({
+      company: this.userInfoService.company()
+    }),
+    stream: ({ params }) => {
+      if (!params.company) {
+        return of([]); // Retorna un observable con un array vacío si no hay empresa seleccionada
+      }
+      return this.ventasQueryService.getPartOv();
+    }
+  });
+
   //APARTADO PARA VERIFICAR SI EL USUARIO ESTA EN MOVIL O DESKTOP
   @HostListener('window:resize')
   onResize() {
@@ -67,7 +94,15 @@ export class OrdenLines {
     return this.form.get('lineas') as FormArray;
   }
 
-  //TIPAR FORMULARIO:
+
+
+  //FILTRAR PRESENTACIONES:
+  PresentacionesFiltradas = computed(() => {
+    const tipo = this.TipoCilindros();
+      return (this.Presentaciones.value()??[]).filter(p =>
+        p.Calculated_Propietario === tipo
+      );
+  });
   
 
   // Método para crear una nueva línea de pedido con valores por defecto
@@ -79,31 +114,33 @@ export class OrdenLines {
       cilindros: [cilindros, [Validators.required, Validators.min(0)]],
       presentacion: [presentacion, [Validators.required, Validators.min(0)]],
       uom: [uom, Validators.required],
+      descripcion: [ '', Validators.required],
       precio: [0, [Validators.required, Validators.min(0)]],
       ncertificado: [false, Validators.required],
       Qty: [{ value: cilindros * presentacion, disabled: true }],
       total: [{ value: cilindros * presentacion * 0, disabled: true }],
     });
-
+    //Si es UND o SERV se bloquea la presentacion y se coloca 1, de lo contrario se habilita para que el usuario pueda colocar la presentacion deseada
     group.get('uom')?.valueChanges.subscribe(uom => {
 
         const presCtrl = group.get('presentacion');
 
         if (uom === 'UND' || uom === 'SERV') {
+          //Se coloca 1 por default y se bloquea el campo de presentación
           presCtrl?.setValue(1);
-          presCtrl?.disable({ emitEvent: false });
+          //presCtrl?.disable({ emitEvent: false });
         } else {
-          presCtrl?.enable({ emitEvent: false });
+          //presCtrl?.enable({ emitEvent: false });
         }
 
     });
 
     //Escucha constantemente los cambios en los campos relevantes para calcular el total (cilindros, presentación, precio y UOM)
     group.valueChanges.subscribe(value => {
-      //EN EL CASO DE QUE LA UNIDAD SEA UND O SER LA PRESENTACION SE CONSIDERA 1, 
+      //EN EL CASO DE QUE LA UNIDAD SEA 'UND','SER' LA PRESENTACION SE CONSIDERA 1, 
       //DE LO CONTRARIO SE TOMA EL VALOR INGRESADO EN PRESENTACION
       const uom = value.uom;
-      const qtyPres = (uom === 'UND' || uom === 'SER')
+      const qtyPres = (uom === 'UND' || uom === 'SER' || uom?.includes('U_') || uom?.includes('A_'))
         ? 1
         : this.qtyPresentación(String(value.presentacion));
 
@@ -129,21 +166,12 @@ export class OrdenLines {
         console.error('Error al obtener partes para orden de venta:', err);
       }
     });
-
-    //OBTENER PRESENTACIONES DE CILINDROS PARA ORDEN DE VENTA
-    this.ventasQueryService.getTipoCilindros().subscribe({
-      next: (presentaciones) => {
-        this.Presentaciones.set(presentaciones);
-      },
-      error: (err) => {
-        console.error('Error al obtener presentaciones de cilindros para orden de venta:', err);
-      }
-    });
   }
 
   //Metodo para agregar una linea de pedido en blanco, se pueden agregar tantas como se necesiten
   addLinea(): void {
     this.lineas.push(this.createLinea());
+    this.AddDelLine.emit();
   }
 
   // Metodo para eliminar una línea del pedido, 
@@ -170,6 +198,7 @@ export class OrdenLines {
 
       return updated;
     });
+    this.AddDelLine.emit();
   }
 
 
@@ -204,6 +233,14 @@ export class OrdenLines {
       }
 
     });
+
+    //AGREGAR DESCRIPCION DE LA PARTE SELECCIONADA
+    const parteSeleccionada = (this.Parts.value()??[]).find(p => p.Part_PartNum === partNum);
+    if (parteSeleccionada) {
+      linea.get('descripcion')?.setValue(parteSeleccionada.Part_PartDescription);
+    } else {
+      linea.get('descripcion')?.setValue('');
+    }
 
   }
 
@@ -251,7 +288,8 @@ export class OrdenLines {
       Qty: linea.Qty,
       PrecioUnit: linea.precio,
       UOM: linea.uom,
-      OrderNum: OrderNum
+      OrderNum: OrderNum,
+      Descripcion: linea.descripcion
     }));
 
     return this.ventasQueryService.postAddLineas(lineasPedido)
@@ -261,7 +299,7 @@ export class OrdenLines {
   // SE UTILIZA PARA CALCULAR LA CANTIDAD TOTAL A VENDER EN BASE AL NUMERO DE CILINDROS 
   // Y LA PRESENTACION
   qtyPresentación(presentacion: string):Number{
-    return this.Presentaciones()
+    return (this.Presentaciones.value()??[])
     .find(p => p.UDCodes_CodeID === presentacion)
     ?.UDCodes_NUMERO01_c ?? 0;
   }

@@ -1,4 +1,4 @@
-import { Component, computed, effect, HostListener, inject, input, signal, ViewChild } from '@angular/core';
+import { Component, computed, effect, HostListener, inject, input, signal, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 import { Cliente } from '../../../interfaces/cliente.interface';
 import { PaginationTable } from "../../../../../shared/components/pagination-table/pagination-table";
 import { Router, RouterLink} from '@angular/router';
@@ -9,6 +9,7 @@ import { Modalg } from "../../../../../shared/components/modalg/modalg";
   selector: 'app-table-clientes',
   imports: [PaginationTable, Modalg],
   templateUrl: './table-clientes.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './table-clientes.css',
 })
 export class TableClientes {

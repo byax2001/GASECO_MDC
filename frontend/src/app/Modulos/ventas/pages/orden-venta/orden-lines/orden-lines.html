@@ -6,6 +6,7 @@
     <thead>
       <tr class="bg-gray-200">
         <th class="w-60 border-y border-gray-100 bg-gray-50/50 p-2">Parte</th>
+        <th class="w-60 border-y border-gray-100 bg-gray-50/50 p-2">Descripción</th>
         <th class="w-25 border-y border-gray-100 bg-gray-50/50 p-2">No. Cilindros</th>
         <th class="w-25 border-y border-gray-100 bg-gray-50/50 p-2">Presentación</th>
         <th class="w-25 border-y border-gray-100 bg-gray-50/50 p-2">UOM</th>
@@ -21,6 +22,7 @@
 
         <tr [formGroupName]="index">
 
+<!--SELECCIÓN DE PARTE-->
           <td class="border border-gray-300 px-4 py-2">
             <select
             formControlName="parte" 
@@ -34,6 +36,15 @@
               }
             </select>
           </td>
+<!--DESCRIPCION DE PARTE -->
+          <td class="border border-gray-300 px-4 py-2">
+            <input
+              type="text"
+              formControlName="descripcion"
+              class="w-full p-2 rounded border"
+            />
+          </td>
+
 <!--NUMERO DE CILINDROS-->
           <td class="border border-gray-300 px-4 py-2">
             <input
@@ -46,9 +57,9 @@
 <!--PRESENTACION-->
           <td class="border border-gray-300 px-4 py-2">
             <select formControlName="presentacion" class="w-full p-2 rounded border bg-white">
-              @for (pres of Presentaciones(); track pres) {
+              @for (pres of PresentacionesFiltradas(); track pres) {
                 <option [value]="pres.UDCodes_CodeID">
-                  {{ pres.UDCodes_NUMERO01_c }} {{ pres.Calculated_Propietario}}
+                 Tipo {{pres.UDCodes_CodeDesc}}: {{ pres.UDCodes_NUMERO01_c }} 
                 </option>
               }
             </select>
@@ -133,6 +144,7 @@
           [class.bg-green-50]="index % 2 !== 0"
         >
 
+<!--SELECCIÓN DE PARTE-->
           <label class="label">Parte</label>
           <select formControlName="parte" class="select select-bordered w-full" (change)="onParteChange(index)">
             @for (parte of Parts(); track parte.Part_PartNum) {
@@ -142,18 +154,23 @@
             }
           </select>
 
+<!--DESCRIPCION DE PARTE -->
+
+          <label class="label mt-2">Descripción</label>
+          <input type="text" formControlName="descripcion" class="input input-bordered w-full" />
+<!--NUMERO DE CILINDROS-->
           <label class="label mt-2">No. Cilindros</label>
           <input type="number" formControlName="cilindros" class="input input-bordered w-full" />
-
+<!--PRESENTACION-->
           <label class="label mt-2">Presentación</label>
           <select formControlName="presentacion" class="select select-bordered w-full">
-            @for (pres of Presentaciones(); track pres) {
+            @for (pres of PresentacionesFiltradas(); track pres) {
               <option [value]="pres.UDCodes_CodeID">
-                {{ pres.UDCodes_NUMERO01_c }} {{ pres.Calculated_Propietario }}
+                Tipo {{ pres.UDCodes_CodeDesc}}: {{ pres.UDCodes_NUMERO01_c }}
               </option>
             }
           </select>
-
+<!--UNIDAD DE MEDIDA (UOM)-->
           <label class="label mt-2">UOM</label>
           <select formControlName="uom" class="select select-bordered w-full" (change)="ChangeUnitPrice(index)">
             @for (uom of uomsPorLinea()[index]; track uom.RowIdent) {
@@ -162,13 +179,13 @@
               </option>
             }
           </select>
-
+<!--PRECIO UNITARIO-->
           <label class="label mt-2">Precio</label>
           <input type="number" formControlName="precio" class="input input-bordered w-full" />
-
+<!--PRECIO TOTAL: SOLO LECTURA-->
           <label class="label mt-2">Precio Total</label>
           <input type="number" formControlName="total" class="input input-bordered w-full" readonly />
-
+<!--CERTIFICADO-->
           <label class="label mt-2 cursor-pointer justify-start gap-3">
             <input type="checkbox" formControlName="ncertificado" class="checkbox checkbox-primary" />
             <span>Certificado</span>

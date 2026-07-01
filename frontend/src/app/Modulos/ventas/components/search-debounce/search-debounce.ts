@@ -1,9 +1,10 @@
-import { Component, effect, output, signal } from '@angular/core';
+import { Component, effect, output, signal, ChangeDetectionStrategy } from '@angular/core';
 
 @Component({
   selector: 'app-search-debounce',
   imports: [],
   templateUrl: './search-debounce.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './search-debounce.css',
 })
 export class SearchDebounce {

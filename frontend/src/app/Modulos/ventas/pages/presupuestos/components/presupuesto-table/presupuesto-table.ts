@@ -1,4 +1,4 @@
-import { Component, computed, effect, inject, input, signal, ViewChild } from '@angular/core';
+import { Component, computed, effect, inject, input, signal, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 import {
   FormArray,
   FormBuilder,
@@ -22,6 +22,7 @@ import { FilesAdmin } from '../../../../../../services/files-admin.service';
   selector: 'presupuesto-table',
   imports: [ReactiveFormsModule, FormsModule, ReactiveFormsModule, DecimalPipe, ButtonIcon, ModalAddLP, PaginationTable],
   templateUrl: './presupuesto-table.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './presupuesto-table.css',
 })
 export class PresupuestoTable {

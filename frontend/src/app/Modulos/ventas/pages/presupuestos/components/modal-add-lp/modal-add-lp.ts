@@ -1,4 +1,4 @@
-import { Component, inject, input, output, signal } from '@angular/core';
+import { Component, inject, input, output, signal, ChangeDetectionStrategy } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { PresupuestoRowForm } from '../Interface/PresupuestoRowForm.type';
 import { PartOV } from '../../../orden-venta/components/interface/PartOV.interface';
@@ -11,6 +11,7 @@ import { of } from 'rxjs';
   selector: 'modal-add-lp',
   imports: [ReactiveFormsModule],
   templateUrl: './modal-add-lp.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './modal-add-lp.css',
 })
 export class ModalAddLP  {
