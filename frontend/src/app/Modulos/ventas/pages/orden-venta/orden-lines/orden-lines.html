@@ -29,7 +29,7 @@
             class="w-full p-2 rounded border bg-white"
             (change)="onParteChange(index)"
             >
-              @for (parte of Parts(); track parte.Part_PartNum) {
+              @for (parte of Parts.value()??[]; track parte.Part_PartNum) {
                 <option [value]="parte.Part_PartNum">
                   {{ parte.Part_PartDescription }}
                 </option>
@@ -147,7 +147,7 @@
 <!--SELECCIÓN DE PARTE-->
           <label class="label">Parte</label>
           <select formControlName="parte" class="select select-bordered w-full" (change)="onParteChange(index)">
-            @for (parte of Parts(); track parte.Part_PartNum) {
+            @for (parte of Parts.value()??[]; track parte.Part_PartNum) {
               <option [value]="parte.Part_PartNum">
                 {{ parte.Part_PartDescription }}
               </option>
