@@ -1,0 +1,52 @@
+<app-header-page PageName="Orden de Venta" />
+<modalg #modalG />
+
+@if(loading()){
+  <SpinnerLoad/>
+}
+<form [formGroup]="formHeader">
+  <div class="w-full min-h-screen p-1 bg-white" [class.opacity-50]="loading()" [class.pointer-events-none]="loading()">
+  <!-- HEADER FORM -->
+    <orden-venta-header
+      [formHeader]="formHeader"
+      [CustInfoOv]="CustInfoOv()"
+      [LMonedas]="LMonedas()"
+      [creandoOV]="creandoOV()"
+      [orderNumView]="orderNumView()"
+    />
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-0 md:mt-5">
+    </div>
+    <!-- BOTON CREAR ORDEN DE VENTA -->
+    <div class="flex justify-center md:justify-end gap-2">
+      <button class="btn bg-[#A6C441] text-white hover:bg-[#8aa83a] mb-0 md:mb-3" (click)="CrearOrdenVenta()"
+        [disabled]="!formHeader.valid || formHeader.controls.orderNum.value>0">
+        @if(formHeader.controls.orderNum.value > 0) {
+        OV Creada
+        } @else {
+        Crear Orden de Venta
+        }</button>      
+
+        <button-icon
+          icon="fa-solid fa-envelope"
+          color="blue"
+          tooltip="Enviar Correo"
+          [funcion]="() => EnviarCorreo(formHeader.controls.orderNum.value)"
+        ></button-icon>  
+    </div>
+
+<!-- LINEAS DE ORDEN  -->
+    <div class="overflow-x-auto">
+      <!-- SE ENVIA EL CUSTID Y EL TIPO DE MONEDA PARA BUSCAR UNA LISTA DE PRECIO CON LA MONEDA SELECCIONADA PARA EL TEMA DEL PRECIO UNITARIO AUTOMATICO-->
+      <Orden-lines 
+        #ordenLines
+        [custID]="formHeader.controls.custID.value"
+        [CustNum]="CustInfoOv().Customer_CustNum"
+        [currencyCode]="formHeader.controls.currencyCode.value"
+        [OrderNum]="formHeader.controls.orderNum.value"
+        [TipoCilindros]="formHeader.controls.TipoCilindros.value"
+        (AddDelLine)="validarCambioTipoCilindro()"
+        />
+
+    </div>
+  </div>
+</form>

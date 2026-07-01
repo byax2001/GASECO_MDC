@@ -19,4 +19,5 @@ public class OrdenVentaLineRequest {
     private double PrecioUnit;
     private String UOM;
     private int OrderNum;
+    private String Descripcion;
 }

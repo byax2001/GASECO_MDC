@@ -1,4 +1,4 @@
-import { Component, inject, input, output, ViewChild } from '@angular/core';
+import { Component, inject, input, output, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 import { Company } from '../../interfaces/Company.interface';
 import { Modalact } from "../../shared/components/modalact/modalact";
 import { CookieService } from 'ngx-cookie-service';
@@ -10,6 +10,7 @@ import { UserInfoService } from '../../services/userInfo.service';
   selector: 'NavbarHome',
   imports: [Modalact, FormsModule],
   templateUrl: './navbar-home.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './navbar-home.css',
 })
 export class NavbarHome {

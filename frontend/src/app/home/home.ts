@@ -1,4 +1,4 @@
-import { Component, computed, inject, signal, ViewChild } from '@angular/core';
+import { Component, computed, inject, signal, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 import { Modalg } from "../shared/components/modalg/modalg";
 import {NavbarHome} from "./navbar-home/navbar-home";
 import { Router, RouterLink } from '@angular/router';
@@ -11,6 +11,7 @@ import { Cardg } from '../shared/components/cardm/cardm';
   selector: 'app-home',
   imports: [Modalg, NavbarHome, Cardg],
   templateUrl: './home.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './home.css',
 })
 

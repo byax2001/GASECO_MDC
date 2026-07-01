@@ -1,9 +1,10 @@
-import { Component, input, output, signal } from '@angular/core';
+import { Component, input, output, signal, ChangeDetectionStrategy } from '@angular/core';
 
 @Component({
   selector: 'modalact',
   imports: [],
   templateUrl: './modalact.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './modalact.css',
 })
 export class Modalact {

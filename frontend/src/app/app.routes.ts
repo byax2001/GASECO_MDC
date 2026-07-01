@@ -18,7 +18,14 @@ export const routes: Routes = [
   },
   {
     path: 'ventas',
-    loadChildren: () => import('./ventas/ventas.routes'),
+    loadChildren: () => import('./Modulos/ventas/ventas.routes'),
+    canMatch:[
+      authenticatedGuard
+    ]
+  },
+  {
+    path: 'handheldop',
+    loadChildren: () => import('./Modulos/handheldOp/handheldop.routes'),
     canMatch:[
       authenticatedGuard
     ]

@@ -1,9 +1,10 @@
-import { Component, computed, input, output, signal } from '@angular/core';
+import { Component, computed, input, output, signal, ChangeDetectionStrategy } from '@angular/core';
 
 @Component({
   selector: 'PaginationTable',
   imports: [],
   templateUrl: './pagination-table.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './pagination-table.css',
 })
 export class PaginationTable {
