@@ -1,9 +1,9 @@
 import { Routes } from "@angular/router";
-import { HandlhedopLayout } from "./layout/handlhedop-layout/handlhedop-layout";
+import { InventarioLayout } from "./layout/inventario-layout/inventario-layout";
 export const  HandheldOP: Routes = [
   {
     path: '',
-    component: HandlhedopLayout,
+    component: InventarioLayout,
     children:[
       {
        path: 'scancil',

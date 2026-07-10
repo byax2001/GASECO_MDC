@@ -24,8 +24,8 @@ export const routes: Routes = [
     ]
   },
   {
-    path: 'handheldop',
-    loadChildren: () => import('./Modulos/handheldOp/handheldop.routes'),
+    path: 'inventario',
+    loadChildren: () => import('./Modulos/inventario/inventario.routes'),
     canMatch:[
       authenticatedGuard
     ]

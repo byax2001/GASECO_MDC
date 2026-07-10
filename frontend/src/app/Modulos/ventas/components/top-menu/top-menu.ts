@@ -1,9 +1,10 @@
-import { Component, computed, effect, inject, signal, ViewChild, ChangeDetectionStrategy } from '@angular/core';
+import { Component, computed, effect, inject, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { CookieService } from 'ngx-cookie-service';
 import { UserInfoService } from '../../../../services/userInfo.service';
 import {FormsModule} from '@angular/forms';
 import { Modalact } from '../../../../shared/components/modalact/modalact';
+import Sucursal from './interface/sucursal.interface';
 
 
 @Component({
@@ -16,6 +17,16 @@ import { Modalact } from '../../../../shared/components/modalact/modalact';
 export class TopMenuVentas {
   userInfoService = inject(UserInfoService);
   companies = computed(() => this.userInfoService.getCompaniesCmb());
+  lsucursales: Sucursal[] = [
+    { company: '165943', code: 'MfgSys', description: 'Amatitlan' },
+    { company: '165943B', code: 'COM', description: 'Comayagua' },
+    { company: '165943B', code: 'TEG', description: 'Tegucigalpa' }
+  ]
+  sucfiltered = computed (()=>{
+    const selectedCompany = this.userInfoService.company();
+    if(!selectedCompany) return [];
+    return this.lsucursales.filter(sucursal => sucursal.company === selectedCompany);
+  })
   cookieService = inject (CookieService);
   router = inject(Router);
   @ViewChild('modalAct') modalAct!: Modalact;

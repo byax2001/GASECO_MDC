@@ -5,4 +5,5 @@ export interface CrearOvRequest {
     FechaR:      Date;
     Proyecto:    string;
     TOperacion:  string;
+    OC:          string;
 }

@@ -27,14 +27,12 @@
               d="M4 6h16M4 12h16M4 18h7" />
           </svg>
         </div>
-
         <ul
           tabindex="-1"
           class="menu menu-sm dropdown-content bg-base-100 rounded-box z-40  w-52  shadow">
-
-          <li><a routerLink="/ventas/listaclientes">Lista de Clientes</a></li>
-          <li><a routerLink="/ventas/presupuestos">Presupuestos</a></li>
-
+          @for(modulo of subModulos(); track modulo.ruta) {
+            <li><a [routerLink]="modulo.ruta">{{ modulo.descripcion }}</a></li>
+          }
         </ul>
 
       </div>
@@ -67,7 +65,7 @@
             d="M11.98 20v-1H19V5h-7.02V4H20v16zm-.71-4.461l-.703-.72l2.32-2.319H4.019v-1h8.868l-2.32-2.32l.702-.718L14.808 12z"/>
         </svg>
       </button>
-
+<!--COMPAÑIA -->
       <select
         class="select select-bordered w-40"
          [ngModel]="userInfoService.company()"
@@ -79,7 +77,19 @@
             {{ company.name }}
           </option> 
         }
+      </select>
 
+<!--SUCURSAL -->
+      <select
+        class="select select-bordered w-40"
+        [ngModel]="userInfoService.sucursal()"
+        (ngModelChange)="userInfoService.sucursal.set($event)"
+        >
+        @for(sucursal of sucursalFiltred(); track sucursal.codigo) {
+          <option [value]="sucursal.codigo">
+            {{ sucursal.descripcion }}
+          </option> 
+        }
       </select>
 
     </div>
@@ -104,16 +114,33 @@
 
     </div>
 
-    <!-- SELECT MOBILE -->
-    <div class="col-span-12 md:hidden">
+<!-------------------------------------- SELECT MOBILE -------------------------------->
+    <div class="col-span-6 md:hidden">
       <select
         class="select select-bordered w-full"
-        [ngModel]="userInfoService.company()"
-         (ngModelChange)="userInfoService.company.set($event)">
+         [ngModel]="userInfoService.company()"
+         (ngModelChange)="userInfoService.company.set($event)"
+         >
 
         @for(company of companies(); track company.code) {
           <option [value]="company.code">
             {{ company.name }}
+          </option>
+        }
+
+      </select>
+    </div>
+
+    <div class="col-span-6 md:hidden">
+      <select
+        class="select select-bordered w-full"
+        [ngModel]="userInfoService.sucursal()"
+        (ngModelChange)="userInfoService.sucursal.set($event)"
+        >
+
+        @for(sucursal of sucursalFiltred(); track sucursal.codigo) {
+          <option [value]="sucursal.codigo">
+            {{ sucursal.descripcion }}
           </option>
         }
 

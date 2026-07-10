@@ -18,5 +18,6 @@ public class OrdenVentaRequest {
      private String FechaR;
      private String Proyecto;
      private String TOperacion;
+     private String OC;
 }
 

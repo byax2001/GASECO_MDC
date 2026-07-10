@@ -50,7 +50,8 @@ export default class OrdenVenta {
     ubicacion: [''],
     proyecto: [''],
     currencyCode: ['GTQ', Validators.required],
-    TipoOperacion: ['', Validators.required]
+    TipoOperacion: ['', Validators.required],
+    OC: ['']
   });
 
   orderNumView = signal<number>(0);
@@ -153,7 +154,8 @@ CustInfoOv = rxResource<ClienteInfoOv, { company: string | null; custID: string 
       CurrencyCod: this.formHeader.value.currencyCode!,
       Proyecto: this.formHeader.value.proyecto!,
       FechaR: new Date(this.formHeader.value.fechaRequerida!),
-      TOperacion: this.formHeader.value.TipoOperacion!
+      TOperacion: this.formHeader.value.TipoOperacion!,
+      OC: this.formHeader.value.OC!
     }; 
 
     //Se muestra el spinner de carga mientras se procesa la solicitud de creación de orden de venta
@@ -210,8 +212,9 @@ CustInfoOv = rxResource<ClienteInfoOv, { company: string | null; custID: string 
       return;
     }
     const correo:Correo = this.ordenLines.getCorreo();
+    correo.asunto = `Orden de Venta ${orderNum} Creada`;
     correo.para = this.CustInfoOv.value().SalesRep_EMailAddress || '';
-    correo.mensaje = `Se ha creado la orden de venta número ${this.formHeader.value.orderNum} para el cliente ${this.CustInfoOv.value().Customer_Name}.\n` + correo.mensaje;
+    correo.mensaje = `Se ha creado la orden de venta número ${orderNum} para el cliente ${this.CustInfoOv.value().Customer_Name}.\n` + correo.mensaje;
 
     correo.mensaje += `\nDirección: ${this.formHeader.value.ubicacion}\n\n Proyecto: ${this.formHeader.value.proyecto}\n\nFecha Requerida: ${this.formHeader.value.fechaRequerida}\n\nMoneda: ${this.formHeader.value.currencyCode}\n\n`;
     this.loading.set(true);

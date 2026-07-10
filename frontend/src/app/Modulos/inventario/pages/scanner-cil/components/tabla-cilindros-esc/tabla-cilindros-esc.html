@@ -1,0 +1,47 @@
+<table class="table-auto border-collapse border border-gray-400 w-full text-xs">
+    <thead>
+        <tr>
+            <th class="px-1 py-2">No.</th>
+            <th class="px-2 py-2">ID</th>
+            <th class="px-2 py-2">Serie</th>
+            <th class="px-3 py-2">Producto</th>
+            <th class="px-3 py-2">PartNum</th>
+            <th class="px-2 py-2">UOM</th>
+            <th class="px-2 py-2">Estado</th>
+            <th class="px-2 py-2 hidden md:table-cell">Mt. Cubicos</th>
+            <th class="px-2 py-2 hidden md:table-cell">Sucursal</th>
+            <th class="px-2 py-2 hidden md:table-cell">Fecha Ult. Mov</th>
+            <th class="px-2 py-2 hidden md:table-cell">Fecha Ult. Lle</th>
+            <th class="px-1 py-2">Acción</th>
+        </tr>
+    </thead>
+    <tbody>
+        @for(cilindro of lcilindros(); track cilindro.IDCILINDRO; let index = $index) {
+            <tr class="border-b border-gray-200 hover:bg-gray-100 font-normal"
+            [class.bg-white]="index % 2 === 0"
+            [class.bg-[#EEEEEE]]="index % 2 !== 0">
+                <td class="px-1 py-4 text-center">
+                {{ index + 1 }}
+                </td>
+                <td class=" px-2 py-2 text-center">{{cilindro.IDCILINDRO}}</td>
+                <td class="px-2 py-2 text-center">{{cilindro.SERIE}}</td>
+                <td class="px-3 py-2 text-center">{{cilindro.DESCCORTA}}</td>
+                <td class="px-3 py-2 text-center">{{cilindro.CVEPRODUCTO_CP}}</td>
+                <td class="px-2 py-2 text-center">{{cilindro.UDM}}</td>
+                <td class="px-2 py-2 text-center">{{cilindro.UBACTUAL}}</td>
+                <td class="px-2 py-2 text-center hidden md:table-cell">{{cilindro.MTSCUBICOS}}</td>
+                <td class="px-2 py-2 text-center hidden md:table-cell">{{cilindro.SUCURSAL}}</td>
+                <td class="px-2 py-2 text-center hidden md:table-cell">{{cilindro.FHULTMOV | date:'dd/MM/yyyy HH:mm:ss'}}</td>
+                <td class="px-2 py-2 text-center hidden md:table-cell">{{cilindro.FHULTLLE | date:'dd/MM/yyyy HH:mm:ss'}}</td>
+                <td class=" border-gray-300 px-4 py-2 text-center">
+                <button type="button" (click)="funcDel(index)" class="p-2 text-red-600">
+                <svg class="w-6 h-6" stroke="currentColor" fill="none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                    <path d="M 10 2 L 9 3 L 4 3 L 4 5 L 5 5 L 5 20 C 5 20.522222 5.1913289 21.05461 5.5683594 21.431641 C 5.9453899 21.808671 6.4777778 22 7 22 L 17 22 C 17.522222 22 18.05461 21.808671 18.431641 21.431641 C 18.808671 21.05461 19 20.522222 19 20 L 19 5 L 20 5 L 20 3 L 15 3 L 14 2 L 10 2 z M 7 5 L 17 5 L 17 20 L 7 20 L 7 5 z M 9 7 L 9 18 L 11 18 L 11 7 L 9 7 z M13,7L13,18L15,18L15,7L13,7z"></path>
+                    </svg>
+                </button>
+            </td>
+            </tr>
+        }   
+    </tbody>
+</table>
+

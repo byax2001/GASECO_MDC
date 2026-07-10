@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { HandlhedopLayout } from './handlhedop-layout';
+import { TablaCilindrosEsc } from './tabla-cilindros-esc';
 
-describe('HandlhedopLayout', () => {
-  let component: HandlhedopLayout;
-  let fixture: ComponentFixture<HandlhedopLayout>;
+describe('TablaCilindrosEsc', () => {
+  let component: TablaCilindrosEsc;
+  let fixture: ComponentFixture<TablaCilindrosEsc>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [HandlhedopLayout]
+      imports: [TablaCilindrosEsc]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(HandlhedopLayout);
+    fixture = TestBed.createComponent(TablaCilindrosEsc);
     component = fixture.componentInstance;
     await fixture.whenStable();
   });

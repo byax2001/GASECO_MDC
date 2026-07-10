@@ -1,0 +1,35 @@
+export interface CilindroScan {
+    IDCILINDRO:        number;
+    SERIE:             string;
+    CVEPRODUCTO_CP:    string;
+    CVEENVASE:         string;
+    UBACTUAL:          string;
+    REFUBACTUAL:       number;
+    UBANTERIOR:        string;
+    REFUBANTERIOR:     null;
+    MTSCUBICOS:        number;
+    FHREGISTRO:        null;
+    USUARIO:           null;
+    STATUS:            string;
+    OBSERVACION:       null;
+    NUMCERTIFICADO:    null;
+    FECHAPH:           null;
+    EXPPERMITIDA:      null;
+    RANGOEXP:          null;
+    EXPTOTAL:          null;
+    PESO:              null;
+    CAPACIDAD:         null;
+    FABRICANTE:        string;
+    CVEPROPIETARIO:    string;
+    CONEXION:          string;
+    CVEORIGEN:         string;
+    SUCURSAL:          string;
+    NORMA_FABRICACION: string;
+    COMPANIA:          null;
+    FHULTMOV:          Date;
+    ULOTELLE:          null;
+    FHULTLLE:          null;
+    DESCCORTA:         string;
+    UDM:               string;
+    LINEA_CUBO:        string;
+}
