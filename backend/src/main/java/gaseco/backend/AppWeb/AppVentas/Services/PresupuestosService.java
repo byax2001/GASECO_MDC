@@ -67,12 +67,18 @@ public class PresupuestosService {
         return ventas;
     }
 
-    public List<Map<String, Object>> GetVendedores(String Company) {
+    public List<Map<String, Object>> GetVendedores(String Company, String CodVendedor) {
         String username = AppConstants.EPICOR_USER;
         String password = AppConstants.EPICOR_PASS;
 
         //BAQ a consultar para obtener los vendedores, el nombre de la función en Epicor es App_V_Vendedores
-        String baq_consult = "/api/v1/BaqSvc/App_V_Vendedores("+Company+")/Data?Anio=";
+        String baq_consult = "/api/v1/BaqSvc/App_V_Vendedores("+Company+")/Data?";
+
+        if(CodVendedor != "0" && !CodVendedor.isEmpty() && CodVendedor != null){
+            baq_consult += "CodVendedor=" + CodVendedor;
+        }
+        
+
        
         Map<String, Object> response = webClient.get()
             .uri(AppConstants.EPICOR_URL+ baq_consult)

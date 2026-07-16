@@ -24,6 +24,10 @@ export class PresupuestoqueryServiceTs {
   }
 
   getVendedores():Observable<Vendedores[]> {
-    return this.http.get<Vendedores[]>(`${this.url}/ventas/ppto/vendedores/${this.userInfoService.company()}`);
+    if(this.userInfoService.rol()!='ADMIN'){
+      const codVendedor = this.userInfoService.getCodeUser('VENTAS');
+      return this.http.get<Vendedores[]>(`${this.url}/ventas/ppto/vendedores/${this.userInfoService.company()}/${codVendedor}`);
+    }
+    return this.http.get<Vendedores[]>(`${this.url}/ventas/ppto/vendedores/${this.userInfoService.company()}/0`);
   }
 }

@@ -29,7 +29,7 @@ export default class ScannerCil {
       //Luego de 500ms de inactividad, se emite el valor del input
       this.buscarCilindro(value);
       console.log('Emitted value:', value);
-    }, 100);
+    }, 200);
 
     onCleanup(() => {
       clearTimeout(timeout);

@@ -38,7 +38,7 @@ export function TokenInterceptor(
         cookieService.delete('token', '/');
         sessionStorage.clear();
         alert('Su sesión ha expirado y/o no hay licencias disponibles en Epicor')
-        window.location.href = '/login';
+        //window.location.href = '/login';
       }
 
       return throwError(() => error);

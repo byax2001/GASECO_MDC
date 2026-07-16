@@ -1,0 +1,48 @@
+<table class="table-fixed text-xs w-full border border-collapse border-gray-300">
+    <thead>
+        <tr>
+            <th class="w-15 border-y border-gray-100 bg-base-200 p-2 text-center">Orden</th>
+            <th class="w-10 border-y border-gray-100 bg-base-200 p-2 text-center">Linea</th>
+            <th class="w-25 border-y border-gray-100 bg-base-200 p-2 text-center">PartNum</th>
+            <th class="w-30 border-y border-gray-100 bg-base-200 p-2 text-center">Producto</th>
+            <th class="w-30 border-y border-gray-100 bg-base-200 p-2 text-center">Cliente</th>
+            <th class="w-20 border-y border-gray-100 bg-base-200 p-2 text-center">Fecha Orden</th>
+            <th class="w-20 border-y border-gray-100 bg-base-200 p-2 text-center">Cantidad</th>
+            <th class="w-10 border-y border-gray-100 bg-base-200 p-2 text-center">UOM</th>
+            <th class="w-15 border-y border-gray-100 bg-base-200 p-2 text-center">No. Cilindros</th>
+            <th class="w-20 border-y border-gray-100 bg-base-200 p-2 text-center">Capacidad</th>
+            <th class="w-15 border-y border-gray-100 bg-base-200 p-2 text-center">Tipo Cilindro</th>
+            <th class="w-15 border-y border-gray-100 bg-base-200 p-2 text-center">Estado Linea</th>
+            <th class="w-15 border-y border-gray-100 bg-base-200 p-2 text-center">Precio</th>
+            <th class="w-20 border-y border-gray-100 bg-base-200 p-2 text-center">Impuesto</th>
+            <th class="w-15 border-y border-gray-100 bg-base-200 p-2 text-center">Total</th>
+            <th class="w-25 border-y border-gray-100 bg-base-200 p-2 text-center">Operación</th>
+            <th class="w-15 border-y border-gray-100 bg-base-200 p-2 text-center">Código</th>
+        </tr>
+    </thead>
+    <tbody>
+        @for(ovpendiente of OVPendientes(); track ovpendiente.RowIdent; let index = $index) {
+            <tr class="border-b border-gray-200 hover:bg-gray-100"
+            [class.bg-white]="index % 2 === 0"
+            [class.bg-[#EEEEEE]]="index % 2 !== 0">
+                <td class="px-2 text-center">{{ ovpendiente.OrderDtl_OrderNum }}</td>
+                <td class="px-2 text-center">{{ ovpendiente.OrderDtl_OrderLine}}</td>
+                <td class="px-2 text-center">{{ ovpendiente.Part_PartNum }}</td>
+                <td class="px-2">{{ ovpendiente.Part_PartDescription }}</td>
+                <td class="px-2">{{ ovpendiente.Customer_Name }}</td>
+                <td class="px-2">{{ ovpendiente.OrderHed_OrderDate | date: 'dd/MM/yyyy' }}</td>
+                <td class="px-2 text-center">{{ ovpendiente.OrderDtl_OrderQty }}</td>
+                <td class="px-2 text-center">{{ ovpendiente.OrderDtl_SalesUM }}</td>
+                <td class="px-2 text-center">{{ ovpendiente.OrderDtl_NUMCILINDROS_c }}</td>
+                <td class="px-2 text-center">{{ ovpendiente.Calculated_Capacidad }}</td>
+                <td class="px-2 text-center">{{ ovpendiente.Calculated_DescCilindro }}</td>
+                <td class="px-2 text-center">{{ ovpendiente.OrderDtl_LineStatus }}</td>
+                <td class="px-2 text-center">{{ ovpendiente.OrderHed_DocTotalCharges }}</td>
+                <td class="px-2 text-center">{{ ovpendiente.OrderHed_DocTotalTax }}</td>
+                <td class="px-2 text-center">{{ ovpendiente.OrderHed_DocOrderAmt}}</td>
+                <td class="px-2">{{ ovpendiente.Calculated_OperacionDesc }}</td>
+                <td class="px-2 text-center">{{ ovpendiente.OrderHed_CVEOPERACION_c }}</td>
+            </tr>
+        }
+    </tbody>
+</table>

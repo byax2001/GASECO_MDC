@@ -23,9 +23,9 @@ public class PresupuestosController {
          return presupuestosService.GetVentas(Company, Anio, PresupuestoPor, CodVendedor);
     }
 
-    @GetMapping("/vendedores/{Company}")
-    public List<Map<String, Object>> GetVendedores(@PathVariable String Company) {
-        return presupuestosService.GetVendedores(Company);
+    @GetMapping("/vendedores/{Company}/{CodVendedor}")
+    public List<Map<String, Object>> GetVendedores(@PathVariable String Company, @PathVariable String CodVendedor) {
+        return presupuestosService.GetVendedores(Company, CodVendedor);
     }
 
 }
