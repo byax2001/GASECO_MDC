@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { HandlhedopLayout } from './handlhedop-layout';
+import { DateInput } from './date-input';
 
-describe('HandlhedopLayout', () => {
-  let component: HandlhedopLayout;
-  let fixture: ComponentFixture<HandlhedopLayout>;
+describe('DateInput', () => {
+  let component: DateInput;
+  let fixture: ComponentFixture<DateInput>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [HandlhedopLayout]
+      imports: [DateInput]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(HandlhedopLayout);
+    fixture = TestBed.createComponent(DateInput);
     component = fixture.componentInstance;
     await fixture.whenStable();
   });

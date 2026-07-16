@@ -20,15 +20,6 @@
         </p>
       </div>
 
-      
-
-      <div class="p-3 rounded-xl bg-gray-50">
-        <label class="text-xs text-gray-500">Territorio</label>
-        <p class="font-semibold text-gray-800">
-          {{ CustInfoOv().Customer_TerritoryID }}
-        </p>
-      </div>
-
       <div class="p-3 rounded-xl bg-gray-50">
         <label class="text-xs text-gray-500">Vendedor</label>
         <p class="font-semibold text-gray-800">
@@ -68,7 +59,7 @@
       </div>
       <div class="p-3 rounded-xl bg-gray-50">
         <label class="text-xs text-gray-500">Tipo de Operación</label>
-        <select  formControlName="TipoOperacio" class="select select-bordered w-full text-xs">
+        <select  formControlName="TipoOperacion" class="select select-bordered w-full text-xs">
           @for(tipo of TipoOperacion(); track tipo) {
           <option [value]="tipo.code">
             {{ tipo.description }}
@@ -84,6 +75,13 @@
         <input type="date" class="input input-bordered w-full" formControlName="fechaRequerida" />
       </div>
 
+      <div>
+        <label class="label">
+          <span class="label-text">Orden de Compra</span>
+        </label>
+        <input type="text" placeholder="Ingrese orden de compra" class="input input-bordered w-full"
+          formControlName="OC" />
+      </div>
       <div>
         <label class="label">
           <span class="label-text">Ubicación</span>

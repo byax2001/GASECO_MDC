@@ -1,0 +1,39 @@
+<modalg #modalG/>
+
+<app-header-page [PageName]="'Ordenes de Venta Pendientes'" />
+
+<div class="container-fluid">
+  
+    <div class="">
+      <form class="grid grid-cols-1 md:grid-cols-8 gap-4" [formGroup]="formDate">
+        <date-input
+          [placeholder]="'Fecha Inicial'"
+          [idinput]="'fechaI'"
+          formControlName="fechaI"/>
+        <date-input
+          [placeholder]="'Fecha Final'"
+          [idinput]="'fechaF'"
+          formControlName="fechaF"/>
+         <div class="items-end">
+          <button-icon
+            [funcion]="() => search()"
+            [tooltip]="'Buscar'"
+            [icon]="'fa-solid fa-magnifying-glass'">
+          </button-icon>
+         
+
+        </div>
+        <div class="items-end">
+           <button-icon
+            [funcion]="() => descargarExcel()"
+            [tooltip]="'Descargar Excel'"
+            [icon]="'fa-solid fa-download'"/>
+        </div>
+      </form>
+    </div>
+  </div>
+@if(loading()){
+<SpinnerLoad/>
+}@else{
+<ovpendiente-table [OVPendientes]="OVPendientes()" />
+}

@@ -22,6 +22,7 @@ type LineaOvForm = FormGroup<{
   ncertificado: FormControl<boolean>;
   Qty: FormControl<number>;
   total: FormControl<number>;
+  asignacion: FormControl<number>;
 }>;
 
 
@@ -39,7 +40,6 @@ export class OrdenLines {
   userInfoService = inject(UserInfoService);
   custID = input.required<string>();
   CustNum = input.required<number>();
-  OrderNum = input.required<number>();
   TipoCilindros = input.required<string>();
   AddDelLine = output();
 
@@ -99,9 +99,15 @@ export class OrdenLines {
   //FILTRAR PRESENTACIONES:
   PresentacionesFiltradas = computed(() => {
     const tipo = this.TipoCilindros();
-      return (this.Presentaciones.value()??[]).filter(p =>
+      return [  {
+      UDCodes_CodeID: '0',
+      UDCodes_CodeDesc: 'N/A',
+      UDCodes_NUMERO01_c: 0,
+      Calculated_Propietario: tipo
+      },
+      ...(this.Presentaciones.value()??[]).filter(p =>
         p.Calculated_Propietario === tipo
-      );
+      )];
   });
   
 
@@ -117,8 +123,9 @@ export class OrdenLines {
       descripcion: [ '', Validators.required],
       precio: [0, [Validators.required, Validators.min(0)]],
       ncertificado: [false, Validators.required],
-      Qty: [{ value: cilindros * presentacion, disabled: true }],
+      Qty: [{ value: cilindros * presentacion, disabled: false }],
       total: [{ value: cilindros * presentacion * 0, disabled: true }],
+      asignacion: [0, [Validators.min(0)]]
     });
     //Si es UND o SERV se bloquea la presentacion y se coloca 1, de lo contrario se habilita para que el usuario pueda colocar la presentacion deseada
     group.get('uom')?.valueChanges.subscribe(uom => {
@@ -135,21 +142,40 @@ export class OrdenLines {
 
     });
 
+    let ultimaPresentacion = '';
+
     //Escucha constantemente los cambios en los campos relevantes para calcular el total (cilindros, presentación, precio y UOM)
     group.valueChanges.subscribe(value => {
+      //Controlan los valores del Qty, total y cilindros al hacer cambios en cualquiera de los campos relevantes
+      const qtyCtrl = group.get('Qty');
+      const totalCtrl = group.get('total');
+
+
       //EN EL CASO DE QUE LA UNIDAD SEA 'UND','SER' LA PRESENTACION SE CONSIDERA 1, 
       //DE LO CONTRARIO SE TOMA EL VALOR INGRESADO EN PRESENTACION
       const uom = value.uom;
+      const precio = Number(value.precio ?? 0);
+      const cilindros = Number(value.cilindros ?? 0);
+      const presentacion = String(value.presentacion ?? '');
+
       const qtyPres = (uom === 'UND' || uom === 'SER' || uom?.includes('U_') || uom?.includes('A_'))
         ? 1
-        : this.qtyPresentación(String(value.presentacion));
+        : this.qtyPresentación(presentacion);
 
-      const qty = Number(value.cilindros ?? 0) * Number(qtyPres); //Cantidad de Producto a vender
-      const total = qty *Number(value.precio ?? 0); //Total de la línea (Cantidad * Precio Unitario)
+      const qty = cilindros* Number(qtyPres); //Cantidad de Producto a vender
+      const total = qty *precio; //Total de la línea (Cantidad * Precio Unitario)
 
-      
-      group.get('Qty')?.setValue(qty, { emitEvent: false });
-      group.get('total')?.setValue(total, { emitEvent: false });
+      if (presentacion == "0" || presentacion == "") {
+        //qtyCtrl?.enable({ emitEvent: false });
+        //const qtyManual = Number(qtyCtrl?.value ?? 0);
+        qtyCtrl?.setValue(cilindros, { emitEvent: false });
+        totalCtrl?.setValue(cilindros * precio, { emitEvent: false });
+        return;
+      }
+
+      qtyCtrl?.disable({ emitEvent: false });
+      qtyCtrl?.setValue(qty, { emitEvent: false });
+      totalCtrl?.setValue(total, { emitEvent: false });
     });
 
     return group;
@@ -157,15 +183,6 @@ export class OrdenLines {
 
   //AL INICIAR EL COMPONENTE:
   ngOnInit() {
-    //OBTENER PARTES PARA ORDEN DE VENTA
-    this.ventasQueryService.getPartOv().subscribe({
-      next: (partes) => {
-        this.Parts.set(partes);
-      },
-      error: (err) => {
-        console.error('Error al obtener partes para orden de venta:', err);
-      }
-    });
   }
 
   //Metodo para agregar una linea de pedido en blanco, se pueden agregar tantas como se necesiten
@@ -283,7 +300,7 @@ export class OrdenLines {
       CustID: this.custID(),
       CustNum: this.CustNum(),
       PartNum: linea.parte,
-      NoCilindros: linea.cilindros,
+      NoCilindros: linea.uom !== "SER" ? linea.cilindros : 0,
       TipoCilindro: linea.presentacion,
       Qty: linea.Qty,
       PrecioUnit: linea.precio,
@@ -309,14 +326,14 @@ export class OrdenLines {
       const correoData:Correo= {
         para: '',
         copia: 'facturacion@gasecosa.com;aux.logistica@gasecosa.com',
-        asunto: `Orden de Venta ${this.OrderNum()} Creada`,
+        asunto: ``,
         mensaje: ``
       }
       //Si alguna linea esta con certificado se debe de copiar a rgc@gasecosa.com;
       let ncertificado = 0;
       this.form.getRawValue().lineas.forEach(linea => {
         if(linea.ncertificado){
-          correoData.copia += ';rgc@gasecosa.com';
+          correoData.copia += ';rgc@gasecosa.com;ygutierrez@gasecosa.com';
           if(ncertificado === 0){
             correoData.mensaje += '\n\nNota: Esta orden de venta contiene líneas que requieren certificado de calidad.';
             ncertificado++;
@@ -328,12 +345,13 @@ export class OrdenLines {
       const lineasPedido = this.form.getRawValue().lineas.map(linea => `
         Parte: ${linea.parte}, 
         Cilindros: ${linea.cilindros}, 
-        Presentación: ${linea.presentacion}, 
+        Presentación: ${this.Presentaciones.value()?.find(p => p.UDCodes_CodeID === linea.presentacion)?.UDCodes_CodeDesc || 'Desconocida'}, 
         UOM: ${linea.uom}, 
         Precio Unitario: ${linea.precio}, 
         Cantidad Total: ${linea.Qty}, 
+        Asignación: ${linea.asignacion},
         Certificado: ${linea.ncertificado ? 'Sí' : 'No'},
-        Total Línea: ${linea.total}
+        Precio total: ${linea.total}
       `).join('\n');  
       correoData.mensaje += '\n\nDetalles de la Orden de Venta:\n' + lineasPedido;
       return correoData;

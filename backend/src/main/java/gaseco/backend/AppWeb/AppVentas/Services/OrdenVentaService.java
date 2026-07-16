@@ -59,6 +59,7 @@ public class OrdenVentaService {
                 .build();
         }
 
+        
         OrdenVentaResponse response = webClient.post()
             .uri(AppConstants.EPICOR_URL+fx_consult)
             .header("x-api-key", AppConstants.EPICOR_API_KEY)
@@ -89,7 +90,7 @@ public class OrdenVentaService {
             }
 
             OrdenVentaLineResponse response = null;
-
+            System.out.println("Creando orden de venta con request: " + AppConstants.EPICOR_URL+fx_consult);
             try{
                 for(OrdenVentaLineRequest line : request){
                     System.out.println("Agregando línea: " + line);

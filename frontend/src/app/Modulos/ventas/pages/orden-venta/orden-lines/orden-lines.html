@@ -4,16 +4,18 @@
   @if(!isMobile()) {
   <table class="w-full table-fixed border-collapse border border-gray-300">
     <thead>
-      <tr class="bg-gray-200">
-        <th class="w-60 border-y border-gray-100 bg-gray-50/50 p-2">Parte</th>
-        <th class="w-60 border-y border-gray-100 bg-gray-50/50 p-2">Descripción</th>
+      <tr class="bg-gray-200 text-xs">
+        <th class="w-50 border-y border-gray-100 bg-gray-50/50 p-2">Parte</th>
+        <th class="w-50 border-y border-gray-100 bg-gray-50/50 p-2">Descripción</th>
         <th class="w-25 border-y border-gray-100 bg-gray-50/50 p-2">No. Cilindros</th>
         <th class="w-25 border-y border-gray-100 bg-gray-50/50 p-2">Presentación</th>
-        <th class="w-25 border-y border-gray-100 bg-gray-50/50 p-2">UOM</th>
+        <th class="w-23 border-y border-gray-100 bg-gray-50/50 p-2">UOM</th>
+        <th class="w-25 border-y border-gray-100 bg-gray-50/50 p-2">Cantidad</th>
         <th class="w-25 border-y border-gray-100 bg-gray-50/50 p-2">Precio</th>
         <th class="w-25 border-y border-gray-100 bg-gray-50/50 p-2">Precio Total</th>
-        <th class="w-25 border-y border-gray-100 bg-gray-50/50 p-2">Certificado</th>
-        <th class="w-25 border-y border-gray-100 bg-gray-50/50 p-2">Action</th>
+        <th class="w-20 border-y border-gray-100 bg-gray-50/50 p-2">Certificado</th>
+        <th class="w-22 border-y border-gray-100 bg-gray-50/50 p-2">Asignar</th>
+        <th class="w-15 border-y border-gray-100 bg-gray-50/50 p-2">Acción</th>
       </tr>
     </thead>
 
@@ -23,13 +25,13 @@
         <tr [formGroupName]="index">
 
 <!--SELECCIÓN DE PARTE-->
-          <td class="border border-gray-300 px-4 py-2">
+          <td class="border border-gray-300 px-3 py-2">
             <select
             formControlName="parte" 
             class="w-full p-2 rounded border bg-white"
             (change)="onParteChange(index)"
             >
-              @for (parte of Parts.value()??[]; track parte.Part_PartNum) {
+              @for (parte of Parts.value(); track parte.Part_PartNum) {
                 <option [value]="parte.Part_PartNum">
                   {{ parte.Part_PartDescription }}
                 </option>
@@ -37,7 +39,7 @@
             </select>
           </td>
 <!--DESCRIPCION DE PARTE -->
-          <td class="border border-gray-300 px-4 py-2">
+          <td class="border border-gray-300 px-3 py-2">
             <input
               type="text"
               formControlName="descripcion"
@@ -55,15 +57,16 @@
           </td>
 
 <!--PRESENTACION-->
-          <td class="border border-gray-300 px-4 py-2">
+          <td class="border border-gray-300 px-3 py-2">
             <select formControlName="presentacion" class="w-full p-2 rounded border bg-white">
               @for (pres of PresentacionesFiltradas(); track pres) {
                 <option [value]="pres.UDCodes_CodeID">
-                 Tipo {{pres.UDCodes_CodeDesc}}: {{ pres.UDCodes_NUMERO01_c }} 
+                 {{pres.UDCodes_CodeDesc}}: {{ pres.UDCodes_NUMERO01_c }} 
                 </option>
               }
             </select>
           </td>
+
 
 <!--UNIDAD DE MEDIDA (UOM)-->
          <td class="border border-gray-300 px-4 py-2">
@@ -79,8 +82,17 @@
     }
   </select>
 </td>
+<!--CANTIDAD -->
+          <td class="border border-gray-300 px-4 py-2">
+            <input
+              type="number"
+              formControlName="Qty"
+              class="w-full p-2 rounded border"
+            />
+          </td>
+
 <!--PRECIO UNITARIO-->
-            <td class="border border-gray-300 px-4 py-2">
+            <td class="border border-gray-300 px-2 py-2">
                 <input
                 type="number"
                 formControlName="precio"
@@ -89,7 +101,7 @@
                 />
             </td>
 <!--PRECIO TOTAL: SOLO LECTURA-->
-          <td class="border border-gray-300 px-4 py-2">
+          <td class="border border-gray-300 px-2 py-2">
             <input
               type="number"
               formControlName="total"
@@ -97,6 +109,8 @@
               readonly
             />
           </td>
+
+
 <!--CERTIFICADO-->
 
             <td class="border border-gray-300 px-4 py-2 text-center">
@@ -105,6 +119,14 @@
                 formControlName="ncertificado"
                 class="h-5 w-5 text-blue-600 rounded border-gray-300 focus:ring-blue-500"
                 />
+<!--ASIGNACION-->
+          <td class="border border-gray-300 px-3 py-2">
+            <input
+              type="number"
+              formControlName="asignacion"
+              class="w-full p-2 rounded border"
+            />
+          </td>
 <!--ELIMINAR LINEA-->
           <td class="border border-gray-300 px-4 py-2">
             <button type="button" (click)="removeLinea(index)" class="p-2 text-red-600">
@@ -166,7 +188,7 @@
           <select formControlName="presentacion" class="select select-bordered w-full">
             @for (pres of PresentacionesFiltradas(); track pres) {
               <option [value]="pres.UDCodes_CodeID">
-                Tipo {{ pres.UDCodes_CodeDesc}}: {{ pres.UDCodes_NUMERO01_c }}
+                {{ pres.UDCodes_CodeDesc}}: {{ pres.UDCodes_NUMERO01_c }}
               </option>
             }
           </select>

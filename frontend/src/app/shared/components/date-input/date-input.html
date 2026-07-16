@@ -1,0 +1,18 @@
+ <div class="relative mb-5">
+  <label
+    [for]="idinput()"
+    class="absolute -top-2 left-3 bg-white px-2 text-xs text-gray-500 z-1">
+    {{ placeholder() }}
+  </label>
+
+  <input
+    [id]="idinput()"
+    type="date"
+    class="input input-bordered w-full"
+    [value]="value"
+    [disabled]="disabled"
+    (input)="updateValue($event)"
+    (blur)="onTouched()">
+    
+
+</div>

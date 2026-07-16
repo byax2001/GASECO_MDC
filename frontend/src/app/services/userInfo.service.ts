@@ -18,6 +18,7 @@ export class UserInfoService {
   userInfo = signal<InfoUser>({});
   rol = signal<string>('');
   company = signal<string>('');
+  sucursal = signal<string>('');
 
   companyNames: Record<string, string> = {
     '165943': 'GASECO GT',
@@ -43,8 +44,8 @@ export class UserInfoService {
 
   getUserInfo(username: string): Observable<InfoAppResponse[]> {
     //Ya no es necesario el token porque el interceptor se encarga de agregarlo a cada petición
-  return this.http.get<InfoAppResponse[]>(
-    `${environment.API_URL}/user-info/${username}`);
+    return this.http.get<InfoAppResponse[]>(
+      `${environment.API_URL}/user-info/${username}`);
   }
 
   getUserName(): Observable<UserName> {
@@ -104,6 +105,7 @@ export class UserInfoService {
   verifyAccess(modulo: string): boolean {
     // El !! simplemente convierte el resultado a un booleano, devolviendo true si el código de usuario 
     // existe para el módulo dado, o false si no existe.
+    console.log('Verificando acceso para el módulo:', modulo, 'Código de usuario:', this.getCodeUser(modulo));
     return !!this.getCodeUser(modulo);
   }
 
