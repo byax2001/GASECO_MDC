@@ -5,6 +5,8 @@ import { UserInfoService } from '../../../services/userInfo.service';
 import { Observable } from 'rxjs';
 import { VentasPresupuestoResponse } from '../pages/presupuestos/interface/VentasPresupuestoResponse.interface';
 import { Vendedores } from '../interfaces/Vendedores.interface';
+import UploadpptoResponse from '../pages/presupuestos/interface/UploadpptoResponse.interface';
+import UploadpptoRequest from '../pages/presupuestos/interface/UploadpptoRequest.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -17,7 +19,7 @@ export class PresupuestoqueryServiceTs {
 
 
   // Retorna las ventas para presupuestos
-  getVentasPresupuesto(Anio:number, PresupuestoPor:string, CodVendedor:number): Observable<VentasPresupuestoResponse[]> {
+  getVentasPresupuesto(Anio:number, PresupuestoPor:string, CodVendedor:string): Observable<VentasPresupuestoResponse[]> {
     return this.http.get<VentasPresupuestoResponse[]>(
       `${this.url}/ventas/ppto/${this.userInfoService.company()}/${Anio}/${PresupuestoPor}/${CodVendedor}`
     );
@@ -28,6 +30,10 @@ export class PresupuestoqueryServiceTs {
       const codVendedor = this.userInfoService.getCodeUser('VENTAS');
       return this.http.get<Vendedores[]>(`${this.url}/ventas/ppto/vendedores/${this.userInfoService.company()}/${codVendedor}`);
     }
-    return this.http.get<Vendedores[]>(`${this.url}/ventas/ppto/vendedores/${this.userInfoService.company()}/0`);
+    return this.http.get<Vendedores[]>(`${this.url}/ventas/ppto/vendedores/${this.userInfoService.company()}/ADMIN`);
+  }
+
+  uploadPresupuesto(data: UploadpptoRequest): Observable<UploadpptoResponse> {
+    return this.http.post<UploadpptoResponse>(`${this.url}/ventas/ppto/upload/${this.userInfoService.company()}`, data);
   }
 }

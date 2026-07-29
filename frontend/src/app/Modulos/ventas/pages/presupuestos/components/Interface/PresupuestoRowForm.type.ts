@@ -8,6 +8,8 @@ export type PresupuestoRowForm = FormGroup<{
   partDescription: FormControl<string>;
   Calculated_UOM: FormControl<string>;
   precioU: FormControl<number>;
+  CodVendedor: FormControl<string>;
+  Anio: FormControl<number>;
 
   eneroBase: FormControl<number>;
   febreroBase: FormControl<number>;

@@ -30,6 +30,8 @@ export class PresupuestoTable {
 
   private fb = inject(FormBuilder);
   porcentaje = signal<number>(0);
+  Anio = input.required<number>();
+  CodVendedor = input.required<string>();
   presupuestoData = input.required<VentasPresupuestoResponse[]>()
 
   form = this.fb.nonNullable.group({
@@ -91,6 +93,8 @@ private mesesP = [
       partDescription: row.Part_PartDescription,
       Calculated_UOM: row.Calculated_UOM,
       precioU: row.Calculated_PrecioU,
+      CodVendedor: row.Customer_SalesRepCode,
+      Anio: row.Calculated_Anio,
 
       eneroBase: row.Calculated_Enero,
       febreroBase: row.Calculated_Febrero,
@@ -225,6 +229,10 @@ showModalAdd(){
   this.ModalAdd.showModalG("Agregar línea de presupuesto", "Complete los campos para agregar una nueva línea al presupuesto.");
 }
 addLineaPresupuesto(nuevaLinea: PresupuestoRowForm) {
+  nuevaLinea.patchValue({
+    Anio: this.Anio(),
+    CodVendedor: this.CodVendedor()
+  });
   this.filas.push(nuevaLinea);
 }
 
@@ -311,4 +319,49 @@ actualizarBasesSinReset(data: VentasPresupuestoResponse[]) {
   });
 }
 
+getDataFacturacion():string {
+  // Data es un array de objetos que contiene la información de cada fila del presupuesto, incluyendo los valores base y calculados
+  const data = this.filas.controls.map(f => ({
+    CustID: f.controls.CustID.value,
+    PartNum: f.controls.partNum.value,
+    Anio: f.controls.Anio.value +"", //En Epicor el Anio es un string, por eso se hace la conversion a string
+    UOM: f.controls.Calculated_UOM.value,
+    SalesRepCode: f.controls.CodVendedor.value,
+    PrecioU: f.controls.precioU.value,
+    Ene: f.controls.eneroBase.value,
+    Feb: f.controls.febreroBase.value,
+    Mar: f.controls.marzoBase.value,
+    Abr: f.controls.abrilBase.value,
+    May: f.controls.mayoBase.value,
+    Jun: f.controls.junioBase.value,
+    Jul: f.controls.julioBase.value,
+    Ago: f.controls.agostoBase.value,
+    Sep: f.controls.septiembreBase.value,
+    Oct: f.controls.octubreBase.value,
+    Nov: f.controls.noviembreBase.value,
+    Dic: f.controls.diciembreBase.value,
+    Porcentaje: f.controls.porcentaje.value,
+    EneP: f.controls.eneroP.value,
+    FebP: f.controls.febreroP.value,
+    MarP: f.controls.marzoP.value,
+    AbrP: f.controls.abrilP.value,
+    MayP: f.controls.mayoP.value,
+    JunP: f.controls.junioP.value,
+    JulP: f.controls.julioP.value,
+    AgoP: f.controls.agostoP.value,
+    SepP: f.controls.septiembreP.value,
+    OctP: f.controls.octubreP.value,
+    NovP: f.controls.noviembreP.value,
+    DicP: f.controls.diciembreP.value
+  }));
+console.log(typeof this.filas.controls[0].controls.Anio.value);
+console.log(this.filas.controls[0].controls.Anio.value);
+
+console.log(typeof this.filas.controls[0].controls.precioU.value);
+console.log(this.filas.controls[0].controls.precioU.value);
+  
+
+  // Convertir el array de objetos a un string JSON para enviarlo al backend
+  return JSON.stringify(data);
+}
 }
