@@ -39,6 +39,9 @@ export class ModalAddLP  {
     partNum: ['', Validators.required],
     partDescription: ['', Validators.required],
     Calculated_UOM: ['', Validators.required],
+    CodVendedor: '',
+    Anio: 0,
+
     precioU: [0, [Validators.required, Validators.min(0.01)]],
     eneroBase: 0,
     febreroBase: 0,

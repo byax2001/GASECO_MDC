@@ -46,6 +46,17 @@
         icon="fa-brands fa-sistrix"
       />
     </div>
+    <div  class="p-1 rounded-xl bg-gray-50 flex items-end">
+     
+     @if(this.formHeader.value.CodPresupuestoPor == 'F'){
+      <button-icon
+        class="w-full md:w-auto"
+        [funcion]="() => uploadEpicor()"
+        tooltip="Subir a Epicor"
+        icon="fa-solid fa-upload"
+      />
+     }
+    </div>
   </div>
 </form>
 
@@ -53,6 +64,8 @@
 <div class="overflow-x-auto">
   <presupuesto-table 
   #presupuestoTable
+  [Anio]="formHeader.getRawValue().anio"
+  [CodVendedor]="formHeader.getRawValue().CodVendedor"
   [presupuestoData]="presupuestoData()" /> 
 </div>
 

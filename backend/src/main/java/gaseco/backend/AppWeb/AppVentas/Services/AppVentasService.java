@@ -28,24 +28,18 @@ public class AppVentasService {
         String password = AppConstants.EPICOR_PASS;
 
         //El nombre del BAQ es App_V_Customer
-        String baq_consult = "/BaqSvc/App_V_Customer/Data?";
+        String baq_consult = "/BaqSvc/App_V_Customer("+Company+")/Data?";
 
         if(!"".equals(CodVendedor)){
-            baq_consult += "CodVendedor='" + CodVendedor + "'";
+            baq_consult += "CodVendedor=" + CodVendedor;
         }
 
-        System.out.println("Obteniendo token de Epicor...");
-        String token = epicorService.getToken(username, password);
-        System.out.println("Token obtenido: " + token);
-
-         if (token == null) {
-        return List.of(Map.of("error", "Error al obtener el token de Epicor"));
-        }
 
         Map<String, Object> response = webClient.get()
-            .uri(AppConstants.EPICOR_URL+"/api/v2/odata/" + Company + baq_consult)
+            .uri(AppConstants.EPICOR_URL+"/api/v1/"+ baq_consult)
             .header("x-api-key", AppConstants.EPICOR_API_KEY)
-            .header("Authorization", "Bearer " + token)
+            .header("Authorization", "Basic "+Base64.getEncoder().encodeToString((username + ":" + password).getBytes()))
+            //.header("Authorization", "Bearer " + token)
             .accept(MediaType.APPLICATION_JSON)
             .retrieve()
             .bodyToMono(Map.class)

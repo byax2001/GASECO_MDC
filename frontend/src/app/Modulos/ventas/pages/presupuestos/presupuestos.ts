@@ -11,11 +11,12 @@ import { ComboDefault } from '../../../../interfaces/ComboDefault.interface';
 import { ButtonIcon } from "../../../../shared/components/button-icon/button-icon";
 import { UserInfoService } from '../../../../services/userInfo.service';
 import { finalize, of } from 'rxjs';
+import UploadpptoRequest from './interface/UploadpptoRequest.interface';
 
 
 type PresupuestoHeaderForm = {
   anio: FormControl<number>;
-  CodVendedor: FormControl<number>;
+  CodVendedor: FormControl<string>;
   CodPresupuestoPor: FormControl<string>;
 };
 
@@ -42,7 +43,7 @@ export default class Presupuestos {
     if (!params.company) { return of([]);}
 
     this.formHeader.patchValue({
-      CodVendedor: 0
+      CodVendedor: ''
     });
 
 
@@ -67,7 +68,7 @@ export default class Presupuestos {
   private fb = inject(FormBuilder);
   formHeader: FormGroup<PresupuestoHeaderForm> = this.fb.nonNullable.group({
   anio: [0, Validators.required],
-  CodVendedor: [0, Validators.required],
+  CodVendedor: ['', Validators.required],
   CodPresupuestoPor: ['V', Validators.required]
 });
   
@@ -112,7 +113,7 @@ export default class Presupuestos {
 
   getVendedores(){
        //Una vez cargada la información del usuario, se procede a cargar los vendedores
-          this.presupuestoService.getVendedores().subscribe({
+        this.presupuestoService.getVendedores().subscribe({
           next: (data) => {
             this.Lvendedores.set(data);
           },
@@ -137,7 +138,7 @@ export default class Presupuestos {
       this.loading.set(false);
       return;
     }
-    if(this.formHeader.controls.CodVendedor.value! <= 0) {
+    if(this.formHeader.controls.CodVendedor.value! === '') {
       this.modalG.showModalG("Error", "Por favor, seleccione un vendedor.");
       this.loading.set(false);
       return;
@@ -157,5 +158,33 @@ export default class Presupuestos {
         console.error('Error al obtener los datos de presupuesto:', error);
       }
     });
+  }
+
+
+
+  uploadEpicor() {
+      console.log('Subiendo datos a Epicor');
+      this.loading.set(true);
+      const data = this.presupuestoTable.getDataFacturacion();
+      if (data === '[]') {
+        this.modalG.showModalG("Error", "No hay datos para subir a Epicor.");
+        this.loading.set(false);
+        return;
+      }
+      const uploadData: UploadpptoRequest = { "pptos": data };
+
+      console.log('Datos a subir:', uploadData);
+      this.presupuestoService.uploadPresupuesto(uploadData).subscribe({
+        next: (response) => {
+          this.modalG.showModalG("Éxito", "Datos subidos a Epicor correctamente.");
+          console.log('Respuesta del servidor:', response);
+          this.loading.set(false);
+        },
+        error: (error) => {
+          this.modalG.showModalG("Error", "Ocurrió un error al subir los datos a Epicor. Por favor, inténtelo de nuevo más tarde.");
+          console.error('Error al subir los datos a Epicor:', error);
+          this.loading.set(false);
+        }
+      });
   }
 }
