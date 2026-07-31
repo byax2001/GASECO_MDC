@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { CilindrosCliente } from './cilindros-cliente';
+import  CilindrosCliente  from './cilindros-cliente';
 
 describe('CilindrosCliente', () => {
   let component: CilindrosCliente;
