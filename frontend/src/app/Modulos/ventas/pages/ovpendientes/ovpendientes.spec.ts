@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { OVPendientes } from './ovpendientes';
+import OVPendientes  from './ovpendientes';
 
 describe('OVPendientes', () => {
   let component: OVPendientes;

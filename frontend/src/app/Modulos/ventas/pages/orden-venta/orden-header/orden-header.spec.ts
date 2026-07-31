@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { OrdenHeader } from './orden-header';
+import  OrdenHeader  from './orden-header';
 
 describe('OrdenHeader', () => {
   let component: OrdenHeader;

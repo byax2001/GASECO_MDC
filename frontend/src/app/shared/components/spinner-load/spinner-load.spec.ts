@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { SnipperLoad } from './spinner-load';
+import { SpinnerLoad } from './spinner-load';
 
-describe('SnipperLoad', () => {
-  let component: SnipperLoad;
-  let fixture: ComponentFixture<SnipperLoad>;
+describe('SpinnerLoad', () => {
+  let component: SpinnerLoad;
+  let fixture: ComponentFixture<SpinnerLoad>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [SnipperLoad]
+      imports: [SpinnerLoad]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(SnipperLoad);
+    fixture = TestBed.createComponent(SpinnerLoad);
     component = fixture.componentInstance;
     await fixture.whenStable();
   });

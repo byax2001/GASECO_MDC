@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ScannerCil } from './scanner-cil';
+import ScannerCil from './scanner-cil';
 
 describe('ScannerCil', () => {
   let component: ScannerCil;
