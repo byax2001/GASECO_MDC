@@ -1,0 +1,18 @@
+<app-header-page
+  PageName="Reporte de Ventas Vendedores"
+/>
+
+<FiltroFechaIF
+  (rangoFechas)="search($event)"
+/>
+<div class="container mt-4">
+  @if(loading()){
+    <SpinnerLoad/>
+  }@else{
+    <TableVendedoresRV
+      [ventasVendedores]="ventasVendedores()"
+      />
+  }
+
+
+</div>

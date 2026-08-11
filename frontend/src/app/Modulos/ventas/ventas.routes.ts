@@ -25,6 +25,10 @@ export const ventasRoutes: Routes = [
       {
         path: 'ovpendientes',
         loadComponent: () => import('./pages/ovpendientes/ovpendientes')
+      },
+      {
+        path:'vendedores-rv',
+        loadComponent: () => import('./pages/vendedores-rv/vendedores-rv')
       }
 
 
