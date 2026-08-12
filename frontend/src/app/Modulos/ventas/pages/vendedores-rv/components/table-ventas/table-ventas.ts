@@ -4,7 +4,7 @@ import { DecimalPipe, PercentPipe } from '@angular/common';
 
 @Component({
   selector: 'TableVendedoresRV',
-  imports: [DecimalPipe, PercentPipe],
+  imports: [DecimalPipe],
   templateUrl: './table-ventas.html',
   styleUrl: './table-ventas.css',
 })

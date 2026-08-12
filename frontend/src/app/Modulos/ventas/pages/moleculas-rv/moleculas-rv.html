@@ -1,7 +1,7 @@
 <modalg #modalG/>
 
 <app-header-page
-  PageName="Reporte de Ventas Vendedores"
+  PageName="Reporte de Ventas Moleculas"
 />
 
 <FiltroFechaIF
@@ -16,8 +16,8 @@
   @if(loading()){
     <SpinnerLoad/>
   }@else{
-    <TableVendedoresRV
-      [ventasVendedores]="ventasVendedores()"
+    <TableMoleculasRV
+      [ventasMoleculas]="ventasMoleculas()"
       />
   }
 </div>
@@ -25,8 +25,8 @@
 <!-- VELOCIMETRO TOTAL-->
 <div>
 <velocimetro
-  [variable1]="ventasVendedores().slice(0,-1).reduce((acc, fila) => acc + fila.Calculated_Venta, 0)"
-  [variable2]="ventasVendedores().slice(0,-1).reduce((acc, fila) => acc + fila.Calculated_PPTO, 0)"
+  [variable1]="ventasMoleculas().slice(0,-1).reduce((acc, fila) => acc + fila.Calculated_Venta, 0)"
+  [variable2]="ventasMoleculas().slice(0,-1).reduce((acc, fila) => acc + fila.Calculated_PPTO, 0)"
   [nameVariable1]="'Ventas'"
   [nameVariable2]="'PPTO'"
   [symbolvariable1]="'Q'"
@@ -37,17 +37,18 @@
 
 <!--Velocimetro individual-->
 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-    @for (ventasSeller of ventasVendedores(); track $index) {
-        @if($index < ventasVendedores().length - 1){
+    @for (ventasMolecula of ventasMoleculas(); track $index) {
+        @if($index < ventasMoleculas().length - 1){
             <velocimetro
-                [variable1]="ventasSeller.Calculated_Venta"
-                [variable2]="ventasSeller.Calculated_PPTO"
+                [variable1]="ventasMolecula.Calculated_Venta"
+                [variable2]="ventasMolecula.Calculated_PPTO"
                 [nameVariable1]="'Ventas'"
                 [nameVariable2]="'PPTO'"
                 [symbolvariable1]="'Q'"
                 [symbolvariable2]="'Q'"
-                [nameVelocimetro]="ventasSeller.Calculated_SellerName"
+                [nameVelocimetro]="ventasMolecula.UDCodes_CodeDesc"
             />
         }
     }
 </div>
+

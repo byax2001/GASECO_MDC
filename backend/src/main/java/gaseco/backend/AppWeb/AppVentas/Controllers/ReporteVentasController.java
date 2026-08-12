@@ -21,12 +21,13 @@ public class ReporteVentasController {
 
     @GetMapping("/sellers/{Company}/{FhInicial}/{FhFinal}")
     public ResponseEntity<List<Map<String, Object>>> VentasVendedores(@PathVariable String Company, @PathVariable String FhInicial, @PathVariable String FhFinal) {
-        System.out.println("Company: " + Company);
-        System.out.println("FhInicial: " + FhInicial);
-        System.out.println("FhFinal: " + FhFinal);
         List<Map<String, Object>> vendedores = reporteVentasService.VentasVendedores(Company, FhInicial, FhFinal);
         return ResponseEntity.ok(vendedores);
     }
 
-
+    @GetMapping("/moleculas/{Company}/{FhInicial}/{FhFinal}")
+    public ResponseEntity<List<Map<String,Object>>> VentasMoleculas (@PathVariable String Company, @PathVariable String FhInicial, @PathVariable String FhFinal) {
+        List<Map<String,Object>> moleculas = reporteVentasService.VentasMoleculas(Company, FhInicial, FhFinal);
+        return ResponseEntity.ok(moleculas);
+    }
 }

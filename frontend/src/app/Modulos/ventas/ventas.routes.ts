@@ -1,5 +1,6 @@
 import { Routes } from "@angular/router";
 import { VentasLayout } from "./layouts/ventas-layout/ventas-layout";
+import { adminpermisosGuard } from "../../guards/adminpermisos.guard";
 
 export const ventasRoutes: Routes = [
   {
@@ -28,7 +29,13 @@ export const ventasRoutes: Routes = [
       },
       {
         path:'vendedores-rv',
-        loadComponent: () => import('./pages/vendedores-rv/vendedores-rv')
+        loadComponent: () => import('./pages/vendedores-rv/vendedores-rv'),
+        canActivate: [adminpermisosGuard]
+      },
+      {
+        path:'moleculas-rv',
+        loadComponent: () => import('./pages/moleculas-rv/moleculas-rv'),
+        canActivate: [adminpermisosGuard]
       }
 
 

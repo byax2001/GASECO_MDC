@@ -6,6 +6,7 @@ import { UserInfoService } from '../../../services/userInfo.service';
 import { RangoFechaIF } from '../../../shared/components/filtro-fecha-if/interface/RangoFechaIF.interface';
 import { Observable } from 'rxjs/internal/Observable';
 import VentasVendedores from '../pages/vendedores-rv/interface/VentasVendedores.interface';
+import { VentasMoleculas } from '../pages/moleculas-rv/interfaces/VentasMoleculas.interface';
 
 @Service()
 export class ReporteVentasService {
@@ -19,4 +20,9 @@ export class ReporteVentasService {
     );
   }
 
+  getVentasMoleculas(RangoFechas: RangoFechaIF): Observable<VentasMoleculas[]> {
+    return this.http.get<VentasMoleculas[]>(
+      `${this.url}/ventas/reporte/moleculas/${this.userInfoService.company()}/${RangoFechas.FhInicial}/${RangoFechas.FhFinal}`
+    );
+  }
 }

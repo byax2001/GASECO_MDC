@@ -30,7 +30,8 @@ export class TopMenuVentas {
       { descripcion: 'Lista de Clientes', ruta: '/ventas/listaclientes' },
       { descripcion: 'Presupuestos', ruta: '/ventas/presupuestos' },
       { descripcion: 'Órdenes de Venta Pendientes', ruta: '/ventas/ovpendientes' },
-      {descripcion: 'Reporte de Ventas Vendedores', ruta: '/ventas/vendedores-rv'}
+      {descripcion: 'Reporte de Ventas Vendedores', ruta: '/ventas/vendedores-rv'},
+      {descripcion: 'Reporte de Ventas Moléculas', ruta: '/ventas/moleculas-rv'}
     ];
     
   sucfiltered = computed (()=>{
