@@ -1,0 +1,54 @@
+
+<!--
+export default interface VentasVendedores {
+    Calculated_SellerName: string;
+    Calculated_IDVendedor: string;
+    Calculated_Venta:      number;
+    Calculated_Costo:      number;
+    Calculated_Peso:       number;
+    Calculated_PPTO:       number;
+    Calculated_Ejecutado:  number;
+    Calculated_Pendiente:  number;
+    Calculated_GAP:        number;
+    Calculated_MG:         number;
+    Calculated_MGp:        number;
+    RowIdent:              string;
+}
+-->
+
+<table class="table-fixed text-xs w-full border border-collapse border-gray-300">
+    <thead>
+        <tr>
+            <th class="p-2 text-left">Vendedor</th>
+            <th class="p-2 text-center">ID Vendedor</th>
+            <th class="p-2 text-left">Venta</th>
+            <th class="p-2 text-left">Costo</th>
+            <th class="p-2 text-left">Peso</th>
+            <th class="p-2 text-left">PPTO</th>
+            <th class="p-2 text-left">Ejecutado</th>
+            <th class="p-2 text-left">Pendiente</th>
+            <th class="p-2 text-left">GAP</th>
+            <th class="p-2 text-left">MG</th>
+            <th class="p-2 text-left">MG%</th>
+        </tr>
+    </thead>
+    <tbody>
+        @for (fila of ventasVendedores(); track fila.RowIdent; let index = $index) {
+            <tr class="border-b border-gray-200 hover:bg-gray-100"
+            [class.bg-white]="index % 2 === 0"
+            [class.bg-[#EEEEEE]]="index % 2 !== 0">
+                <td class="py-1">{{ fila.Calculated_SellerName }}</td>
+                <td class="text-center">{{ fila.Calculated_IDVendedor }}</td>
+                <td>{{ fila.Calculated_Venta | number: "1.2-2" }}</td>
+                <td>{{fila.Calculated_Costo | number: "1.2-2" }}</td>
+                <td>{{fila.Calculated_Peso | number:"1.2-2"}}%</td>
+                <td>{{fila.Calculated_PPTO | number:"1.2-2"}}</td>
+                <td>{{fila.Calculated_Ejecutado | number:"1.2-2"}}%</td>
+                <td>{{fila.Calculated_Pendiente | number:"1.2-2"}}%</td>
+                <td>{{fila.Calculated_GAP | number: "1.2-2" }}</td>
+                <td>{{fila.Calculated_MG | number: "1.2-2" }}</td>
+                <td>{{fila.Calculated_MGp | number:"1.2-2"}}%</td>
+            </tr>
+        }
+    </tbody>
+</table>

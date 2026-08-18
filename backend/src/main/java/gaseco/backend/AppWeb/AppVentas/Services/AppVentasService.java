@@ -94,7 +94,16 @@ public class AppVentasService {
             .bodyToMono(Map.class)
             .block();
 
-        return (List<Map<String, Object>>) response.get("value");
+        List<Map<String, Object>> lmonedas =(List<Map<String, Object>>) response.get("value");
+        lmonedas.forEach(row -> {
+            Object valor = row.get("Calculated_Rate");
+
+            if (valor != null) {
+                row.put("Calculated_Rate", new BigDecimal(valor.toString()));
+            }
+        });
+
+        return lmonedas;
     }
 
     //REGRESA UN LISTADO DE LOS TIPOS DE CILINDROS DE LA COMPAÑIA

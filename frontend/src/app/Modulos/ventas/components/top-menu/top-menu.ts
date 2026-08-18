@@ -5,6 +5,7 @@ import { UserInfoService } from '../../../../services/userInfo.service';
 import {FormsModule} from '@angular/forms';
 import { Modalact } from '../../../../shared/components/modalact/modalact';
 import Sucursal from './interface/sucursal.interface';
+import Link from '../../../../interfaces/Link.interface';
 
 
 @Component({
@@ -22,6 +23,17 @@ export class TopMenuVentas {
     { company: '165943B', code: 'COM', description: 'Comayagua' },
     { company: '165943B', code: 'TEG', description: 'Tegucigalpa' }
   ]
+/**   <li><a routerLink="/ventas/listaclientes">Lista de Clientes</a></li>
+          <li><a routerLink="/ventas/presupuestos">Presupuestos</a></li>
+          <li><a routerLink="/ventas/ovpendientes">Órdenes de Venta Pendientes</a></li> */
+   subModulos: Link[] = [
+      { descripcion: 'Lista de Clientes', ruta: '/ventas/listaclientes' },
+      { descripcion: 'Presupuestos', ruta: '/ventas/presupuestos' },
+      { descripcion: 'Órdenes de Venta Pendientes', ruta: '/ventas/ovpendientes' },
+      {descripcion: 'Reporte de Ventas Vendedores', ruta: '/ventas/vendedores-rv'},
+      {descripcion: 'Reporte de Ventas Moléculas', ruta: '/ventas/moleculas-rv'}
+    ];
+    
   sucfiltered = computed (()=>{
     const selectedCompany = this.userInfoService.company();
     if(!selectedCompany) return [];
@@ -65,7 +77,7 @@ export class TopMenuVentas {
   }
  
   abrirModal(){
-    this.modalAct.openModal();
+    this.modalAct.showModalAct('Cierre de sesión', '¿Confirmar cierre de sesión?');
   }
 
   accionModal(event: boolean) {

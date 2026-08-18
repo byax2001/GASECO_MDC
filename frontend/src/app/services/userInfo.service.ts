@@ -109,4 +109,8 @@ export class UserInfoService {
     return !!this.getCodeUser(modulo);
   }
 
+  isAdministrator(): boolean {
+    return this.rol() === 'ADMIN';
+  }
+
 }

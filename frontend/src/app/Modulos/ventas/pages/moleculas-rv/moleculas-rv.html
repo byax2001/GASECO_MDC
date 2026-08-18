@@ -1,0 +1,98 @@
+<modalg #modalG/>
+
+<app-header-page
+  PageName="Reporte de Ventas Moleculas"
+/>
+
+<FiltroFechaIF
+  (rangoFechas)="search($event)"
+/>
+
+<!--OPCIONES-->
+
+<div class="grid grid-cols-1 md:grid-cols-10 items-end">
+ <div class="pr-1 rounded-xl bg-gray-50">
+        <label class="text-xs text-gray-500">Descripción Moneda</label>
+        <select formControlName="currencyCode" class="select select-bordered w-full" (change) = "cambioMoneda($event)">
+          @for(moneda of LMonedas.value(); track moneda.RowIdent) {
+          <option [value]="moneda.Currency_CurrencyCode">
+            {{ moneda.Currency_CurrencyCode }}
+          </option>
+          }
+        </select>
+  </div>
+
+<button-icon
+  [funcion]="() => descargarExcel()"
+  [tooltip]="'Descargar Excel'"
+  [icon]="'fa-solid fa-download'"/>
+
+</div>
+
+<!--TARJETAS Y TABLA-->
+
+<div class="container mt-4">
+  @if(loading()){
+    <SpinnerLoad/>
+  }@else{
+    <!-- Tarjetas en Mobile -->
+    @if(isMobile()){
+      @for(ventasMolecula of ventasMoleculasExchange().slice(0, -1); track $index) {
+          <CardTable
+            [titulo]="ventasMolecula.UDCodes_CodeDesc"
+            [data]="{
+              'Molecula': ventasMolecula.UDCodes_CodeDesc,
+              'Ventas': ventasMolecula.Calculated_Venta,
+              'Peso': ventasMolecula.Calculated_Peso + ' %',
+              'Costo': ventasMolecula.Calculated_Costo,
+              'PPTO': ventasMolecula.Calculated_PPTO,
+              'Ejecutado': ventasMolecula.Calculated_Ejecutado  + ' %',
+              'Pendiente': ventasMolecula.Calculated_Pendiente  + ' %',
+              'GAP': ventasMolecula.Calculated_GAP,
+              'MG': ventasMolecula.Calculated_MG,
+              'MGp': ventasMolecula.Calculated_MGp  + ' %'
+
+            }"
+          />
+        
+      }
+    <!-- Tabla en Desktop -->
+    }@else{
+      <TableMoleculasRV
+        [ventasMoleculas]="ventasMoleculasExchange()"
+      />
+    }
+    
+  }
+</div>
+
+<!-- VELOCIMETRO TOTAL-->
+<div>
+<velocimetro
+  [variable1]="ventasMoleculasExchange().slice(0,-1).reduce((acc, fila) => acc + fila.Calculated_Venta, 0)??0"
+  [variable2]="ventasMoleculasExchange().slice(0,-1).reduce((acc, fila) => acc + fila.Calculated_PPTO, 0)??0"
+  [nameVariable1]="'Ventas'"
+  [nameVariable2]="'PPTO'"
+  [symbolvariable1]="moneda()"
+  [symbolvariable2]="moneda()"
+  [nameVelocimetro]="'Ventas vs PPTO'"
+  />
+</div>
+
+<!--Velocimetro individual-->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+    @for (ventasMolecula of ventasMoleculasExchange(); track $index) {
+        @if($index < ventasMoleculasExchange().length - 1){
+            <velocimetro
+                [variable1]="ventasMolecula.Calculated_Venta??0"
+                [variable2]="ventasMolecula.Calculated_PPTO??0"
+                [nameVariable1]="'Ventas'"
+                [nameVariable2]="'PPTO'"
+                [symbolvariable1]="moneda()"
+                [symbolvariable2]="moneda()"
+                [nameVelocimetro]="ventasMolecula.UDCodes_CodeDesc"
+            />
+        }
+    }
+</div>
+

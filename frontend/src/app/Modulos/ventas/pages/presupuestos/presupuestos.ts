@@ -1,4 +1,4 @@
-import { Component, inject, signal, ViewChild, ChangeDetectionStrategy } from '@angular/core';
+import { Component, inject, signal, ViewChild, ChangeDetectionStrategy, HostListener } from '@angular/core';
 import { HeaderPage } from "../../../../shared/components/header-page/header-page";
 import { PresupuestoTable } from "./components/presupuesto-table/presupuesto-table";
 import { VentasPresupuestoResponse } from './interface/VentasPresupuestoResponse.interface';
@@ -32,6 +32,14 @@ export default class Presupuestos {
   presupuestoData= signal< VentasPresupuestoResponse[] >([]);
   userInfoService = inject(UserInfoService);
 
+  //PARA EVITAR QUE EL USUARIO CIERRE O RECARGUE LA PÁGINA SI HAY DATOS EN EL PRESUPUESTO
+  @HostListener('window:beforeunload', ['$event'])
+    onBeforeUnload(event: BeforeUnloadEvent) {
+      if (this.presupuestoData().length > 0) {
+        event.preventDefault();
+        event.returnValue = '';
+      }
+    }
   loading = signal<boolean>(false);
 
   Lvendedores = rxResource({
