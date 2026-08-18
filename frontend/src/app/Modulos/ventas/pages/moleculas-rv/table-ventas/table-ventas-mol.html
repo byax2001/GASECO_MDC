@@ -3,7 +3,7 @@
     <thead>
         <tr>
             <th class="p-2 text-left">Molécula</th>
-            <th class="p-2 text-center">Código</th>
+            <th class="p-2 text-left">Código</th>
             <th class="p-2 text-left">Venta</th>
             <th class="p-2 text-left">Costo</th>
             <th class="p-2 text-left">Peso</th>
@@ -21,7 +21,7 @@
             [class.bg-white]="index % 2 === 0"
             [class.bg-[#EEEEEE]]="index % 2 !== 0">
                 <td class="py-1">{{ fila.UDCodes_CodeDesc }}</td>
-                <td class="text-center">{{ fila.UDCodes_CodeID}}</td>
+                <td class="text-left">{{ fila.UDCodes_CodeID}}</td>
                 <td>{{ fila.Calculated_Venta | number: "1.2-2" }}</td>
                 <td>{{fila.Calculated_Costo | number: "1.2-2" }}</td>
                 <td>{{fila.Calculated_Peso | number:"1.2-2"}}%</td>

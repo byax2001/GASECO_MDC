@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, signal, effect, inject, viewChild, ViewChild } from '@angular/core';
+import { Component, ChangeDetectionStrategy, signal, effect, inject, HostListener, ViewChild } from '@angular/core';
 import { HeaderPage } from "../../../../shared/components/header-page/header-page";
 import { CilindroScan } from '../../components/CilindroScan.interface';
 import { EscaneoService } from './services/escaneo.service';
@@ -6,10 +6,11 @@ import { Modalg } from "../../../../shared/components/modalg/modalg";
 import { TablaCilindrosEsc } from "./components/tabla-cilindros-esc/tabla-cilindros-esc";
 import { FilesAdmin } from '../../../../services/files-admin.service';
 import { ButtonIcon } from '../../../../shared/components/button-icon/button-icon';
+import { Modalact } from "../../../../shared/components/modalact/modalact";
 
 @Component({
   selector: 'app-scanner-cil',
-  imports: [HeaderPage, Modalg, TablaCilindrosEsc, ButtonIcon],
+  imports: [HeaderPage, Modalg, TablaCilindrosEsc, ButtonIcon, Modalact],
   templateUrl: './scanner-cil.html',
   changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './scanner-cil.css',
@@ -20,6 +21,13 @@ export default class ScannerCil {
   adminFileService = inject(FilesAdmin);
   escaneoService = inject(EscaneoService);
   @ViewChild('modalG') modalG!: Modalg;
+  @ViewChild('modalAct') modalAct!: Modalact;
+  ngOnInit() {
+    const storedCilindros = localStorage.getItem('cilindrosEscaneados');
+    if (storedCilindros) {
+      this.cilindrosEscaneados.set(JSON.parse(storedCilindros));
+    }
+  }
 
   debounceEffect = effect((onCleanup) =>{
     const value = this.cilindro();
@@ -29,12 +37,22 @@ export default class ScannerCil {
       //Luego de 500ms de inactividad, se emite el valor del input
       this.buscarCilindro(value);
       console.log('Emitted value:', value);
-    }, 200);
+    }, 2000);
 
     onCleanup(() => {
       clearTimeout(timeout);
     });
   })
+
+  @HostListener('window:beforeunload', ['$event'])
+    onBeforeUnload(event: BeforeUnloadEvent) {
+
+      localStorage.setItem('cilindrosEscaneados', JSON.stringify(this.cilindrosEscaneados()));
+      if (this.cilindrosEscaneados().length > 0) {
+        event.preventDefault();
+        event.returnValue = '';
+      }
+    }
 
   //SE BUSCA EL CILINDRO EN BASE A SU SERIE
   buscarCilindro(cilindro?: string) {
@@ -52,6 +70,8 @@ export default class ScannerCil {
           ...actual,
           ...data
         ]);
+        localStorage.setItem('cilindrosEscaneados', JSON.stringify(this.cilindrosEscaneados()));
+
         this.cilindro.set('');
       },
       error: (error) => {
@@ -67,6 +87,7 @@ export default class ScannerCil {
       newArray.splice(index, 1);
       return newArray;
     });
+    localStorage.setItem('cilindrosEscaneados', JSON.stringify(this.cilindrosEscaneados()));
   }
 
 
@@ -113,5 +134,9 @@ export default class ScannerCil {
     this.adminFileService.descargarXLSX(data, 'CilindrosEscaneados');
   }
 
+  limpiarCilindros() {
+    localStorage.removeItem('cilindrosEscaneados');
+    this.cilindrosEscaneados.set([]);
+  }
 
 }

@@ -1,14 +1,14 @@
 import { Component, input } from '@angular/core';
 import VentasVendedores from '../../interface/VentasVendedores.interface';
-import { DecimalPipe, PercentPipe } from '@angular/common';
+import { DecimalPipe } from '@angular/common';
 
 @Component({
   selector: 'TableVendedoresRV',
   imports: [DecimalPipe],
-  templateUrl: './table-ventas.html',
-  styleUrl: './table-ventas.css',
+  templateUrl: './table-ventas-seller.html',
+  styleUrl: './table-ventas-seller.css',
 })
-export class TableVentas {
+export class TableVentasVendedores {
   ventasVendedores = input.required<VentasVendedores[]>();
 
 }

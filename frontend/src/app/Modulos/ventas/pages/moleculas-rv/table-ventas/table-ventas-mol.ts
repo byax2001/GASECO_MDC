@@ -5,9 +5,9 @@ import { VentasMoleculas } from '../interfaces/VentasMoleculas.interface';
 @Component({
   selector: 'TableMoleculasRV',
   imports: [DecimalPipe],
-  templateUrl: './table-ventas.html',
-  styleUrl: './table-ventas.css',
+  templateUrl: './table-ventas-mol.html',
+  styleUrl: './table-ventas-mol.css',
 })
-export class TableVentas {
+export class TableVentasMoleculas {
   ventasMoleculas = input.required<VentasMoleculas[]>();
 }

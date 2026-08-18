@@ -7,45 +7,82 @@
 <FiltroFechaIF
   (rangoFechas)="search($event)"
 />
+<div class="grid grid-cols-1 md:grid-cols-10 items-end">
+ <div class="pr-1 rounded-xl bg-gray-50">
+        <label class="text-xs text-gray-500">Descripción Moneda</label>
+        <select formControlName="currencyCode" class="select select-bordered w-full" (change) = "cambioMoneda($event)">
+          @for(moneda of LMonedas.value(); track moneda.RowIdent) {
+          <option [value]="moneda.Currency_CurrencyCode">
+            {{ moneda.Currency_CurrencyCode }}
+          </option>
+          }
+        </select>
+  </div>
+
 <button-icon
   [funcion]="() => descargarExcel()"
   [tooltip]="'Descargar Excel'"
   [icon]="'fa-solid fa-download'"/>
 
+</div>
+
 <div class="container mt-4">
   @if(loading()){
     <SpinnerLoad/>
   }@else{
+
+    @if(isMobile()){
+      @for(ventasVendedor of ventasVendedoresExchange().slice(0, -1); track $index) {
+          <CardTable
+            [titulo]="ventasVendedor.Calculated_SellerName"
+            [data]="{
+              'Vendedor': ventasVendedor.Calculated_SellerName,
+              'Ventas': ventasVendedor.Calculated_Venta,
+              'Peso': ventasVendedor.Calculated_Peso + ' %',
+              'Costo': ventasVendedor.Calculated_Costo,
+              'PPTO': ventasVendedor.Calculated_PPTO,
+              'Ejecutado': ventasVendedor.Calculated_Ejecutado  + ' %',
+              'Pendiente': ventasVendedor.Calculated_Pendiente  + ' %',
+              'GAP': ventasVendedor.Calculated_GAP,
+              'MG': ventasVendedor.Calculated_MG,
+              'MGp': ventasVendedor.Calculated_MGp  + ' %'
+
+            }"
+          />
+        
+      }
+    }@else{
     <TableVendedoresRV
-      [ventasVendedores]="ventasVendedores()"
+      [ventasVendedores]="ventasVendedoresExchange()"
       />
+    }
   }
 </div>
 
 <!-- VELOCIMETRO TOTAL-->
 <div>
 <velocimetro
-  [variable1]="ventasVendedores().slice(0,-1).reduce((acc, fila) => acc + fila.Calculated_Venta, 0)"
-  [variable2]="ventasVendedores().slice(0,-1).reduce((acc, fila) => acc + fila.Calculated_PPTO, 0)"
+  [variable1]="ventasVendedoresExchange().slice(0,-1).reduce((acc, fila) => acc + fila.Calculated_Venta, 0)"
+  [variable2]="ventasVendedoresExchange().slice(0,-1).reduce((acc, fila) => acc + fila.Calculated_PPTO, 0)"
   [nameVariable1]="'Ventas'"
   [nameVariable2]="'PPTO'"
-  [symbolvariable1]="'Q'"
-  [symbolvariable2]="'Q'"
+  [symbolvariable1]="moneda()"
+  [symbolvariable2]="moneda()"
   [nameVelocimetro]="'Ventas vs PPTO'"
   />
 </div>
 
 <!--Velocimetro individual-->
 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-    @for (ventasSeller of ventasVendedores(); track $index) {
-        @if($index < ventasVendedores().length - 1){
+    @for (ventasSeller of ventasVendedoresExchange(); track $index) {
+        @if($index < ventasVendedoresExchange().length - 1){
             <velocimetro
                 [variable1]="ventasSeller.Calculated_Venta"
                 [variable2]="ventasSeller.Calculated_PPTO"
                 [nameVariable1]="'Ventas'"
                 [nameVariable2]="'PPTO'"
-                [symbolvariable1]="'Q'"
-                [symbolvariable2]="'Q'"
+                [symbolvariable1]="moneda()"
+                [symbolvariable2]="moneda()"
                 [nameVelocimetro]="ventasSeller.Calculated_SellerName"
             />
         }

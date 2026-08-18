@@ -1,0 +1,25 @@
+<div class="rounded-xl p-4 shadow">
+
+  <div class="font-bold text-lg">
+    {{ titulo() }}
+  </div>
+
+  <div class="mt-2">
+
+    @for (elemento of elementos(); track elemento[0]) {
+
+      <div class="text-sm">
+
+        <span class="font-semibold">
+          {{ elemento[0] }}:
+        </span>
+
+        {{ elemento[1] }}
+
+      </div>
+
+    }
+
+  </div>
+
+</div>

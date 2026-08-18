@@ -96,7 +96,7 @@ export class NavbarSuc {
   }
  
   abrirModal(){
-    this.modalAct.openModal();
+    this.modalAct.showModalAct('Cierre de sesión', '¿Confirmar cierre de sesión?');
   }
 
   accionModal(event: boolean) {

@@ -10,9 +10,15 @@ import { Component, input, output, signal, ChangeDetectionStrategy } from '@angu
 export class Modalact {
 
   showModal = signal(false);
-  msgModal = input.required<string>();
-  TitleModal = input.required<string>();
+  msgModal = signal<string>('');
+  TitleModal = signal<string>('');
   ynAction = output<boolean>();
+
+  showModalAct(title: string, msg: string) {
+    this.TitleModal.set(title);
+    this.msgModal.set(msg);
+    this.openModal();
+  }
 
   openModal() {
     this.showModal.set(true);
