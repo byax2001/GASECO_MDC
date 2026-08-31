@@ -100,7 +100,7 @@ CustInfoOv = rxResource<ClienteInfoOv, { company: string | null; custID: string 
         if (!params.company || !params.custID) {
               return of([]); // Retorna un observable con un array vacío si no hay empresa seleccionada
         }       
-      return this.ventasQueryService.getMonedas(params.custID);
+      return this.ventasQueryService.getMonedasCustomer(params.custID);
     }
   })
 

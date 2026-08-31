@@ -28,7 +28,7 @@ export class NavbarHome {
   }
 
   openModal(){
-    this.modalAct.openModal();
+    this.modalAct.showModalAct('Cierre de sesión', '¿Confirmar cierre de sesión?');
   }
 
   modalAction(event: boolean) {

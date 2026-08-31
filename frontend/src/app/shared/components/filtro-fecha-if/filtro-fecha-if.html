@@ -1,0 +1,25 @@
+<modalg
+#modalG
+/>
+<div class="container-fluid">
+  
+    <div class="">
+      <form class="grid grid-cols-1 md:grid-cols-8 gap-4" [formGroup]="FormDate">
+        <date-input
+          [placeholder]="'Fecha Inicial'"
+          [idinput]="'fechaI'"
+          formControlName="FhInicial"/>
+        <date-input
+          [placeholder]="'Fecha Final'"
+          [idinput]="'fechaF'"
+          formControlName="FhFinal"/>
+         <div class="items-end">
+          <button-icon
+            [funcion]="() => getRangoFechas()"
+            [tooltip]="'Buscar'"
+            [icon]="'fa-solid fa-magnifying-glass'">
+          </button-icon>
+        </div>
+      </form>
+    </div>
+</div>

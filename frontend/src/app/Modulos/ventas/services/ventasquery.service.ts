@@ -56,10 +56,16 @@ export class VentasQueryService {
     );
   }
 
-  //PARA OBTENER TODAS LAS MONEDAS PERMITIDAS PARA ORDENES DE VENTAS
-  getMonedas(CustID: string): Observable<Moneda[]> {
+  //PARA OBTENER TODAS LAS MONEDAS PERMITIDAS PARA ORDENES DE VENTAS DEL CLIENTE SELECCIONADO
+  getMonedasCustomer(CustID: string): Observable<Moneda[]> {
     return this.http.get<Moneda[]>(`${this.url}/ventas/lmonedas/${this.userInfoService.company()}/${CustID}`);
   }
+
+  //OBTENER TODAS LAS MONEDAS PERMITIDAS PARA LA COMPAÑIA
+  getMonedas(): Observable<Moneda[]> {
+    return this.http.get<Moneda[]>(`${this.url}/ventas/lmonedas/${this.userInfoService.company()}/0`);
+  }
+  
 
   //PARA OBTENER LOS TIPOS DE CILINDROS PERMITIDOS PARA ORDENES DE VENTAS
   getTipoCilindros(): Observable<TCilindros[]> {
