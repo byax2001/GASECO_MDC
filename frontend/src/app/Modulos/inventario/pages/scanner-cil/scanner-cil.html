@@ -1,7 +1,64 @@
 <app-header-page [PageName]="'Escaneo de Cilindros'" />
 <modalg #modalG/>
 <modalact #modalAct (ynAction)="limpiarCilindros()"/>
+<modal-scan-cil #modalScan (rEstado)="asignarEstado($event)"/>
+
 <div class="container justify-content justify-center w-full">
+
+<!--INFORMACIÓN ESCANEADA-->
+       <!-- INFORMACIÓN -->
+    <div class="grid grid-cols-2 gap-3 mb-5">
+
+      <!-- TOTAL CILINDROS -->
+      <div
+        class="flex items-center justify-center gap-3
+               bg-gray-100 rounded-xl px-3 py-3">
+
+        <div
+          class="flex items-center justify-center
+                 w-10 h-10 rounded-full bg-[#8c8c8c] text-white">
+          <i class="fa-solid fa-list-ol"></i>
+        </div>
+
+        <div>
+          <p class="text-xs text-gray-500 font-medium">
+            Cilindros
+          </p>
+
+          <p class="text-2xl font-bold text-gray-700">
+            {{ cilindrosEscaneados().length }}
+          </p>
+        </div>
+
+      </div>
+
+      <!-- CILINDROS VACÍOS -->
+      <div
+        class="flex items-center justify-center gap-3
+               bg-[#A6C441]/10 rounded-xl px-3 py-3">
+
+        <div
+          class="flex items-center justify-center
+                 w-10 h-10 rounded-full bg-[#A6C441] text-white">
+          <i class="fa-solid fa-box-open"></i>
+        </div>
+
+        <div>
+          <p class="text-xs text-gray-500 font-medium">
+            Vacíos
+          </p>
+
+          <p class="text-2xl font-bold text-[#71882c]">
+            {{ cilVacios() }}
+          </p>
+        </div>
+
+      </div>
+
+    </div>
+
+
+<!--INPUT DE SCANER-->
    <div class="grid grid-cols-3 w-full place-items-center px-4 mb-2">
         <div class="col-span-1"></div>
         <div class="col-span-3 md:col-span-1 w-full">
@@ -20,17 +77,25 @@
         </div>
         
     </div>
-    <div class="grid grid-cols-2 md:grid-cols-4 w-full place-items-center px-4 mb-2">
-        <div class= "col-span-1 md:col-span-2 text-right w-full py-2 bold text-lg rounded-l-2xl">
-            No. Cilindros: {{ cilindrosEscaneados().length }}
-        </div>
-        <div class="flex justify-end md:justify-center w-full ">
+
+<!--OPCIONES SECUNDARIAS-->
+    <div class="grid grid-cols-4 md:grid-cols-4 w-full place-items-center px-4 mb-3">
+        <div class=""></div>
+        
+        <div class="flex justify-start md:justify-center w-full ">
             <button-icon
                 class=" "
                 [funcion]="() => modalAct.showModalAct('Limpiar Escaneo', '¿Está seguro que desea limpiar el escaneo de cilindros?')"
                 tooltip="Limpiar Escaneo"
                 icon="fa-solid fa-rotate-right"/>
         </div>
+        <div class="flex justify-start w-full">
+            <label class="label">
+                <input type="checkbox" [checked]="sinEtiqueta()" class="checkbox" (change)="sinEtiqueta.set($any($event.target).checked)" />
+                Cilindro sin Etiqueta
+            </label>
+        </div>
+        
     </div>
 
     <div class="flex justify-end">

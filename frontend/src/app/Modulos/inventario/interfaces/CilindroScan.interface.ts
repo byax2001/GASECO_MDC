@@ -28,8 +28,10 @@ export interface CilindroScan {
     COMPANIA:          null;
     FHULTMOV:          Date;
     ULOTELLE:          null;
-    FHULTLLE:          null;
+    FHULTLLE:          Date;
     DESCCORTA:         string;
     UDM:               string;
     LINEA_CUBO:        string;
+    ESTADOSCAN:        string;
+    SINETIQUETA:       boolean;
 }

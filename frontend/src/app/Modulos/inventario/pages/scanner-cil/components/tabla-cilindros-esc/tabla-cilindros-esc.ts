@@ -1,5 +1,5 @@
 import { Component, input, output } from '@angular/core';
-import { CilindroScan } from '../../../../components/CilindroScan.interface';
+import { CilindroScan } from '../../../../interfaces/CilindroScan.interface';
 import { DatePipe } from '@angular/common';
 
 @Component({

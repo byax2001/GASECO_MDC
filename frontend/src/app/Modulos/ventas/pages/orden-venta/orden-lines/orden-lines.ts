@@ -106,7 +106,7 @@ export class OrdenLines {
       Calculated_Propietario: tipo
       },
       ...(this.Presentaciones.value()??[]).filter(p =>
-        p.Calculated_Propietario === tipo
+        p.Calculated_Propietario?.startsWith(tipo)
       )];
   });
   
