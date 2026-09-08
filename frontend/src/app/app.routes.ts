@@ -31,6 +31,13 @@ export const routes: Routes = [
     ]
   },
   {
+    path: 'fin',
+    loadChildren: () => import('./Modulos/finanzas/finanzas.routes'),
+    canMatch:[
+      authenticatedGuard
+    ]
+  },
+  {
     path:'**',
     redirectTo: ''
   }

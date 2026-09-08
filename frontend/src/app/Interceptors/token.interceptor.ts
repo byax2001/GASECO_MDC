@@ -1,8 +1,9 @@
 import { inject, Injectable } from '@angular/core';
-import { HttpInterceptor, HttpEvent, HttpHandler, HttpRequest, HttpHandlerFn } from '@angular/common/http';
+import { HttpInterceptor, HttpEvent, HttpHandler, HttpRequest, HttpHandlerFn, HttpErrorResponse } from '@angular/common/http';
 import { catchError, Observable, throwError } from 'rxjs';
 import { CookieService } from 'ngx-cookie-service';
 import { Router } from '@angular/router';
+import { ErrorAPI } from '../interfaces/ErrorApi.interface';
 
 //Un interceptor no borra el resto de elementos del headers (method, url, params), sino que los mantiene y 
 // añade el nuevo header con el token. 
@@ -13,14 +14,15 @@ import { Router } from '@angular/router';
 export function TokenInterceptor(
  req: HttpRequest<unknown>,
   next: HttpHandlerFn
-) {
+) 
+{
   const cookieService = inject(CookieService);
   const token = cookieService.get('token');
 
   //Con esto se evita mandar el token en peticiones login ya que no las necesita
-    /*if(req.url.includes('/auth/login')){
+  if(req.url.includes('/auth/login')){
     return next(req);
-  }*/
+  }
 
   //Caso contrario se añade el token a la cabecera de la petición
   const newReq = req.clone({
@@ -33,12 +35,16 @@ export function TokenInterceptor(
   //Si el token es invalido o ha expirado, el backend responde con un error 401, lo que hace que 
   // se borre el token de las cookies y se redirija al login.
   return next(newReq).pipe(
-    catchError((error) => {
+    catchError((error: HttpErrorResponse) => {
       if (error.status === 401) {
-        cookieService.delete('token', '/');
-        sessionStorage.clear();
-        alert('Su sesión ha expirado y/o no hay licencias disponibles en Epicor')
-        window.location.href = '/login';
+        const backendError: ErrorAPI = error.error;
+
+        if (backendError.code !== 'INVALID_CREDENTIALS') {
+          cookieService.delete('token', '/');
+          sessionStorage.clear();
+          alert(backendError.message)
+          window.location.href = '/login';
+        }
       }
 
       return throwError(() => error);

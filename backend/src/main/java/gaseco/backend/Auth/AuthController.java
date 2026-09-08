@@ -52,12 +52,8 @@ public class AuthController {
 
     @PostMapping(value = "login")
     public ResponseEntity<AuthResponse> Login(@RequestBody LoginRequest request){
-        try{
         return  ResponseEntity.ok(authService.login(request));
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body( AuthResponse.builder()
-                    .build());
-        }
+       
 
     }
 

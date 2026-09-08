@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import gaseco.backend.Config.Exepciones.EpicorException;
 import gaseco.backend.Constants.AppConstants;
 import gaseco.backend.Helpers.EpicorToken.services.EpicorService;
 import lombok.RequiredArgsConstructor;
@@ -42,6 +43,20 @@ public class AppVentasService {
             //.header("Authorization", "Bearer " + token)
             .accept(MediaType.APPLICATION_JSON)
             .retrieve()
+            .onStatus(
+                status -> status.is4xxClientError(),
+                clientResponse -> clientResponse.bodyToMono(String.class)
+                    .map(body -> new EpicorException(
+                        "Epicor rechazó la solicitud: " + body
+                    ))
+            )
+            .onStatus(
+                status -> status.is5xxServerError(),
+                clientResponse -> clientResponse.bodyToMono(String.class)
+                    .map(body -> new EpicorException(
+                        "Epicor presentó un error interno: " + body
+                    ))
+            )
             .bodyToMono(Map.class)
             .block();
 

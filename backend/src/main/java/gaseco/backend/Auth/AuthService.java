@@ -8,6 +8,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import gaseco.backend.Config.Exepciones.LoginIncorrectoException;
 import gaseco.backend.Entitys.User.User;
 import gaseco.backend.Entitys.User.UserRepository;
 import gaseco.backend.JwtAuthenticationFilter.JwtService;
@@ -22,14 +23,18 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
 
     public AuthResponse login(LoginRequest request) {
-     
+        try {
         
-        authenticationManager.authenticate(
-            new UsernamePasswordAuthenticationToken(
-                request.getLogin(),
-                request.getPassword()
-            )
+            authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                    request.getLogin(),
+                    request.getPassword()
+                )
         );
+        } catch (BadCredentialsException ex) {
+            System.out.println("Login incorrecto: " + ex.getMessage());
+            throw new LoginIncorrectoException();
+        }
 
         User user=userRepository.findByLogin(request.getLogin()).orElseThrow();
         String token=jwtService.getToken(user);

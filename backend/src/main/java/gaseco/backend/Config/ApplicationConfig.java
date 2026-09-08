@@ -8,6 +8,7 @@ import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -45,7 +46,9 @@ public class ApplicationConfig {
     @Bean
     public UserDetailsService userDetailService(){
         return login -> userRepository.findByLogin(login)
-        .orElseThrow(() -> new RuntimeException("User not found"));
+        .orElseThrow(() ->
+            new UsernameNotFoundException("Usuario no encontrado")
+        );
     }   
 
     // PARA CONSUMIR APIS
