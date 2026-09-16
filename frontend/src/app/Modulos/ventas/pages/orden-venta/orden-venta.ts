@@ -143,8 +143,69 @@ CustInfoOv = rxResource<ClienteInfoOv, { company: string | null; custID: string 
       this.modalG.showModalG('Error', 'No se han agregado lineas a la orden de venta. Por favor, agrega al menos una linea antes de crear la orden de venta.');
       return;
     }
-  
 
+    // VALIDAR QUE NO SE HALLA AGREGADO KM A PRODUCTOS NO MEDICINALES
+    let errorM = false;
+    let errorNM = false;
+    if(this.userInfoService.company() === '165943') {
+      
+      //SOME ES UN FOREACH QUE SE DETIENE AL HALLAR UNA CONDICION Y RETORNA TRUE SI ALGUNA 
+      // LINEA LA CUMPLE, EN ESTE CASO SI ALGUNA LINEA TIENE 
+      //UN PRODUCTO DISTINTO A OXY-25-CRIM Y SU PRESENTACION ES 133 O 143
+      errorM = this.ordenLines.lineas.controls.some(linea => {
+        const parte = linea.value.parte ?? '';
+        const presentacion = String(linea.value.presentacion ?? '');
+        console.log('Validando linea:', { parte, presentacion });
+
+        return (
+          !['OXY-25-CRIM', 'OXY-25-CRIM-L'].includes(parte) &&
+          ['133', '143'].includes(presentacion)
+        );
+      });
+
+      // Verifica si hay alguna linea que es producto medico con una presentacion distinta a 133 (K) o 143 (KJ)
+      errorNM = this.ordenLines.lineas.controls.some(linea => {
+        const parte = linea.value.parte ?? '';
+        const presentacion = String(linea.value.presentacion ?? '');
+        return (
+          ['OXY-25-CRIM', 'OXY-25-CRIM-L'].includes(parte) &&
+          !['133', '143'].includes(presentacion)
+        );
+      });
+
+
+      
+    }else if(this.userInfoService.company() === '165943B') {
+      //SOME ES UN FOREACH QUE SE DETIENE AL HALLAR UNA CONDICION Y RETORNA TRUE SI ALGUNA 
+      // LINEA LA CUMPLE, EN ESTE CASO SI ALGUNA LINEA TIENE 
+
+        errorM = this.ordenLines.lineas.controls.some(linea => {
+          const parte = linea.value.parte ?? '';
+          const presentacion = String(linea.value.presentacion ?? '');
+
+          return (
+            !['20000052'].includes(parte) &&
+            ['133', '143'].includes(presentacion)
+          );
+        });
+         // Verifica si hay alguna linea que es producto medico con una presentacion distinta a 133 (K) o 143 (KJ)
+        errorNM = this.ordenLines.lineas.controls.some(linea => {
+          const parte = linea.value.parte ?? '';
+          const presentacion = String(linea.value.presentacion ?? '');
+          return (
+            ['20000052'].includes(parte) &&
+            !['133', '143'].includes(presentacion)
+          );
+        });
+      
+    }
+    if(errorM) {
+      this.modalG.showModalG('Error', 'No se puede agregar KM o KMJ a productos no medicinales. Por favor, revisa las lineas de la orden de venta y usar K O KJ en su lugar.');
+    }else if(errorNM) {
+      this.modalG.showModalG('Error', 'El producto medicinal solo puede ser vendido en presentaciones KM o KMJ. Por favor, revisa las lineas de la orden de venta.');
+    }
+  
+    
     //Creando OV es para evitar el doble click en el boton de crear orden de venta mientras se procesa la solicitud
     this.creandoOV.set(true);
 
@@ -203,7 +264,6 @@ CustInfoOv = rxResource<ClienteInfoOv, { company: string | null; custID: string 
     });
 
 
-
   }
 
   EnviarCorreo(orderNum: number) {
@@ -232,8 +292,9 @@ CustInfoOv = rxResource<ClienteInfoOv, { company: string | null; custID: string 
           this.modalG.showModalG('Error', `Ocurrió un error al enviar el correo: ${error.message}`);
           this.loading.set(false);
         }
+          
     });
-
+  
 
   }
   

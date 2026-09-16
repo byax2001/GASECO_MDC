@@ -11,7 +11,6 @@ export class AuthService {
   private http = inject(HttpClient);
 
   login(username: string, password: string): Observable<AuthResponse> {
-    console.log('variable de ambiente', environment.API_URL);
     return this.http.post<AuthResponse>(`${environment.API_URL}/auth/login`, {'login': username, 'password': password});
   }
 }

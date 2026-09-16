@@ -1,0 +1,17 @@
+<app-header-page PageName="Liquidación de Viáticos" />
+<modalg #modalG />
+@if(this.loading()){
+<SpinnerLoad/>
+}
+<div class="container-fluid ">
+    <div class="flex justify-center md:justify-end mb-2">
+        <button-icon 
+           icon="fa-solid fa-plus"
+           [funcion]="()=>getNuevaLiquidacion()"
+           tooltip="Nueva Liquidación"
+        />
+    </div>
+    <div>
+        <table-liq-via/>
+    </div>
+</div>

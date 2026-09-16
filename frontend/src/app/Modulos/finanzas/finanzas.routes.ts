@@ -10,9 +10,16 @@ export const  FinanzasRoute: Routes = [
        path: 'home',
        loadComponent: () => import('./pages/finanzas-home/finanzas-home')
       },
+
+      //LISTADO DE VIATICOS
       {
        path: 'lv',
-       loadComponent: () => import('./pages/liq-viaticos/liq-viaticos')
+       loadComponent: () => import('./pages/liq-viaticos-list/liq-viaticos-list')
+      },
+      //INGRESO DE VIATICOS
+      {
+        path: 'lv/:id',
+        loadComponent: () => import('./pages/liq-viaticos/liq-viaticos')
       },
       {
         path:'**',

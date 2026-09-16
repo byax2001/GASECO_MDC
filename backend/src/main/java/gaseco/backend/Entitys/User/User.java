@@ -89,6 +89,10 @@ public class User implements UserDetails {
     @Column(name = "ROL_APP", length = 8)
     String Rol;
 
+    @Column(name = "EPICOR_U", length = 8)
+    String EpicorU;
+
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         // La autoridad sera la variable AREA_WEB, pero se le antepone el prefijo "ROLE_"
@@ -114,12 +118,13 @@ public class User implements UserDetails {
 
     @Override
     public boolean isAccountNonLocked() {
-        return this.intentosPassword == 0;
+        return this.intentosPassword < 3;
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return this.fhVencimineto.isAfter(LocalDate.now());
+        return this.fhVencimineto == null ||
+           !this.fhVencimineto.isBefore(LocalDate.now());
     }
 
     @Override

@@ -25,7 +25,7 @@ export default class Home {
     { code: 'VENTAS', url: '/ventas', icon: 'icons/ventas.png', name: 'Ventas', description: 'Gestiona tus ventas de manera eficiente y sencilla.' },
     { code: 'MDC', url: '/cilindros', icon: 'icons/cilindros.png', name: 'Modulo de Cilindros', description: 'Gestiona tus cilindros de manera eficiente y sencilla.' },
     { code: 'INV', url: '/inventario', icon: 'icons/inventario.png', name: 'Inventario', description: 'Gestiona tu inventario de manera eficiente y sencilla.' },
-    { code: 'FIN', url: '/fin', icon: 'icons/finanzas.png', name: 'Finanzas', description: 'Gestiona tu contabilidad de manera eficiente y sencilla' },
+    { code: 'FIN', url: '/finanzas', icon: 'icons/finanzas.png', name: 'Finanzas', description: 'Gestiona tu contabilidad de manera eficiente y sencilla' },
     { code: 'C', url: '/moduloC', icon: 'icons/default.png', name: 'Módulo C', description: 'Descripción del Módulo C.' },
     { code: 'D', url: '/moduloD', icon: 'icons/default.png', name: 'Módulo D', description: 'Descripción del Módulo D.' },
   ]);
@@ -67,7 +67,7 @@ export default class Home {
         this.router.navigate(['/inventario/lproductos']);
         break;
       case 'FIN':
-        this.router.navigate(['/fin/home']);
+        this.router.navigate(['/finanzas/home']);
         break;
 
     }

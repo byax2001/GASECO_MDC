@@ -18,6 +18,8 @@ export class UserInfoService {
   userInfo = signal<InfoUser>({});
   rol = signal<string>('');
   company = signal<string>('');
+  Desusuario = signal<string>(''); //Nombre del usuario
+  EpicorU = signal<string>(''); // ID de usuario en Epicor
   sucursal = signal<string>('');
 
   companyNames: Record<string, string> = {
@@ -53,14 +55,20 @@ export class UserInfoService {
   }
 
   loadUserInfo() {
-    
+    //OBTIENE EL USERNAME DEL USUARIO 
     this.getUserName().subscribe({
+
+      //AL OBTENER EL USERNAME, SE OBTIENE LA INFO DEL USUARIO
       next: (resp_user) => {
         this.getUserInfo(resp_user.username).subscribe({
           next: (response) => {
+            //MODULOS HABILITADOS PARA EL USUARIO, SE GUARDA EN EL SIGNAL userInfo
             this.userInfo.set(mapToInfoUser(response));
+            //RESTO DE INFORMACION DEL USUARIO
             this.company.set(this.getCompaniesCmb()[0]?.code ?? '');
             this.rol.set(resp_user.rol);
+            this.Desusuario.set(resp_user.desusuario);
+            this.EpicorU.set(resp_user.epicorU);
             console.log('User info cargada:', this.userInfo())
           },
           error: (error) => {

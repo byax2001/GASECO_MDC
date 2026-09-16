@@ -11,6 +11,6 @@ import Link from '../../../../interfaces/Link.interface';
 })
 export class FinanzasLayout {
   subModulos: Link[] = [
-    { descripcion: 'Liquidación de Viaticos', ruta: '/fin/lv' },
+    { descripcion: 'Liquidación de Viaticos', ruta: '/finanzas/lv' },
   ];
 }

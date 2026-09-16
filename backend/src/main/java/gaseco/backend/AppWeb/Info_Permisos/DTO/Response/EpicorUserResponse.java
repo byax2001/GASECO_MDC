@@ -8,9 +8,6 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class UsernameResponse {
-    String username;
-    String rol;
-    String desusuario;
-    String epicorU;
+public class EpicorUserResponse {
+    private String EpicorU;
 }

@@ -3,7 +3,7 @@ import { HttpInterceptor, HttpEvent, HttpHandler, HttpRequest, HttpHandlerFn, Ht
 import { catchError, Observable, throwError } from 'rxjs';
 import { CookieService } from 'ngx-cookie-service';
 import { Router } from '@angular/router';
-import { ErrorAPI } from '../interfaces/ErrorApi.interface';
+import { ErrorApi } from '../interfaces/ErrorApi.interface';
 
 //Un interceptor no borra el resto de elementos del headers (method, url, params), sino que los mantiene y 
 // añade el nuevo header con el token. 
@@ -37,7 +37,7 @@ export function TokenInterceptor(
   return next(newReq).pipe(
     catchError((error: HttpErrorResponse) => {
       if (error.status === 401) {
-        const backendError: ErrorAPI = error.error;
+        const backendError: ErrorApi = error.error;
 
         if (backendError.code !== 'INVALID_CREDENTIALS') {
           cookieService.delete('token', '/');

@@ -1,14 +1,21 @@
 package gaseco.backend.Auth;
 
 
+
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.CredentialsExpiredException;
+import org.springframework.security.authentication.DisabledException;
+import org.springframework.security.authentication.LockedException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import gaseco.backend.Config.Exepciones.LoginIncorrectoException;
+import gaseco.backend.Config.Exepciones.PasswordExpiredException;
+import gaseco.backend.Config.Exepciones.AccountLockedException;
+
 import gaseco.backend.Entitys.User.User;
 import gaseco.backend.Entitys.User.UserRepository;
 import gaseco.backend.JwtAuthenticationFilter.JwtService;
@@ -31,6 +38,24 @@ public class AuthService {
                     request.getPassword()
                 )
         );
+        } catch (LockedException e) {
+
+            throw new AccountLockedException(
+                "Usuario bloqueado por exceder el número máximo de intentos."
+            );
+
+        } catch (DisabledException e) {
+
+            throw new DisabledException(
+                "El usuario se encuentra deshabilitado."
+            );
+
+        } catch (CredentialsExpiredException e) {
+
+            throw new PasswordExpiredException(
+                "La contraseña del usuario ha expirado."
+            );
+
         } catch (BadCredentialsException ex) {
             System.out.println("Login incorrecto: " + ex.getMessage());
             throw new LoginIncorrectoException();

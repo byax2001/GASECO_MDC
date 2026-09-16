@@ -31,7 +31,7 @@ export const routes: Routes = [
     ]
   },
   {
-    path: 'fin',
+    path: 'finanzas',
     loadChildren: () => import('./Modulos/finanzas/finanzas.routes'),
     canMatch:[
       authenticatedGuard
