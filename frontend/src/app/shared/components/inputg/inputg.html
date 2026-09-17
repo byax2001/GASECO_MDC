@@ -1,4 +1,4 @@
-<div class="relative w-full mt-2">
+<div class="relative w-full">
   
   <input
     [type]="type() === 'password' && showPassword ? 'text' : type()"
@@ -7,8 +7,7 @@
     [disabled]="disabled"
     (input)="updateValue($event)"
     (blur)="onTouched()"
-    placeholder=" "
-    class="peer input input-bordered  h-11 pt-3 text-sm"
+    class="peer input input-bordered  w-full h-11 text-sm"
   />
 
   <label

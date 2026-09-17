@@ -1,2 +1,5 @@
-<app-header-page PageName="Ingreso de Viáticos" />
+<app-header-page PageName="Ingreso de Viáticos: {{ idLiqVia() }}" />
 <modalg #modalG />
+
+<liq-viaticos-header [formLiqViaticosHeader]="LiqViaticosForm.controls.header" />
+<liq-viaticos-lines [formFacturas]="LiqViaticosForm.controls.facturas" />

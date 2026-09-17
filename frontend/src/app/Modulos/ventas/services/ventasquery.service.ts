@@ -4,16 +4,16 @@ import { environment } from '../../../../environments/environment';
 import { Cliente } from '../interfaces/cliente.interface';
 import { Observable } from 'rxjs';
 import { UserInfoService } from '../../../services/userInfo.service';
-import { ClienteInfoOv} from '../pages/orden-venta/components/interface/ClienteInfoOv.interface';
+import { ClienteInfoOv} from '../pages/orden-venta/interface/ClienteInfoOv.interface';
 import { PartUOM } from '../interfaces/PartUOM.interface';
 import { Moneda } from '../interfaces/Moneda.interface';
 import { TCilindros } from '../interfaces/TCilindros.interface';
-import { PartOV } from '../pages/orden-venta/components/interface/PartOV.interface';
+import { PartOV } from '../pages/orden-venta/interface/PartOV.interface';
 import { PrecioUnitario } from '../interfaces/PrecioUnitario.interface';
-import { CrearOvResponse } from '../pages/orden-venta/components/interface/CrearOvResponse.interface';
-import { CrearOvRequest } from '../pages/orden-venta/components/interface/CrearOvRequest.interface';
-import { AddLineOvRequest } from '../pages/orden-venta/components/interface/AddLineOvRequest.interface';
-import { AddLineOvResponse } from '../pages/orden-venta/components/interface/AddLineOvResponse.interface';
+import { CrearOvResponse } from '../pages/orden-venta/interface/CrearOvResponse.interface';
+import { CrearOvRequest } from '../pages/orden-venta/interface/CrearOvRequest.interface';
+import { AddLineOvRequest } from '../pages/orden-venta/interface/AddLineOvRequest.interface';
+import { AddLineOvResponse } from '../pages/orden-venta/interface/AddLineOvResponse.interface';
 
 @Injectable({
   providedIn: 'root',

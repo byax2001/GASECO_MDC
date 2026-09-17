@@ -1,15 +1,15 @@
 import { Component, computed, HostListener, inject, input, Input, signal, ChangeDetectionStrategy, output } from '@angular/core';
 import { FormArray, FormBuilder, ReactiveFormsModule, Validators, FormControl, FormGroup } from '@angular/forms';
-import { PartOV } from '../components/interface/PartOV.interface';
-import { VentasQueryService } from '../../../services/ventasquery.service';
-import { TCilindros } from '../../../interfaces/TCilindros.interface';
-import { PartUOM } from '../../../interfaces/PartUOM.interface';
-import { AddLineOvRequest } from '../components/interface/AddLineOvRequest.interface';
-import { AddLineOvResponse } from '../components/interface/AddLineOvResponse.interface';
+import { PartOV } from '../../interface/PartOV.interface';
+import { VentasQueryService } from '../../../../services/ventasquery.service';
+import { TCilindros } from '../../../../interfaces/TCilindros.interface';
+import { PartUOM } from '../../../../interfaces/PartUOM.interface';
+import { AddLineOvRequest } from '../../interface/AddLineOvRequest.interface';
+import { AddLineOvResponse } from '../../interface/AddLineOvResponse.interface';
 import { Observable, of } from 'rxjs';
-import { Correo } from '../../../../../interfaces/Correo.interface';
+import { Correo } from '../../../../../../interfaces/Correo.interface';
 import { rxResource } from '@angular/core/rxjs-interop';
-import { UserInfoService } from '../../../../../services/userInfo.service';
+import { UserInfoService } from '../../../../../../services/userInfo.service';
 
 type LineaOvForm = FormGroup<{
   noLinea: FormControl<number>;

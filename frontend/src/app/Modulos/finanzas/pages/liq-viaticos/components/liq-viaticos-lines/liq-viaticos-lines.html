@@ -1,0 +1,44 @@
+
+<FormFacturaLv
+#FormFacturaLv
+(emitirFactura)="agregarFactura($event)"
+/>
+<div class="flex justify-end gap-2 mb-2">
+    <button-icon
+        icon="fa-solid fa-plus"
+        tooltip="Agregar Factura"
+        [funcion]="()=>showFormFactura()"
+
+    />
+</div>
+<table class="table">
+    <thead>
+        <th>N°</th>
+        <th>No Factura</th>
+        <th>Serie</th>
+        <th>Fecha</th>
+        <th>NIT/RTN</th>
+        <th>Proveedor</th>
+        <th>Monto</th>
+        <th>Cuenta GL</th>
+        <th>Tipo Factura</th>
+        <th>Descripción</th>
+    </thead>
+    <tbody>
+        @for(factura of formFacturas().controls; track factura; let i = $index) {
+            <tr>
+            <td>{{i + 1}}</td>
+            <td>{{factura.value.NumeroFactura}}</td>
+            <td>{{factura.value.Serie}}</td>
+            <td>{{factura.value.FechaFactura}}</td>
+            <td>{{factura.value.NitRtn}}</td>
+            <td>{{factura.value.NombreProveedor}}</td>
+            <td>{{factura.value.MontoFactura}}</td>
+            <td>{{factura.value.CuentaGl}}</td>
+            <td>{{factura.value.TipoFactura}}</td>
+            <td>{{factura.value.DescripcionFactura}}</td>
+            </tr>
+        }
+    </tbody>
+
+</table>

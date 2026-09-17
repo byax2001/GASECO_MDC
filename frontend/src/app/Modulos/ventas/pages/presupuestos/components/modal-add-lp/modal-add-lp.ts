@@ -1,7 +1,7 @@
 import { Component, inject, input, output, signal, ChangeDetectionStrategy } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { PresupuestoRowForm } from '../Interface/PresupuestoRowForm.type';
-import { PartOV } from '../../../orden-venta/components/interface/PartOV.interface';
+import { PartOV } from '../../../orden-venta/interface/PartOV.interface';
 import { VentasQueryService } from '../../../../services/ventasquery.service';
 import { rxResource } from '@angular/core/rxjs-interop';
 import { UserInfoService } from '../../../../../../services/userInfo.service';

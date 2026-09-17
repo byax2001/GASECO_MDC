@@ -41,10 +41,12 @@ export class TableClientes {
   }
    createOV(customer: Cliente) {
     console.log('Crear OV para cliente:', customer.Customer_CustID);
-    if(customer.Calculated_Estado !== "Activo"){
+
+    //Se quita el bloqueo para crear pedidos a clientes bloqueados, estos bloqueos ahora estaran presentes de Epicor al Modulo de Cilindros al sincronizar
+    /*if(customer.Calculated_Estado !== "Activo"){
       this.ModalG.showModalG("Cliente Bloqueado", "No se puede crear una orden de venta para un cliente inactivo. Por favor, contacte con el área encargada para más información.");
       return;
-    }
+    }*/
 
     this.router.navigate([
       '/ventas/ov',

@@ -13,4 +13,5 @@ public class OrdenVentaLineResponse {
     private String Result;
     private boolean Continuar;
     private String cResponseMsg;
+    private String cAgingMessage;
 }

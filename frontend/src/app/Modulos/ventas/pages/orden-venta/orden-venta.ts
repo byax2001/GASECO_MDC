@@ -4,15 +4,15 @@ import { HeaderPage } from "../../../../shared/components/header-page/header-pag
 import { ActivatedRoute } from '@angular/router';
 
 import { FormBuilder, FormsModule, Validators, ReactiveFormsModule } from '@angular/forms';
-import { OrdenLines } from "./orden-lines/orden-lines";
+import { OrdenLines } from "./components/orden-lines/orden-lines";
 import { Inputg } from "../../../../shared/components/inputg/inputg";
 import { VentasQueryService } from '../../services/ventasquery.service';
-import { ClienteInfoOv } from './components/interface/ClienteInfoOv.interface';
+import { ClienteInfoOv } from './interface/ClienteInfoOv.interface';
 import { Moneda } from '../../interfaces/Moneda.interface';
-import { CrearOvResponse } from './components/interface/CrearOvResponse.interface';
-import { CrearOvRequest } from './components/interface/CrearOvRequest.interface';
+import { CrearOvResponse } from './interface/CrearOvResponse.interface';
+import { CrearOvRequest } from './interface/CrearOvRequest.interface';
 import { Modalg } from '../../../../shared/components/modalg/modalg';
-import OrdenHeader from './orden-header/orden-header';
+import OrdenHeader from './components/orden-header/orden-header';
 import { SpinnerLoad } from '../../../../shared/components/spinner-load/spinner-load';
 import { ButtonIcon } from "../../../../shared/components/button-icon/button-icon";
 import { Correo } from '../../../../interfaces/Correo.interface';

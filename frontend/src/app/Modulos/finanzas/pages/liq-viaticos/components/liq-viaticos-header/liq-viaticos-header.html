@@ -1,0 +1,54 @@
+ <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6 md:mb-10" [formGroup]="formLiqViaticosHeader()" >
+    
+    <!-- NOMBRE COMPLETO DEL USUARIO A INGRESAR LIQUIDACIÓN  DE VIATICOS     -->
+      <div class="p-3 rounded-xl bg-gray-50">
+        <label class="text-xs text-gray-500">Usuario</label>
+        <p class="font-semibold text-gray-800">
+          {{ formLiqViaticosHeader().get('desUsuario')?.value  }}
+        </p>
+      </div>
+
+      <!--INGRESO DEL TIPO DE MONEDA-->
+      <div class="p-3 rounded-xl bg-gray-50">
+        <label class="text-sm text-gray-500">Moneda</label>
+        <select formControlName="moneda" class="select select-bordered w-full">
+          @for(moneda of LMonedas.value(); track moneda.RowIdent) {
+          <option [value]="moneda.Currency_CurrencyCode">
+            {{ moneda.Currency_CurrencyCode }}
+          </option>
+          }
+
+        </select>
+      </div>
+
+      <!--FECHA DE INGRESO DE LA LIQUIDACIÓN DE VIATICOS-->
+      <div class="p-3 rounded-xl bg-gray-50">
+        <label class="text-xs text-gray-500">Fecha de Ingreso</label>
+        <input type="date" formControlName="fhLiqVia" class="input input-bordered w-full text-xs" />
+      </div>
+      <!--MONTO AUTORIZADO-->
+      <div class="p-3 rounded-xl bg-gray-50">
+        <label class="text-xs text-gray-500">Monto Autorizado</label>
+        <input type="number" formControlName="montoAutorizado" class="input input-bordered w-full text-xs" />
+      </div>
+
+      <!--DESCRIPCIÓN DE LA LIQUIDACIÓN DE VIATICOS-->
+      <div class="p-3 rounded-xl bg-gray-50">
+        <label class="text-xs text-gray-500">Descripción</label>
+        <textarea type="text" formControlName="descLiqVia" class="input input-bordered w-full text-xs" ></textarea>
+      </div>
+
+      <!--ESTADO DE LA LIQUIDACIÓN DE VIATICOS -->
+        <div class="p-3 rounded-xl bg-gray-50">
+        <label class="text-xs text-gray-500">Estado</label>
+        <p class="font-semibold text-gray-800">
+          @if(formLiqViaticosHeader().get('posteada')?.value) {
+            Posteada
+          } 
+          @else 
+          {
+            No Posteada
+          }
+        </p>
+      </div>
+</div>

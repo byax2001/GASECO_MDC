@@ -1,0 +1,122 @@
+
+@if(showModal()) {
+
+<div class="modal modal-open" role="dialog">
+  <div class="modal-box">
+
+    <h3 
+      class="text-lg font-bold"
+    >
+      Ingreso de Factura
+    </h3>
+
+    <p class="py-4">
+     Agregue los detalles de la factura a ingresar en la liquidación de viáticos.
+    </p>
+
+    <!--
+    
+    FormGroup<LiqViaticosFacturaControls> =
+    this.fb.nonNullable.group({
+      NombreProveedor: [''],
+      NitRtn: [''],
+      NumeroFactura: [''],
+      Serie: [''],
+      MontoFactura: [0],
+      CuentaGl: [''],
+      Impuesto: [''],
+      TipoFactura: [''],
+      DescripcionFactura: [''],
+      FechaFactura: ['']
+    });
+    
+    -->
+    <form [formGroup]="facturaForm" class="w-full">
+      <div class="join join-vertical w-full">
+        <Inputg 
+        class="bg-gray-100"
+          type="text"
+          placeholder="Número de Factura"
+          idinput="NumeroFactura"
+          formControlName="NumeroFactura"
+        />
+        <Inputg 
+          class="mt-2"
+          type="text"
+          placeholder="Serie"
+          idinput="Serie"
+          formControlName="Serie"
+        />
+        <Inputg
+          class="mt-2"
+          type="text"
+          placeholder="NIT/RTN"
+          idinput="NitRtn"
+          formControlName="NitRtn"
+        />
+        <Inputg 
+          class="mt-2"
+          type="text"
+          placeholder="Proveedor"
+          idinput="NombreProveedor"
+          formControlName="NombreProveedor"
+        />
+        <Inputg
+          class="mt-2"
+          type="text"
+          placeholder="Cuenta GL"
+          idinput="CuentaGl"
+          formControlName="CuentaGl"
+          />
+        <Inputg 
+          class="mt-2"
+          type="text"
+          placeholder="Impuesto"
+          idinput="Impuesto"
+          formControlName="Impuesto"
+        />
+        <Inputg 
+          class="mt-2"
+          type="text"
+          placeholder="Tipo de Factura"
+          idinput="TipoFactura"
+          formControlName="TipoFactura"
+        />
+        <Inputg 
+          class="mt-2"
+          type="text"
+          placeholder="Descripción de la Factura"
+          idinput="DescripcionFactura"
+          formControlName="DescripcionFactura"
+        />
+        <Inputg 
+          class="mt-2"
+          type="number"
+          placeholder="Monto de Factura"
+          idinput="MontoFactura"
+          formControlName="MontoFactura"
+        />
+        <date-input
+          class="mt-2"
+          placeholder="Fecha de Factura"
+          idinput="FechaFactura"
+          formControlName="FechaFactura"
+        />
+        
+
+      </div>
+    </form>
+
+    <div class="modal-action">
+      <button class="btn" (click)="guardarFactura()">
+        Confirmar
+      </button>
+      <button class="btn" (click)="closeModal()">
+        Cancelar
+      </button>
+    </div>
+
+  </div>
+</div>
+
+}
